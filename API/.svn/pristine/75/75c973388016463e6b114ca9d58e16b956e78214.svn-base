@@ -1,0 +1,104 @@
+﻿using SupremeCourtCore.Common;
+using SupremeCourtCore.Domain;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+
+namespace SupremeCourtCore.Infrastructure
+{
+    public interface CaseJudgeDAO
+    {
+        List<CaseJudge> GetAllCaseByApplicationId(int applicationId, DBConnection dbConnection);
+        List<CaseJudge> GetAllCaseByJudgeId(int judgeId, DBConnection dbConnection);
+        int AddCaseType(CaseJudgeOnline caseType, DBConnection dbConnection);
+        int UpdateCaseType(CaseJudgeOnline caseType, DBConnection dbConnection);
+        int DeleteCaseType(int applicationId, int judgeId, DBConnection dbConnection);
+    }
+    public class CaseJudgeSqlDAOImpl : CaseJudgeDAO
+    {
+        public int AddCaseType(CaseJudgeOnline caseType, DBConnection dbConnection)
+        {
+            dbConnection.cmd.CommandText = "INSERT INTO CASE_JUDGE(JUDGE_ID,APPLICATION_ID,CREATED_BY,CREATED_DATE,IS_MAIN_JUDGE,IS_BEFORE,UPDATED_BY,UPDATED_DATE,IS_NOTBEFORE,JUDGE_NAME) " +
+                "VALUES(" + caseType.judgeId + "," + caseType.applicationId + ",'" + caseType.createdBy + "','" + caseType.createdDate.ToString("yyyy/MM/dd") + "', " + caseType.isMainJudge + "," + caseType.isBefore + ",'" + caseType.updatedBy + "','" + caseType.updatedDate.ToString("yyyy/MM/dd") + "'," + caseType.isNotBefore + ",'" + caseType.judgeName + "')";
+            return dbConnection.cmd.ExecuteNonQuery();
+        }
+
+        public int DeleteCaseType(int applicationId, int judgeId, DBConnection dbConnection)
+        {
+            dbConnection.cmd.CommandText = "DELETE FROM CASE_JUDGE WHERE APPLICATION_ID = " + applicationId + " AND JUDGE_ID = " + judgeId;
+            return dbConnection.cmd.ExecuteNonQuery();
+        }
+
+        public List<CaseJudge> GetAllCaseByApplicationId(int applicationId, DBConnection dbConnection)
+        {
+            //dbConnection.cmd.CommandText = "SELECT * FROM CASE_JUDGE WHERE APPLICATION_ID = " + applicationId;
+            dbConnection.cmd.CommandText = "SELECT CJ.*,J.NAME FROM CASE_JUDGE CJ " +
+                                           "INNER JOIN JUDGE J ON J.ID = CJ.JUDGE_ID " +
+                                           "WHERE CJ.APPLICATION_ID = " + applicationId + " ";
+
+            dbConnection.dr = dbConnection.cmd.ExecuteReader();
+            DataAccessObject dataAccessObject = new DataAccessObject();
+            return dataAccessObject.ReadCollection<CaseJudge>(dbConnection.dr);
+        }
+
+        public List<CaseJudge> GetAllCaseByJudgeId(int judgeId, DBConnection dbConnection)
+        {
+            dbConnection.cmd.CommandText = "SELECT * FROM CASE_JUDGE WHERE JUDGE_ID = " + judgeId;
+
+            dbConnection.dr = dbConnection.cmd.ExecuteReader();
+            DataAccessObject dataAccessObject = new DataAccessObject();
+            return dataAccessObject.ReadCollection<CaseJudge>(dbConnection.dr);
+        }
+
+        public int UpdateCaseType(CaseJudgeOnline caseType, DBConnection dbConnection)
+        {
+            dbConnection.cmd.CommandText = "UPDATE CASE_JUDGE SET CREATED_BY = '" + caseType.createdBy + "', CREATED_DATE = '" + caseType.createdDate.ToString("yyyy/MM/dd") + "', IS_MAIN_JUDGE = " + caseType.isMainJudge + ", IS_BEFORE = " + caseType.isBefore + ", UPDATED_BY = '" + caseType.updatedBy + "', UPDATED_DATE = '" + caseType.updatedDate.ToString("yyyy/MM/dd") + "' WHERE APPLICATION_ID = " + caseType.applicationId + " AND JUDGE_ID = " + caseType.judgeId;
+            return dbConnection.cmd.ExecuteNonQuery();
+        }
+    }
+
+    public class CaseJudgeDAOImpl : CaseJudgeDAO
+    {
+        public int AddCaseType(CaseJudgeOnline caseType, DBConnection dbConnection)
+        {
+            dbConnection.cmd.CommandText = "INSERT INTO CASE_JUDGE(JUDGE_ID,APPLICATION_ID,CREATED_BY,CREATED_DATE,IS_MAIN_JUDGE,IS_BEFORE,UPDATED_BY,UPDATED_DATE,IS_NOTBEFORE,JUDGE_NAME) " +
+                "VALUES(" + caseType.judgeId + "," + caseType.applicationId + ",'" + caseType.createdBy + "','" + caseType.createdDate.ToString("yyyy/MM/dd") + "', " + caseType.isMainJudge + "," + caseType.isBefore + ",'" + caseType.updatedBy + "','" + caseType.updatedDate.ToString("yyyy/MM/dd") + "'," + caseType.isNotBefore + ",'" + caseType.judgeName + "')";
+            return dbConnection.cmd.ExecuteNonQuery();
+        }
+
+        public int DeleteCaseType(int applicationId, int judgeId, DBConnection dbConnection)
+        {
+            dbConnection.cmd.CommandText = "DELETE FROM CASE_JUDGE WHERE APPLICATION_ID = " + applicationId + " AND JUDGE_ID = "+judgeId;
+            return dbConnection.cmd.ExecuteNonQuery();
+        }
+
+        public List<CaseJudge> GetAllCaseByApplicationId(int applicationId, DBConnection dbConnection)
+        {
+           // dbConnection.cmd.CommandText = "SELECT * FROM CASE_JUDGE WHERE APPLICATION_ID = "+applicationId;
+            dbConnection.cmd.CommandText = "SELECT CJ.*,J.NAME FROM CASE_JUDGE CJ " +
+                                           "INNER JOIN JUDGE J ON J.ID = CJ.JUDGE_ID " +
+                                           "WHERE CJ.APPLICATION_ID = "+ applicationId + " ";
+
+            dbConnection.dr = dbConnection.cmd.ExecuteReader();
+            DataAccessObject dataAccessObject = new DataAccessObject();
+            return dataAccessObject.ReadCollection<CaseJudge>(dbConnection.dr);
+        }
+
+        public List<CaseJudge> GetAllCaseByJudgeId(int judgeId, DBConnection dbConnection)
+        {
+            dbConnection.cmd.CommandText = "SELECT * FROM CASE_JUDGE WHERE JUDGE_ID = " + judgeId;
+
+            dbConnection.dr = dbConnection.cmd.ExecuteReader();
+            DataAccessObject dataAccessObject = new DataAccessObject();
+            return dataAccessObject.ReadCollection<CaseJudge>(dbConnection.dr);
+        }
+
+        public int UpdateCaseType(CaseJudgeOnline caseType, DBConnection dbConnection)
+        {
+            dbConnection.cmd.CommandText = "UPDATE CASE_JUDGE SET CREATED_BY = '" + caseType.createdBy + "', CREATED_DATE = '" + caseType.createdDate.ToString("yyyy/MM/dd") + "', IS_MAIN_JUDGE = "+caseType.isMainJudge+ ", IS_BEFORE = "+caseType.isBefore+ ", UPDATED_BY = '"+caseType.updatedBy+ "', UPDATED_DATE = '" + caseType.updatedDate.ToString("yyyy/MM/dd") + "' WHERE APPLICATION_ID = " + caseType.applicationId + " AND JUDGE_ID = "+caseType.judgeId;
+            return dbConnection.cmd.ExecuteNonQuery();
+        }
+    }
+}

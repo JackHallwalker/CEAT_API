@@ -1,0 +1,45 @@
+﻿using SupremeCourtCore.Common;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+
+namespace SupremeCourtCore.Domain
+{
+    public class CustomerLogin
+    {
+        [DBField("ID")]
+        public int loginId { get; set; }
+
+        [DBField("CUSTOMER_ID")]
+        public int CustomerId { get; set; }
+
+        [DBField("USER_NAME")]
+        public string UserName { get; set; }
+
+        [DBField("PASSWORD_2")]
+        public string Password { get; set; }
+
+        [DBField("LAST_LOGIN")]
+        public DateTime LastLogin { get; set; }
+
+        [DBField("LOGIN_ATTEMPT")]
+        public int LoginAttempt { get; set; }
+
+        [DBField("IS_LOCKED")]
+        public int IsLocked { get; set; }
+
+        [DBField("RESET_CODE")]
+        public string ResetCode { get; set; }
+
+        [DBField("RESET_EXPIRY_DATE")]
+        public DateTime ResetExpiryDate { get; set; }
+
+        public int CustomerMobileValidated { get; set; }
+        // public string Message { get; set; }
+        // public string SusscessMessage { get; set; }
+        // public string ErrorMessage { get; set; }
+
+    }
+}

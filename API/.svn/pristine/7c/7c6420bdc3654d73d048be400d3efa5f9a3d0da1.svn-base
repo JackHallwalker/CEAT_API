@@ -1,0 +1,95 @@
+﻿using SupremeCourtCore.Common;
+using SupremeCourtCore.Domain;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+
+namespace SupremeCourtCore.Infrastructure
+{
+    public interface PetitionDAO
+    {
+        List<Petition> GetAllPetitions(DBConnection dbConnection);
+        Petition GetPetition(int id, DBConnection dbConnection);
+        int AddPetition(Petition petition, DBConnection dbConnection);
+        int UpdatePetition(Petition petition, DBConnection dbConnection);
+        int DeletePetition(int petitionId, DBConnection dbConnection);
+    }
+    public class PetitionSqlDAOImpl : PetitionDAO
+    {
+        public int AddPetition(Petition petition, DBConnection dbConnection)
+        {
+            dbConnection.cmd.CommandText = "INSERT INTO PETITION(NAME,IS_ACTIVE) VALUES('" + petition.name + "',1) SELECT SCOPE_IDENTITY()";
+            return Convert.ToInt32(dbConnection.cmd.ExecuteScalar());
+        }
+
+        public int DeletePetition(int petitionId, DBConnection dbConnection)
+        {
+            dbConnection.cmd.CommandText = "UPDATE PETITION SET IS_ACTIVE = 0  WHERE ID = " + petitionId;
+            return dbConnection.cmd.ExecuteNonQuery();
+        }
+
+        public List<Petition> GetAllPetitions(DBConnection dbConnection)
+        {
+            dbConnection.cmd.CommandText = "SELECT * FROM PETITION WHERE IS_ACTIVE = 1";
+
+            dbConnection.dr = dbConnection.cmd.ExecuteReader();
+            DataAccessObject dataAccessObject = new DataAccessObject();
+            return dataAccessObject.ReadCollection<Petition>(dbConnection.dr);
+        }
+
+        public Petition GetPetition(int id, DBConnection dbConnection)
+        {
+            dbConnection.cmd.CommandText = "SELECT * FROM PETITION WHERE ID = " + id + " ";
+
+            dbConnection.dr = dbConnection.cmd.ExecuteReader();
+            DataAccessObject dataAccessObject = new DataAccessObject();
+            return dataAccessObject.GetSingleOject<Petition>(dbConnection.dr);
+        }
+
+        public int UpdatePetition(Petition petition, DBConnection dbConnection)
+        {
+            dbConnection.cmd.CommandText = "UPDATE PETITION SET NAME = '" + petition.name + "', IS_ACTIVE = " + petition.isActive + "  WHERE ID = " + petition.id;
+            return dbConnection.cmd.ExecuteNonQuery();
+        }
+    }
+    public class PetitionDAOImpl : PetitionDAO
+    {
+        public int AddPetition(Petition petition, DBConnection dbConnection)
+        {
+            dbConnection.cmd.CommandText = "INSERT INTO PETITION(NAME,IS_ACTIVE) VALUES('" + petition.name + "',1); SELECT currval('petition_id_seq');";
+            return Convert.ToInt32(dbConnection.cmd.ExecuteScalar());
+        }
+
+        public int DeletePetition(int petitionId, DBConnection dbConnection)
+        {
+            dbConnection.cmd.CommandText = "UPDATE PETITION SET IS_ACTIVE = 0  WHERE ID = " + petitionId;
+            return dbConnection.cmd.ExecuteNonQuery();
+        }
+
+        public List<Petition> GetAllPetitions(DBConnection dbConnection)
+        {
+            dbConnection.cmd.CommandText = "SELECT * FROM PETITION WHERE IS_ACTIVE = 1";
+
+            dbConnection.dr = dbConnection.cmd.ExecuteReader();
+            DataAccessObject dataAccessObject = new DataAccessObject();
+            return dataAccessObject.ReadCollection<Petition>(dbConnection.dr);
+        }
+
+        public Petition GetPetition(int id, DBConnection dbConnection)
+        {
+            dbConnection.cmd.CommandText = "SELECT * FROM PETITION WHERE ID = " + id + " ";
+
+            dbConnection.dr = dbConnection.cmd.ExecuteReader();
+            DataAccessObject dataAccessObject = new DataAccessObject();
+            return dataAccessObject.GetSingleOject<Petition>(dbConnection.dr);
+        }
+
+        public int UpdatePetition(Petition petition, DBConnection dbConnection)
+        {
+            dbConnection.cmd.CommandText = "UPDATE PETITION SET NAME = '" + petition.name + "', IS_ACTIVE = " + petition.isActive + "  WHERE ID = " + petition.id;
+            return dbConnection.cmd.ExecuteNonQuery();
+        }
+    }
+}

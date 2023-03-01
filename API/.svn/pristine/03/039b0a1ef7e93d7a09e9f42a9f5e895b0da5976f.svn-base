@@ -1,0 +1,181 @@
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Net;
+using System.Net.Http;
+using System.Web;
+using System.Web.Http;
+using SupremeCourtCore.Common;
+using SupremeCourtCore.Controller;
+using SupremeCourtCore.Domain;
+
+namespace SupremeCourtAPI.Controllers
+{
+    public class SysUserApiController : ApiController
+    {
+
+        [HttpGet]
+        [Route("api/v1/GetLoginDetails/{username}/{password}")]
+        public SystemUser GetLoginDetails(string username, string password)
+        {
+            SysUserController customerLoginController = ControllerFactory.CreateSysUserController();
+            password = customerLoginController.Encryptword(password);
+
+            return customerLoginController.GetLoginDetails(username, password);
+        }
+
+        [HttpPost]
+        [Route("api/v1/CreateSystemUser/")]
+        public HttpResponseMessage CreateSystemUser([FromBody] SystemUser value)
+        {
+            try
+            {
+                SysUserController customerLoginController = ControllerFactory.CreateSysUserController();
+                value.userPassword = customerLoginController.Encryptword(value.userPassword);
+                int itemId = customerLoginController.SaveLogin(value);
+
+                if(itemId == -1)
+                    return Request.CreateResponse(HttpStatusCode.OK, "Username already exists.");
+                else
+                    return Request.CreateResponse(HttpStatusCode.OK, "User created successfully. User Id-"+itemId);
+
+            }
+            catch (Exception ex)
+            {
+                return Request.CreateErrorResponse(HttpStatusCode.BadRequest, "something went wrong" + ex.Message);
+            }
+        }
+
+        [HttpPut]
+        [Route("api/v1/UpdateSystemUser")]
+        public HttpResponseMessage UpdateSystemUser([FromBody] SystemUser value)
+        {
+            try
+            {
+                SysUserController customerLoginController = ControllerFactory.CreateSysUserController();
+                int itemId = customerLoginController.UpdateLogin(value);
+
+                return Request.CreateResponse(HttpStatusCode.OK, "User Updated successfully.");
+
+            }
+            catch (Exception ex)
+            {
+                return Request.CreateErrorResponse(HttpStatusCode.BadRequest, "something went wrong" + ex.Message);
+            }
+        }
+
+        [HttpDelete]
+        [Route("api/v1/DeleteUser/{id?}")]
+        public HttpResponseMessage DeleteUser(int value)
+        {
+            try
+            {
+                SysUserController customerLoginController = ControllerFactory.CreateSysUserController();
+                int itemId = customerLoginController.DeleteUser(value);
+
+                return Request.CreateResponse(HttpStatusCode.OK, "User Deleted successfully.");
+
+            }
+            catch (Exception ex)
+            {
+                return Request.CreateErrorResponse(HttpStatusCode.BadRequest, "something went wrong" + ex.Message);
+            }
+        }
+
+        [HttpPut]
+        [Route("api/v1/UpdatePasswordByUserId/{userId}/{newPassword}")]
+        public HttpResponseMessage UpdatePasswordByUserId(int userId, string newPassword)
+        {
+            try
+            {
+                SysUserController customerLoginController = ControllerFactory.CreateSysUserController();
+                int itemId = customerLoginController.UpdatePasswordByUserId(userId, newPassword);
+
+                return Request.CreateResponse(HttpStatusCode.OK, "Password Updated successfully.");
+
+            }
+            catch (Exception ex)
+            {
+                return Request.CreateErrorResponse(HttpStatusCode.BadRequest, "something went wrong" + ex.Message);
+            }
+        }
+
+        [HttpPut]
+        [Route("api/v1/UpdateUserNamePasswordByUserId/{userId}/{newUserName}/{newPassword}")]
+        public HttpResponseMessage UpdateUserNamePasswordByUserId(int userId, string newUserName, string newPassword)
+        {
+            try
+            {
+                SysUserController customerLoginController = ControllerFactory.CreateSysUserController();
+                int itemId = customerLoginController.UpdateUserNamePasswordByUserId(userId, newUserName, newPassword);
+
+                return Request.CreateResponse(HttpStatusCode.OK, "Username and Password Updated successfully.");
+
+            }
+            catch (Exception ex)
+            {
+                return Request.CreateErrorResponse(HttpStatusCode.BadRequest, "something went wrong" + ex.Message);
+            }
+        }
+
+        [HttpGet]
+        [Route("api/v1/GetAllUsers")]
+        public List<SystemUserReturn> GetAllUsers()
+        {
+            SysUserController customerLoginController = ControllerFactory.CreateSysUserController();
+            return customerLoginController.GetAllUsers();
+        }
+        
+        [HttpGet]
+        [Route("api/v1/GetAllUsers/{roleId}")]
+        public List<SystemUser> GetAllUsers(int roleId)
+        {
+            SysUserController customerLoginController = ControllerFactory.CreateSysUserController();
+            return customerLoginController.GetAllUsers(roleId);
+        }
+
+        [HttpPut]
+        [Route("api/v1/UpdateLockStatusByUserId/{userId}/{isLocked}")]
+        public HttpResponseMessage UpdateLockStatusByUserId(int userId, int isLocked)
+        {
+            try
+            {
+                SysUserController customerLoginController = ControllerFactory.CreateSysUserController();
+                int itemId = customerLoginController.UpdateLockStatusByUserId(userId, isLocked);
+
+                if (itemId == 0)
+                {
+                    return Request.CreateResponse(HttpStatusCode.BadRequest, "User Id not exist.");
+                }
+                return Request.CreateResponse(HttpStatusCode.OK, "Locked Ststus Updated successfully.");
+
+            }
+            catch (Exception ex)
+            {
+                return Request.CreateErrorResponse(HttpStatusCode.BadRequest, "something went wrong" + ex.Message);
+            }
+        }
+
+        [HttpPut]
+        [Route("api/v1/UpdateActiveStatusByUserId/{userId}/{isActive}")]
+        public HttpResponseMessage UpdateActiveStatusByUserId(int userId, int isActive)
+        {
+            try
+            {
+                SysUserController customerLoginController = ControllerFactory.CreateSysUserController();
+                int itemId = customerLoginController.UpdateActiveStatusByUserId(userId, isActive);
+                if(itemId == 0)
+                {
+                    return Request.CreateResponse(HttpStatusCode.BadRequest, "User Id not exist.");
+                }
+
+                return Request.CreateResponse(HttpStatusCode.OK, "Active Ststus Updated successfully.");
+
+            }
+            catch (Exception ex)
+            {
+                return Request.CreateErrorResponse(HttpStatusCode.BadRequest, "something went wrong" + ex.Message);
+            }
+        }
+    }
+}

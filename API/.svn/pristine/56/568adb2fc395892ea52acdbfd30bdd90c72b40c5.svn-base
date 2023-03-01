@@ -1,0 +1,125 @@
+﻿using System;
+using System.Collections.Generic;
+using SupremeCourtCore.Common;
+using SupremeCourtCore.Domain;
+using SupremeCourtCore.Infrastructure;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+
+namespace SupremeCourtCore.Controller
+{
+    public interface PetitionController
+    {
+        List<Petition> GetAllPetitions();
+        Petition GetPetition(int id);
+        int AddPetition(Petition petition);
+        int UpdatePetition(Petition petition);
+        int DeletePetition(int petitionId);
+    }
+
+    public class PetitionControllerImpl : PetitionController
+    {
+        DBConnection dBConnection;
+        PetitionDAO OrderTypeDAO = DAOFactory.CreatePetitionDAO();
+        public int AddPetition(Petition petition)
+        {
+            try
+            {
+                dBConnection = new DBConnection();
+                return OrderTypeDAO.AddPetition(petition, dBConnection);
+            }
+            catch (Exception)
+            {
+                dBConnection.RollBack();
+
+                throw;
+            }
+            finally
+            {
+                if (dBConnection.con.State == System.Data.ConnectionState.Open)
+                    dBConnection.Commit();
+            }
+        }
+
+        public int DeletePetition(int petitionId)
+        {
+            try
+            {
+                dBConnection = new DBConnection();
+                return OrderTypeDAO.DeletePetition(petitionId, dBConnection);
+            }
+            catch (Exception)
+            {
+                dBConnection.RollBack();
+
+                throw;
+            }
+            finally
+            {
+                if (dBConnection.con.State == System.Data.ConnectionState.Open)
+                    dBConnection.Commit();
+            }
+        }
+
+        public List<Petition> GetAllPetitions()
+        {
+            try
+            {
+                dBConnection = new DBConnection();
+                return OrderTypeDAO.GetAllPetitions(dBConnection);
+            }
+            catch (Exception)
+            {
+                dBConnection.RollBack();
+
+                throw;
+            }
+            finally
+            {
+                if (dBConnection.con.State == System.Data.ConnectionState.Open)
+                    dBConnection.Commit();
+            }
+        }
+
+        public Petition GetPetition(int id)
+        {
+            try
+            {
+                dBConnection = new DBConnection();
+                return OrderTypeDAO.GetPetition(id, dBConnection);
+            }
+            catch (Exception)
+            {
+                dBConnection.RollBack();
+
+                throw;
+            }
+            finally
+            {
+                if (dBConnection.con.State == System.Data.ConnectionState.Open)
+                    dBConnection.Commit();
+            }
+        }
+
+        public int UpdatePetition(Petition petition)
+        {
+            try
+            {
+                dBConnection = new DBConnection();
+                return OrderTypeDAO.UpdatePetition(petition, dBConnection);
+            }
+            catch (Exception)
+            {
+                dBConnection.RollBack();
+
+                throw;
+            }
+            finally
+            {
+                if (dBConnection.con.State == System.Data.ConnectionState.Open)
+                    dBConnection.Commit();
+            }
+        }
+    }
+}

@@ -1,0 +1,125 @@
+﻿using SupremeCourtCore.Common;
+using SupremeCourtCore.Domain;
+using SupremeCourtCore.Infrastructure;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+
+namespace SupremeCourtCore.Controller
+{
+    public interface CaseJudgeController
+    {
+        List<CaseJudge> GetAllCaseByApplicationId(int applicationId);
+        List<CaseJudge> GetAllCaseByJudgeId(int judgeId);
+        int AddCaseJudge(CaseJudgeOnline caseType);
+        int UpdateCaseJudge(CaseJudgeOnline caseType);
+        int DeleteCaseJudge(int applicationId, int judgeId);
+    }
+
+    public class CaseJudgeControllerImpl : CaseJudgeController
+    {
+        DBConnection dBConnection;
+        CaseJudgeDAO OrderTypeDAO = DAOFactory.CreateCaseJudgeDAO();
+        public int AddCaseJudge(CaseJudgeOnline caseType)
+        {
+            try
+            {
+                dBConnection = new DBConnection();
+                return OrderTypeDAO.AddCaseType(caseType, dBConnection);
+            }
+            catch (Exception)
+            {
+                dBConnection.RollBack();
+
+                throw;
+            }
+            finally
+            {
+                if (dBConnection.con.State == System.Data.ConnectionState.Open)
+                    dBConnection.Commit();
+            }
+        }
+
+        public int DeleteCaseJudge(int applicationId, int judgeId)
+        {
+            try
+            {
+                dBConnection = new DBConnection();
+                return OrderTypeDAO.DeleteCaseType(applicationId, judgeId, dBConnection);
+            }
+            catch (Exception)
+            {
+                dBConnection.RollBack();
+
+                throw;
+            }
+            finally
+            {
+                if (dBConnection.con.State == System.Data.ConnectionState.Open)
+                    dBConnection.Commit();
+            }
+        }
+
+        public List<CaseJudge> GetAllCaseByApplicationId(int applicationId)
+        {
+            try
+            {
+                dBConnection = new DBConnection();
+                return OrderTypeDAO.GetAllCaseByApplicationId(applicationId, dBConnection);
+            }
+            catch (Exception)
+            {
+                dBConnection.RollBack();
+
+                throw;
+            }
+            finally
+            {
+                if (dBConnection.con.State == System.Data.ConnectionState.Open)
+                    dBConnection.Commit();
+            }
+        }
+
+        public List<CaseJudge> GetAllCaseByJudgeId(int judgeId)
+        {
+            try
+            {
+                dBConnection = new DBConnection();
+                return OrderTypeDAO.GetAllCaseByJudgeId(judgeId, dBConnection);
+            }
+            catch (Exception)
+            {
+                dBConnection.RollBack();
+
+                throw;
+            }
+            finally
+            {
+                if (dBConnection.con.State == System.Data.ConnectionState.Open)
+                    dBConnection.Commit();
+            }
+        }
+
+        public int UpdateCaseJudge(CaseJudgeOnline caseType)
+        {
+            try
+            {
+                dBConnection = new DBConnection();
+                return OrderTypeDAO.UpdateCaseType(caseType, dBConnection);
+            }
+            catch (Exception)
+            {
+                dBConnection.RollBack();
+
+                throw;
+            }
+            finally
+            {
+                if (dBConnection.con.State == System.Data.ConnectionState.Open)
+                    dBConnection.Commit();
+            }
+        }
+    }
+}

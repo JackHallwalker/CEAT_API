@@ -1,0 +1,85 @@
+﻿using SupremeCourtCore.Common;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+
+namespace SupremeCourtCore.Domain
+{
+    public class Schedule
+    {
+
+        [DBField("ID")]
+        public int id { get; set; }
+
+        [DBField("APPLICATION_ID")]
+        public int applicationId { get; set; }
+
+        [DBField("PETITION_ID")]
+        public int petitionId { get; set; }
+
+        [DBField("COURT_ID")]
+        public int courtId { get; set; }
+
+        [DBField("ACTION_TYPE_ID")]
+        public int actionTypeId { get; set; }
+
+        [DBField("TRIAL_DATE")]
+        public DateTime trialDate { get; set; }
+
+        [DBField("TRIAL_TIME")]
+        public string trialTime { get; set; }
+
+        [DBField("REMARKS")]
+        public string remarks { get; set; }
+
+        [DBField("CATEGORY_ID")]
+        public int CategoryID { get; set; }
+
+        [DBField("CASE_TYPE_ID")]
+        public int caseTypeId { get; set; }
+
+        [DBField("CASE_NO")]
+        public string caseNo { get; set; }
+
+        [DBField("SERIAL_NO")]
+        public int serialNo { get; set; }
+
+        [DBField("LOWER_COURT_NO")]
+        public string lowerCourtNo { get; set; }
+
+        [DBField("DESCRIPTION")]
+        public string description { get; set; }
+
+        [DBField("REG_DATE")]
+        public DateTime regDate { get; set; }
+
+        [DBField("IS_ACTIVE")]
+        public int isActive { get; set; }
+
+        [DBField("NAME")]
+        public string name { get; set; }
+
+        [DBField("case_type_name")]
+        public string caseTypeName { get; set; }
+
+        [DBField("SHORT_CODE")]
+        public string shortCode { get; set; }
+
+        [DBField("petition_name")]
+        public string petitionName { get; set; }
+
+        [DBField("court_name")]
+        public string courtName { get; set; }
+
+        [DBField("court_short_code")]
+        public string courtShortCode { get; set; }
+        [DBField("lawyer_name")]
+        public string lawyer_name { get; set; }
+
+        [DBField("judge_name")]
+        public string judge_name { get; set; }
+
+    }
+}

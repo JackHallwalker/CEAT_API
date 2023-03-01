@@ -1,0 +1,99 @@
+﻿using SupremeCourtCore.Common;
+using SupremeCourtCore.Domain;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+
+namespace SupremeCourtCore.Infrastructure
+{
+    public interface MealPlanDAO
+    {
+        List<MealPlan> GetAllMealPlans(DBConnection dbConnection);
+        MealPlan GetMealPlan(int id, DBConnection dbConnection);
+        int AddMealPlan(MealPlan mealPlan, DBConnection dbConnection);
+        int UpdateMealPlan(MealPlan mealPlan, DBConnection dbConnection);
+        int DeleteMealPlan(MealPlan mealPlan, DBConnection dbConnection);
+    }
+    public class MealPlanSqlDAOImpl : MealPlanDAO
+    {
+        public List<MealPlan> GetAllMealPlans(DBConnection dbConnection)
+        {
+            dbConnection.cmd.CommandText = "SELECT * FROM MEAL_PLAN WHERE IS_ACTIVE = 1";
+
+            dbConnection.dr = dbConnection.cmd.ExecuteReader();
+            DataAccessObject dataAccessObject = new DataAccessObject();
+            return dataAccessObject.ReadCollection<MealPlan>(dbConnection.dr);
+
+        }
+
+        public MealPlan GetMealPlan(int id, DBConnection dbConnection)
+        {
+            dbConnection.cmd.CommandText = "SELECT * FROM MEAL_PLAN WHERE ID = " + id + " ";
+
+            dbConnection.dr = dbConnection.cmd.ExecuteReader();
+            DataAccessObject dataAccessObject = new DataAccessObject();
+            return dataAccessObject.GetSingleOject<MealPlan>(dbConnection.dr);
+
+        }
+
+        public int AddMealPlan(MealPlan mealPlan, DBConnection dbConnection)
+        {
+            dbConnection.cmd.CommandText = "INSERT INTO MEAL_PLAN(NAME,IS_ACTIVE) VALUES('" + mealPlan.name + "', 1) SELECT SCOPE_IDENTITY()";
+            return Convert.ToInt32(dbConnection.cmd.ExecuteScalar());
+        }
+
+        public int UpdateMealPlan(MealPlan mealPlan, DBConnection dbConnection)
+        {
+            dbConnection.cmd.CommandText = "UPDATE MEAL_PLAN SET NAME = '" + mealPlan.name + "' WHERE ID = " + mealPlan.id;
+            return dbConnection.cmd.ExecuteNonQuery();
+        }
+
+        public int DeleteMealPlan(MealPlan mealPlan, DBConnection dbConnection)
+        {
+            dbConnection.cmd.CommandText = "UPDATE MEAL_PLAN SET IS_ACTIVE = 0 WHERE ID = " + mealPlan.id;
+            return dbConnection.cmd.ExecuteNonQuery();
+        }
+    }
+    public class MealPlanDAOImpl : MealPlanDAO
+    {
+        public List<MealPlan> GetAllMealPlans(DBConnection dbConnection)
+        {
+            dbConnection.cmd.CommandText = "SELECT * FROM MEAL_PLAN WHERE IS_ACTIVE = 1";
+
+            dbConnection.dr = dbConnection.cmd.ExecuteReader();
+            DataAccessObject dataAccessObject = new DataAccessObject();
+            return dataAccessObject.ReadCollection<MealPlan>(dbConnection.dr);
+
+        }
+
+        public MealPlan GetMealPlan(int id, DBConnection dbConnection)
+        {
+            dbConnection.cmd.CommandText = "SELECT * FROM MEAL_PLAN WHERE ID = " + id + " ";
+
+            dbConnection.dr = dbConnection.cmd.ExecuteReader();
+            DataAccessObject dataAccessObject = new DataAccessObject();
+            return dataAccessObject.GetSingleOject<MealPlan>(dbConnection.dr);
+
+        }
+
+        public int AddMealPlan(MealPlan mealPlan, DBConnection dbConnection)
+        {
+            dbConnection.cmd.CommandText = "INSERT INTO MEAL_PLAN(NAME,IS_ACTIVE) VALUES('" + mealPlan.name + "', 1); SELECT currval('meal_plan_id_seq');";
+            return Convert.ToInt32(dbConnection.cmd.ExecuteScalar());
+        }
+
+        public int UpdateMealPlan(MealPlan mealPlan, DBConnection dbConnection)
+        {
+            dbConnection.cmd.CommandText = "UPDATE MEAL_PLAN SET NAME = '" + mealPlan.name + "' WHERE ID = " + mealPlan.id;
+            return dbConnection.cmd.ExecuteNonQuery();
+        }
+
+        public int DeleteMealPlan(MealPlan mealPlan, DBConnection dbConnection)
+        {
+            dbConnection.cmd.CommandText = "UPDATE MEAL_PLAN SET IS_ACTIVE = 0 WHERE ID = " + mealPlan.id;
+            return dbConnection.cmd.ExecuteNonQuery();
+        }
+    }
+}

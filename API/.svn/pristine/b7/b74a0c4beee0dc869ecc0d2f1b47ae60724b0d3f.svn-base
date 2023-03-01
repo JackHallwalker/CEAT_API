@@ -1,0 +1,108 @@
+﻿using SupremeCourtCore.Common;
+using SupremeCourtCore.Domain;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+
+namespace SupremeCourtCore.Infrastructure
+{
+    public interface UserActionLogDAO
+    {
+        int AddUserActionLog(UserActionLogOnline userActionLogOnline, DBConnection dbConnection);
+        List<UserActionLog> GetUserActionLogTaken(string username, string FromDate, string ToDate, string caseId, DBConnection dbConnection);
+    }
+
+    public class UserActionLogSqlDAOImpl : UserActionLogDAO
+    {
+        public int AddUserActionLog(UserActionLogOnline userActionLog, DBConnection dbConnection)
+        {
+            dbConnection.cmd.CommandText = "INSERT INTO ACTION_LOG (USER_ID,USER_ACTION,IP_ADDRESS,LOG_DATE,CASE_NO,USERNAME) VALUES(" + userActionLog.UserId + ",'" + userActionLog.UserAction + "','" + userActionLog.IpAddress + "',NOW()::timestamp,'" + userActionLog.CaseNo + "','" + userActionLog.username + "');";
+            return Convert.ToInt32(dbConnection.cmd.ExecuteScalar());
+        }
+
+        public List<UserActionLog> GetUserActionLogTaken(string username, string FromDate, string ToDate, string caseId, DBConnection dbConnection)
+        {
+            string uidSql = "";
+            if (username != null)
+                uidSql = " AND USERNAME = '" + username + "' ";
+
+            string fromDateSql = "";
+            if (FromDate != null)
+                fromDateSql = " AND LOG_DATE >= '" + DateTime.ParseExact(FromDate, "yyyy-MM-dd HH.mm.ss", System.Globalization.CultureInfo.InvariantCulture).ToString("yyyy-MM-dd HH:mm:ss") + "' ";
+
+            string toDateSql = "";
+            if (ToDate != null)
+                toDateSql = " AND LOG_DATE <= '" + DateTime.ParseExact(ToDate, "yyyy-MM-dd HH.mm.ss", System.Globalization.CultureInfo.InvariantCulture).ToString("yyyy-MM-dd HH:mm:ss") + "' ";
+
+            string toCaseId = "";
+            if (caseId != null)
+                toCaseId = " AND CASE_NO = '" + caseId + "' ";
+
+            dbConnection.cmd.CommandText = "SELECT * FROM ACTION_LOG WHERE 1 = 1 " + fromDateSql + toDateSql + toCaseId + uidSql;
+
+            dbConnection.dr = dbConnection.cmd.ExecuteReader();
+            DataAccessObject dataAccessObject = new DataAccessObject();
+            return dataAccessObject.ReadCollection<UserActionLog>(dbConnection.dr);
+        }
+
+    }
+
+    public class UserActionLogDAOImpl : UserActionLogDAO
+    {
+        public int AddUserActionLog(UserActionLogOnline userActionLog, DBConnection dbConnection)
+        {
+            dbConnection.cmd.CommandText = "INSERT INTO ACTION_LOG (USER_ID,USER_ACTION,IP_ADDRESS,LOG_DATE,CASE_NO,USERNAME) VALUES(" + userActionLog.UserId + ",'" + userActionLog.UserAction + "','" + userActionLog.IpAddress + "',NOW()::timestamp,'" + userActionLog.CaseNo + "','" + userActionLog.username + "');";
+            return Convert.ToInt32(dbConnection.cmd.ExecuteScalar());
+        }
+
+        /*public List<UserActionLog> GetUserActionLogTaken(string username, string FromDate, string ToDate, string caseId, DBConnection dbConnection)
+        {
+            string uidSql = "";
+            if (username != null)
+                uidSql = " USERNAME = " + username + " ";
+
+            string fromDateSql = "";
+            if (FromDate != null)
+                fromDateSql = " AND LOG_DATE = '" + FromDate;
+
+            string toDateSql = "";
+            if (ToDate != null)
+                toDateSql = " AND LOG_DATE = '" + ToDate;
+
+            dbConnection.cmd.CommandText = "SELECT * FROM ACTION_LOG WHERE LOG_DATE >= '" + DateTime.ParseExact(FromDate, "yyyy-MM-dd HH.mm.ss", System.Globalization.CultureInfo.InvariantCulture).ToString("yyyy-MM-dd HH:mm:ss") + "' AND LOG_DATE <= '" + DateTime.ParseExact(ToDate, "yyyy-MM-dd HH.mm.ss", System.Globalization.CultureInfo.InvariantCulture).ToString("yyyy-MM-dd HH:mm:ss") + "' AND CASE_NO = '" + caseId + "' AND USERNAME = '" + username + "' ";
+
+            dbConnection.dr = dbConnection.cmd.ExecuteReader();
+            DataAccessObject dataAccessObject = new DataAccessObject();
+            return dataAccessObject.ReadCollection<UserActionLog>(dbConnection.dr);
+        }*/
+
+        public List<UserActionLog> GetUserActionLogTaken(string username, string FromDate, string ToDate, string caseId, DBConnection dbConnection)
+        {
+            string uidSql = "";
+            if (username != null)
+                uidSql = " AND USERNAME = '" + username + "' ";
+
+            string fromDateSql = "";
+            if (FromDate != null)
+                fromDateSql = " AND LOG_DATE >= '" + DateTime.ParseExact(FromDate, "yyyy-MM-dd HH.mm.ss", System.Globalization.CultureInfo.InvariantCulture).ToString("yyyy-MM-dd HH:mm:ss") + "' ";
+
+            string toDateSql = "";
+            if (ToDate != null)
+                toDateSql = " AND LOG_DATE <= '" + DateTime.ParseExact(ToDate, "yyyy-MM-dd HH.mm.ss", System.Globalization.CultureInfo.InvariantCulture).ToString("yyyy-MM-dd HH:mm:ss") + "' ";
+
+            string toCaseId = "";
+            if (caseId != null)
+                toCaseId = " AND CASE_NO = '" + caseId + "' ";
+
+            dbConnection.cmd.CommandText = "SELECT * FROM ACTION_LOG WHERE 1 = 1 " + fromDateSql + toDateSql + toCaseId + uidSql;
+
+            dbConnection.dr = dbConnection.cmd.ExecuteReader();
+            DataAccessObject dataAccessObject = new DataAccessObject();
+            return dataAccessObject.ReadCollection<UserActionLog>(dbConnection.dr);
+        }
+
+    }
+
+}

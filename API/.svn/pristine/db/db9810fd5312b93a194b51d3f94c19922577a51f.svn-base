@@ -1,0 +1,208 @@
+﻿using SupremeCourtCore.Common;
+using SupremeCourtCore.Domain;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+
+namespace SupremeCourtCore.Infrastructure
+{
+    public interface NextActionDAO
+    {
+        List<NextActionOnline> GetAllNextActions(DBConnection dbConnection);
+        List<NextAction> GetAllNextActions(int applicationId, DBConnection dbConnection);
+        List<NextActionForGetAllNextActionsByAppId> GetAllNextActionsByAppId(int applicationId, DBConnection dbConnection);
+        NextAction GetNextAction(int nextActionId, DBConnection dbConnection);
+        int AddNextAction(NextAction nextAction, DBConnection dbConnection);
+        int UpdateNextAction(NextAction nextAction, DBConnection dbConnection);
+        int DeleteNextAction(int nextActionId, DBConnection dbConnection);
+        List<NextActionForGetAllNextActionsByAppId> GetAllNextActions(string trialDate, string trialTime, DBConnection dbConnection);
+        List<NextAction> GetAllNextApplicationsByDate(string date, DBConnection dBConnection);
+    }
+    public class NextActionSqlDAOImpl : NextActionDAO
+    {
+        public int AddNextAction(NextAction nextAction, DBConnection dbConnection)
+        {
+            dbConnection.cmd.CommandText = "INSERT INTO NEXT_ACTION(APPLICATION_ID,COURT_ID,ACTION_TYPE_ID,TRIAL_DATE,TRIAL_TIME,REMARKS,CASE_NO) VALUES(" + nextAction.applicationId + "," + nextAction.courtId + "," + nextAction.actionTypeId + ",'" + nextAction.trialDate.ToString("yyyy/MM/dd") + "','" + nextAction.trialTime + "','" + nextAction.remarks + "','" + nextAction.caseNo + "') SELECT SCOPE_IDENTITY()";
+            return Convert.ToInt32(dbConnection.cmd.ExecuteScalar());
+        }
+
+        public int DeleteNextAction(int nextActionId, DBConnection dbConnection)
+        {
+            dbConnection.cmd.CommandText = "DELETE FROM NEXT_ACTION WHERE ID = " + nextActionId;
+            return dbConnection.cmd.ExecuteNonQuery();
+        }
+
+        public List<NextActionOnline> GetAllNextActions(DBConnection dbConnection)
+        {
+            dbConnection.cmd.CommandText = "SELECT NA.*,ATT.NAME AS ACTION_TYPE_NAME,APP.CASE_NO,APP.REG_DATE FROM NEXT_ACTION NA INNER JOIN APPLICATION APP ON APP.ID = NA.APPLICATION_ID INNER JOIN ACTION_TYPE ATT ON ATT.ID = NA.ACTION_TYPE_ID";
+
+            dbConnection.dr = dbConnection.cmd.ExecuteReader();
+            DataAccessObject dataAccessObject = new DataAccessObject();
+            return dataAccessObject.ReadCollection<NextActionOnline>(dbConnection.dr);
+        }
+
+        public List<NextAction> GetAllNextActions(int applicationId, DBConnection dbConnection)
+        {
+            dbConnection.cmd.CommandText = "SELECT * FROM NEXT_ACTION WHERE APPLICATION_ID = " + applicationId;
+
+            dbConnection.dr = dbConnection.cmd.ExecuteReader();
+            DataAccessObject dataAccessObject = new DataAccessObject();
+            return dataAccessObject.ReadCollection<NextAction>(dbConnection.dr);
+        }
+
+        public List<NextActionForGetAllNextActionsByAppId> GetAllNextActionsByAppId(int applicationId, DBConnection dbConnection)
+        {
+            //dbConnection.cmd.CommandText = "SELECT * FROM NEXT_ACTION WHERE APPLICATION_ID = " + applicationId;
+            dbConnection.cmd.CommandText = " SELECT NA.*, AT.NAME AS ACTION_TYPE_NAME, C.NAME AS COURT_NAME, J.ID AS JUDGE_ID, J.NAME AS JUDGE_NAME,J.IS_ACTIVE FROM NEXT_ACTION NA " +
+                                           " INNER JOIN ACTION_TYPE AT ON AT.ID = NA.ACTION_TYPE_ID " +
+                                           " INNER JOIN COURT C ON C.ID = NA.COURT_ID " +
+                                           " INNER JOIN CASE_JUDGE CJ ON CJ.APPLICATION_ID = NA.APPLICATION_ID " +
+                                           " INNER JOIN JUDGE J ON J.ID = CJ.JUDGE_ID " +
+                                           " WHERE NA.APPLICATION_ID = " + applicationId + "";
+
+            dbConnection.dr = dbConnection.cmd.ExecuteReader();
+            DataAccessObject dataAccessObject = new DataAccessObject();
+            return dataAccessObject.ReadCollection<NextActionForGetAllNextActionsByAppId>(dbConnection.dr);
+        }
+
+        public NextAction GetNextAction(int nextActionId, DBConnection dbConnection)
+        {
+            dbConnection.cmd.CommandText = "SELECT * FROM NEXT_ACTION WHERE ID = " + nextActionId;
+
+            dbConnection.dr = dbConnection.cmd.ExecuteReader();
+            DataAccessObject dataAccessObject = new DataAccessObject();
+            return dataAccessObject.GetSingleOject<NextAction>(dbConnection.dr);
+        }
+
+        public int UpdateNextAction(NextAction nextAction, DBConnection dbConnection)
+        {
+            dbConnection.cmd.CommandText = "UPDATE NEXT_ACTION SET APPLICATION_ID = " + nextAction.applicationId + ", COURT_ID = " + nextAction.courtId + ", ACTION_TYPE_ID = " + nextAction.actionTypeId + ", TRIAL_DATE = '" + nextAction.trialDate.ToString("yyyy/MM/dd") + "', TRIAL_TIME = '" + nextAction.trialTime + "', REMARKS = '" + nextAction.remarks + "'  WHERE ID = " + nextAction.id;
+            return dbConnection.cmd.ExecuteNonQuery();
+        }
+
+        public List<NextActionForGetAllNextActionsByAppId> GetAllNextActions(string trialDate, string trialTime, DBConnection dbConnection)
+        {
+            // dbConnection.cmd.CommandText = "SELECT * FROM NEXT_ACTION WHERE TRIAL_DATE= '" + trialDate + "' AND TRIAL_TIME ='" + trialTime + "'";
+            dbConnection.cmd.CommandText = " SELECT NA.*, AT.NAME AS ACTION_TYPE_NAME, C.NAME AS COURT_NAME, J.ID AS JUDGE_ID, J.NAME AS JUDGE_NAME,J.IS_ACTIVE FROM NEXT_ACTION NA " +
+                                            " INNER JOIN ACTION_TYPE AT ON AT.ID = NA.ACTION_TYPE_ID " +
+                                            " INNER JOIN COURT C ON C.ID = NA.COURT_ID " +
+                                            " INNER JOIN CASE_JUDGE CJ ON CJ.APPLICATION_ID = NA.APPLICATION_ID " +
+                                            " INNER JOIN JUDGE J ON J.ID = CJ.JUDGE_ID " +
+                                            " WHERE NA.TRIAL_DATE='" + trialDate + "' AND NA.TRIAL_TIME = '" + trialTime + "'";
+
+            dbConnection.dr = dbConnection.cmd.ExecuteReader();
+            DataAccessObject dataAccessObject = new DataAccessObject();
+            return dataAccessObject.ReadCollection<NextActionForGetAllNextActionsByAppId>(dbConnection.dr);
+        }
+
+        public List<NextAction> GetAllNextApplicationsByDate(string date, DBConnection dbConnection)
+        {
+
+            string dateSql = "";
+            if (date != null)
+                dateSql = " AND TRIAL_DATE = '" + DateTime.ParseExact(date, "yyyy-MM-dd", System.Globalization.CultureInfo.InvariantCulture).ToString("dd-MMM-yyyy") + "' ";
+
+
+            dbConnection.cmd.CommandText = "SELECT * FROM NEXT_ACTION WHERE 1 = 1 " + dateSql;
+
+            dbConnection.dr = dbConnection.cmd.ExecuteReader();
+            DataAccessObject dataAccessObject = new DataAccessObject();
+            return dataAccessObject.ReadCollection<NextAction>(dbConnection.dr);
+        }
+    }
+    public class NextActionDAOImpl : NextActionDAO
+    {
+        public int AddNextAction(NextAction nextAction, DBConnection dbConnection)
+        {
+            dbConnection.cmd.CommandText = "INSERT INTO NEXT_ACTION(APPLICATION_ID,COURT_ID,ACTION_TYPE_ID,TRIAL_DATE,TRIAL_TIME,REMARKS,CASE_NO) VALUES(" + nextAction.applicationId + "," + nextAction.courtId + "," + nextAction.actionTypeId + ",'" + nextAction.trialDate.ToString("yyyy/MM/dd") + "','" + nextAction.trialTime + "','" + nextAction.remarks + "','" + nextAction.caseNo + "'); SELECT currval('next_action_id_seq');";
+            return Convert.ToInt32(dbConnection.cmd.ExecuteScalar());
+        }
+
+        public int DeleteNextAction(int nextActionId, DBConnection dbConnection)
+        {
+            dbConnection.cmd.CommandText = "DELETE FROM NEXT_ACTION WHERE ID = " + nextActionId;
+            return dbConnection.cmd.ExecuteNonQuery();
+        }
+
+        public List<NextActionOnline> GetAllNextActions(DBConnection dbConnection)
+        {
+            //dbConnection.cmd.CommandText = "SELECT NA.*,APP.CASE_NO,APP.REG_DATE FROM NEXT_ACTION NA INNER JOIN APPLICATION APP ON APP.ID = NA.APPLICATION_ID";
+            dbConnection.cmd.CommandText = "SELECT NA.*,ATT.NAME AS ACTION_TYPE_NAME, APP.CASE_NO,APP.REG_DATE FROM NEXT_ACTION NA INNER JOIN APPLICATION APP ON APP.ID = NA.APPLICATION_ID INNER JOIN ACTION_TYPE ATT ON ATT.ID = NA.ACTION_TYPE_ID";
+
+            dbConnection.dr = dbConnection.cmd.ExecuteReader();
+            DataAccessObject dataAccessObject = new DataAccessObject();
+            return dataAccessObject.ReadCollection<NextActionOnline>(dbConnection.dr);
+        }
+
+        public List<NextAction> GetAllNextActions(int applicationId, DBConnection dbConnection)
+        {
+            dbConnection.cmd.CommandText = "SELECT * FROM NEXT_ACTION WHERE APPLICATION_ID = " + applicationId;
+
+            dbConnection.dr = dbConnection.cmd.ExecuteReader();
+            DataAccessObject dataAccessObject = new DataAccessObject();
+            return dataAccessObject.ReadCollection<NextAction>(dbConnection.dr);
+        }
+
+        public NextAction GetNextAction(int nextActionId, DBConnection dbConnection)
+        {
+            dbConnection.cmd.CommandText = "SELECT * FROM NEXT_ACTION WHERE ID = " + nextActionId;
+
+            dbConnection.dr = dbConnection.cmd.ExecuteReader();
+            DataAccessObject dataAccessObject = new DataAccessObject();
+            return dataAccessObject.GetSingleOject<NextAction>(dbConnection.dr);
+        }
+
+        public int UpdateNextAction(NextAction nextAction, DBConnection dbConnection)
+        {
+            dbConnection.cmd.CommandText = "UPDATE NEXT_ACTION SET APPLICATION_ID = " + nextAction.applicationId + ", COURT_ID = " + nextAction.courtId + ", ACTION_TYPE_ID = " + nextAction.actionTypeId + ", TRIAL_DATE = '" + nextAction.trialDate.ToString("yyyy/MM/dd") + "', TRIAL_TIME = '" + nextAction.trialTime + "', REMARKS = '" + nextAction.remarks + "'  WHERE ID = " + nextAction.id;
+            return dbConnection.cmd.ExecuteNonQuery();
+        }
+
+        public List<NextActionForGetAllNextActionsByAppId> GetAllNextActionsByAppId(int applicationId, DBConnection dbConnection)
+        {
+            //dbConnection.cmd.CommandText = "SELECT * FROM NEXT_ACTION WHERE APPLICATION_ID = " + applicationId;
+            dbConnection.cmd.CommandText = " SELECT NA.*, AT.NAME AS ACTION_TYPE_NAME, C.NAME AS COURT_NAME, J.ID AS JUDGE_ID, J.NAME AS JUDGE_NAME,J.IS_ACTIVE FROM NEXT_ACTION NA " +
+                                           " INNER JOIN ACTION_TYPE AT ON AT.ID = NA.ACTION_TYPE_ID " +
+                                           " INNER JOIN COURT C ON C.ID = NA.COURT_ID " +
+                                           " INNER JOIN CASE_JUDGE CJ ON CJ.APPLICATION_ID = NA.APPLICATION_ID " +
+                                           " INNER JOIN JUDGE J ON J.ID = CJ.JUDGE_ID " +
+                                           " WHERE NA.APPLICATION_ID = " + applicationId + "";
+
+            dbConnection.dr = dbConnection.cmd.ExecuteReader();
+            DataAccessObject dataAccessObject = new DataAccessObject();
+            return dataAccessObject.ReadCollection<NextActionForGetAllNextActionsByAppId>(dbConnection.dr);
+        }
+
+        public List<NextActionForGetAllNextActionsByAppId> GetAllNextActions(string trialDate, string trialTime, DBConnection dbConnection)
+        {
+            //dbConnection.cmd.CommandText = "SELECT * FROM NEXT_ACTION WHERE TRIAL_DATE= '"+ trialDate + "' AND TRIAL_TIME ='"+ trialTime + "'";
+            dbConnection.cmd.CommandText = " SELECT NA.*, AT.NAME AS ACTION_TYPE_NAME, C.NAME AS COURT_NAME, J.ID AS JUDGE_ID, J.NAME AS JUDGE_NAME,J.IS_ACTIVE FROM NEXT_ACTION NA " +
+                                            " INNER JOIN ACTION_TYPE AT ON AT.ID = NA.ACTION_TYPE_ID " +
+                                            " INNER JOIN COURT C ON C.ID = NA.COURT_ID " +
+                                            " INNER JOIN CASE_JUDGE CJ ON CJ.APPLICATION_ID = NA.APPLICATION_ID " +
+                                            " INNER JOIN JUDGE J ON J.ID = CJ.JUDGE_ID " +
+                                            " WHERE NA.TRIAL_DATE='" + trialDate + "' AND NA.TRIAL_TIME = '" + trialTime + "'";
+
+            dbConnection.dr = dbConnection.cmd.ExecuteReader();
+            DataAccessObject dataAccessObject = new DataAccessObject();
+            return dataAccessObject.ReadCollection<NextActionForGetAllNextActionsByAppId>(dbConnection.dr);
+        }
+
+        public List<NextAction> GetAllNextApplicationsByDate(string date, DBConnection dbConnection)
+        {
+
+            string dateSql = "";
+            if (date != null)
+                dateSql = " AND TRIAL_DATE = '" + DateTime.ParseExact(date, "yyyy-MM-dd", System.Globalization.CultureInfo.InvariantCulture).ToString("dd-MMM-yyyy") + "' ";
+
+
+            dbConnection.cmd.CommandText = "SELECT * FROM NEXT_ACTION WHERE 1 = 1 " + dateSql;
+
+            dbConnection.dr = dbConnection.cmd.ExecuteReader();
+            DataAccessObject dataAccessObject = new DataAccessObject();
+            return dataAccessObject.ReadCollection<NextAction>(dbConnection.dr);
+        }
+    }
+}

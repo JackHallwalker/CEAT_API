@@ -1,0 +1,88 @@
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Net;
+using System.Net.Http;
+using System.Web;
+using System.Web.Http;
+using SupremeCourtCore.Common;
+using SupremeCourtCore.Controller;
+using SupremeCourtCore.Domain;
+
+namespace SupremeCourtAPI.Controllers
+{
+    public class PetitionApiController : ApiController
+    {
+        [HttpPost]
+        [Route("api/v1/AddPetition/")]
+        public HttpResponseMessage AddPetition([FromBody] Petition value)
+        {
+            try
+            {
+                PetitionController orderTypeController = ControllerFactory.CreatePetitionController();
+                int itemId = orderTypeController.AddPetition(value);
+
+                return Request.CreateResponse(HttpStatusCode.OK, "Petition created successfully. Id-" + itemId);
+
+            }
+            catch (Exception ex)
+            {
+                return Request.CreateErrorResponse(HttpStatusCode.BadRequest, "something went wrong" + ex.Message);
+            }
+        }
+
+        [HttpGet]
+        [Route("api/v1/GetAllPetitions/")]
+        public IEnumerable<Petition> GetAllPetitions()
+        {
+            PetitionController orderTypeController = ControllerFactory.CreatePetitionController();
+
+            return orderTypeController.GetAllPetitions();
+        }
+
+        [HttpGet]
+        [Route("api/v1/GetPetition/{id?}")]
+        public Petition GetPetition(int id)
+        {
+            PetitionController orderTypeController = ControllerFactory.CreatePetitionController();
+
+            return orderTypeController.GetPetition(id);
+        }
+
+        [HttpPut]
+        [Route("api/v1/UpdatePetition/")]
+        public HttpResponseMessage UpdatePetition([FromBody] Petition value)
+        {
+            try
+            {
+                PetitionController orderTypeController = ControllerFactory.CreatePetitionController();
+                int itemId = orderTypeController.UpdatePetition(value);
+
+                return Request.CreateResponse(HttpStatusCode.OK, "Petition updated successfully.");
+
+            }
+            catch (Exception ex)
+            {
+                return Request.CreateErrorResponse(HttpStatusCode.BadRequest, "something went wrong" + ex.Message);
+            }
+        }
+
+        [HttpPut]
+        [Route("api/v1/DeletePetition/{courtId}")]
+        public HttpResponseMessage DeletePetition(int courtId)
+        {
+            try
+            {
+                PetitionController orderTypeController = ControllerFactory.CreatePetitionController();
+                int itemId = orderTypeController.DeletePetition(courtId);
+
+                return Request.CreateResponse(HttpStatusCode.OK, "Petition delete successfully.");
+
+            }
+            catch (Exception ex)
+            {
+                return Request.CreateErrorResponse(HttpStatusCode.BadRequest, "something went wrong" + ex.Message);
+            }
+        }
+    }
+}

@@ -1,0 +1,120 @@
+﻿using SupremeCourtCore.Common;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+
+namespace SupremeCourtCore.Domain
+{
+    public class NextAction
+    {
+        [DBField("ID")]
+        public int id { get; set; }
+
+        [DBField("APPLICATION_ID")]
+        public int applicationId { get; set; }
+
+        [DBField("COURT_ID")]
+        public int courtId { get; set; }
+
+        [DBField("ACTION_TYPE_ID")]
+        public int actionTypeId { get; set; }
+
+        [DBField("TRIAL_DATE")]
+        public DateTime trialDate { get; set; }
+
+        [DBField("TRIAL_TIME")]
+        public string trialTime { get; set; }
+
+        [DBField("REMARKS")]
+        public string remarks { get; set; }
+
+        [DBField("CASE_NO")]
+        public string caseNo { get; set; }
+    }
+
+    public class NextActionOnline
+    {
+        [DBField("ID")]
+        public int id { get; set; }
+
+        [DBField("APPLICATION_ID")]
+        public int applicationId { get; set; }
+
+        [DBField("PETITION_ID")]
+        public int petitionId { get; set; }
+
+        [DBField("COURT_ID")]
+        public int courtId { get; set; }
+
+        [DBField("ACTION_TYPE_ID")]
+        public int actionTypeId { get; set; }
+
+        [DBField("TRIAL_DATE")]
+        public DateTime trialDate { get; set; }
+
+        [DBField("TRIAL_TIME")]
+        public string trialTime { get; set; }
+
+        [DBField("REMARKS")]
+        public string remarks { get; set; }
+
+        [DBField("CASE_NO")]
+        public string applicationCaseNo { get; set; }
+
+        [DBField("REG_DATE")]
+        public string applicationRegDate { get; set; }
+
+        [DBField("ACTION_TYPE_NAME")]
+        public string actionTypeName { get; set; }
+    }
+
+    public class NextActionDateTimeOnline
+    {
+        public string trialDate { get; set; }
+        public string trialTime { get; set; }
+    }
+
+    public class NextActionForGetAllNextActionsByAppId
+    {
+        [DBField("ID")]
+        public int id { get; set; }
+
+        [DBField("APPLICATION_ID")]
+        public int applicationId { get; set; }
+
+        [DBField("PETITION_ID")]
+        public int petitionId { get; set; }
+
+        [DBField("COURT_ID")]
+        public int courtId { get; set; }
+
+        [DBField("ACTION_TYPE_ID")]
+        public int actionTypeId { get; set; }
+
+        [DBField("TRIAL_DATE")]
+        public DateTime trialDate { get; set; }
+
+        [DBField("TRIAL_TIME")]
+        public string trialTime { get; set; }
+
+        [DBField("REMARKS")]
+        public string remarks { get; set; }
+
+        [DBField("ACTION_TYPE_NAME")]
+        public string applicationTypeName { get; set; }
+
+        [DBField("COURT_NAME")]
+        public string courtRoomName { get; set; }
+
+        [DBField("JUDGE_ID")]
+        public int judgeId { get; set; }
+
+        [DBField("JUDGE_NAME")]
+        public string judgeName { get; set; }
+
+        [DBField("IS_ACTIVE")]
+        public int judgeIsActive { get; set; }
+    }
+}

@@ -1,0 +1,88 @@
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Net;
+using System.Net.Http;
+using System.Web;
+using System.Web.Http;
+using SupremeCourtCore.Common;
+using SupremeCourtCore.Controller;
+using SupremeCourtCore.Domain;
+
+namespace SupremeCourtAPI.Controllers
+{
+    public class SystemFunctionApiController : ApiController
+    {
+        [HttpPost]
+        [Route("api/v1/AddSystemFunction/")]
+        public HttpResponseMessage AddSystemFunction([FromBody] SystemFunction value)
+        {
+            try
+            {
+                SystemFunctionController orderTypeController = ControllerFactory.CreateSystemFunctionController();
+                int itemId = orderTypeController.AddSystemFunction(value);
+
+                return Request.CreateResponse(HttpStatusCode.OK, "System function created successfully. Id-" + itemId);
+
+            }
+            catch (Exception ex)
+            {
+                return Request.CreateErrorResponse(HttpStatusCode.BadRequest, "something went wrong" + ex.Message);
+            }
+        }
+
+        [HttpGet]
+        [Route("api/v1/GetAllSystemFunctions/{systemId}")]
+        public IEnumerable<SystemFunction> GetAllSystemFunctions(int systemId)
+        {
+            SystemFunctionController orderTypeController = ControllerFactory.CreateSystemFunctionController();
+
+            return orderTypeController.GetAllSystemFunctions(systemId);
+        }
+        
+        [HttpGet]
+        [Route("api/v1/GetSystemFunction/{id}")]
+        public SystemFunction GetSystemFunction(int id)
+        {
+            SystemFunctionController orderTypeController = ControllerFactory.CreateSystemFunctionController();
+
+            return orderTypeController.GetSystemFunction(id);
+        }
+
+        [HttpPut]
+        [Route("api/v1/UpdateSystemFunction/")]
+        public HttpResponseMessage UpdateSystemFunction([FromBody] SystemFunction value)
+        {
+            try
+            {
+                SystemFunctionController orderTypeController = ControllerFactory.CreateSystemFunctionController();
+                int itemId = orderTypeController.UpdateSystemFunction(value);
+
+                return Request.CreateResponse(HttpStatusCode.OK, "System function updated successfully.");
+
+            }
+            catch (Exception ex)
+            {
+                return Request.CreateErrorResponse(HttpStatusCode.BadRequest, "something went wrong" + ex.Message);
+            }
+        }
+        
+        [HttpDelete]
+        [Route("api/v1/DeleteSystemFunction/{systemFunctionId}")]
+        public HttpResponseMessage DeleteSystemFunction(int systemFunctionId)
+        {
+            try
+            {
+                SystemFunctionController orderTypeController = ControllerFactory.CreateSystemFunctionController();
+                int itemId = orderTypeController.DeleteSystemFunction(systemFunctionId);
+
+                return Request.CreateResponse(HttpStatusCode.OK, "System function deleted successfully.");
+
+            }
+            catch (Exception ex)
+            {
+                return Request.CreateErrorResponse(HttpStatusCode.BadRequest, "something went wrong" + ex.Message);
+            }
+        }
+    }
+}

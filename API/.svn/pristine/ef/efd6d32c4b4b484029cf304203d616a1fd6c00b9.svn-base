@@ -1,0 +1,31 @@
+﻿using SupremeCourtCore.Common;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+
+namespace SupremeCourtCore.Domain
+{
+    public class AdminLogin
+    {
+        [DBField("ID")]
+        public int ID { get; set; }
+ 
+        [DBField("USER_NAME")]
+        public string UserName { get; set; }
+
+        [DBField("PASSWORD")]
+        public string Password { get; set; }
+
+        [DBField("USER_TYPE_ID")]
+        public int UserType { get; set; }
+
+        [DBField("OUTLET_ID")]
+        public int OutletId { get; set; }
+
+        [DBField("IS_ACTIVE")]
+        public int IsActive { get; set; }
+
+    }
+}

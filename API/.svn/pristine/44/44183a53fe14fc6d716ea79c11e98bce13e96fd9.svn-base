@@ -1,0 +1,70 @@
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Net;
+using System.Net.Http;
+using System.Web;
+using System.Web.Http;
+using SupremeCourtCore.Common;
+using SupremeCourtCore.Controller;
+using SupremeCourtCore.Domain;
+
+namespace SupremeCourtAPI.Controllers
+{
+    public class SystemRoleApiController : ApiController
+    {
+        [HttpPost]
+        [Route("api/v1/AddSystemRole/")]
+        public HttpResponseMessage AddSystemRole([FromBody] SystemRole value)
+        {
+            try
+            {
+                SystemRoleController orderTypeController = ControllerFactory.CreateSystemRoleController();
+                int itemId = orderTypeController.AddSystemRole(value);
+
+                return Request.CreateResponse(HttpStatusCode.OK, "System role created successfully. Id-" + itemId);
+
+            }
+            catch (Exception ex)
+            {
+                return Request.CreateErrorResponse(HttpStatusCode.BadRequest, "something went wrong" + ex.Message);
+            }
+        }
+
+        [HttpGet]
+        [Route("api/v1/GetAllSystemRoles/{systemId}")]
+        public IEnumerable<SystemRole> GetAllSystemRoles(int systemId)
+        {
+            SystemRoleController orderTypeController = ControllerFactory.CreateSystemRoleController();
+
+            return orderTypeController.GetAllSystemRoles(systemId);
+        }
+
+        [HttpGet]
+        [Route("api/v1/GetSystemRole/{id?}")]
+        public SystemRole GetSystemRole(int id)
+        {
+            SystemRoleController orderTypeController = ControllerFactory.CreateSystemRoleController();
+
+            return orderTypeController.GetSystemRole(id);
+        }
+
+        [HttpPut]
+        [Route("api/v1/UpdateSystemRole/")]
+        public HttpResponseMessage UpdateSystemRole([FromBody] SystemRole value)
+        {
+            try
+            {
+                SystemRoleController orderTypeController = ControllerFactory.CreateSystemRoleController();
+                int itemId = orderTypeController.UpdateSystemRole(value);
+
+                return Request.CreateResponse(HttpStatusCode.OK, "System role updated successfully.");
+
+            }
+            catch (Exception ex)
+            {
+                return Request.CreateErrorResponse(HttpStatusCode.BadRequest, "something went wrong" + ex.Message);
+            }
+        }
+    }
+}

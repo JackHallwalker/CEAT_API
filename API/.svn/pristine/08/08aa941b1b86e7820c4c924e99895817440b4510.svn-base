@@ -1,0 +1,88 @@
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Net;
+using System.Net.Http;
+using System.Web;
+using System.Web.Http;
+using SupremeCourtCore.Common;
+using SupremeCourtCore.Controller;
+using SupremeCourtCore.Domain;
+
+namespace SupremeCourtAPI.Controllers
+{
+    public class CaseTypeApiController : ApiController
+    {
+        [HttpPost]
+        [Route("api/v1/AddCaseType/")]
+        public HttpResponseMessage AddCaseType([FromBody] CaseType value)
+        {
+            try
+            {
+                CaseTypeController orderTypeController = ControllerFactory.CreateCaseTypeController();
+                int itemId = orderTypeController.AddCaseType(value);
+
+                return Request.CreateResponse(HttpStatusCode.OK, "Case type created successfully. Id-" + itemId);
+
+            }
+            catch (Exception ex)
+            {
+                return Request.CreateErrorResponse(HttpStatusCode.BadRequest, "something went wrong" + ex.Message);
+            }
+        }
+
+        [HttpGet]
+        [Route("api/v1/GetAllCaseTypes/")]
+        public IEnumerable<CaseType> GetAllCaseTypes()
+        {
+            CaseTypeController orderTypeController = ControllerFactory.CreateCaseTypeController();
+
+            return orderTypeController.GetAllCaseTypes();
+        }
+
+        [HttpGet]
+        [Route("api/v1/GetCaseType/{id?}")]
+        public CaseType GetCaseType(int id)
+        {
+            CaseTypeController orderTypeController = ControllerFactory.CreateCaseTypeController();
+
+            return orderTypeController.GetCaseType(id);
+        }
+
+        [HttpPut]
+        [Route("api/v1/UpdateCaseType/")]
+        public HttpResponseMessage UpdateCaseType([FromBody] CaseType value)
+        {
+            try
+            {
+                CaseTypeController orderTypeController = ControllerFactory.CreateCaseTypeController();
+                int itemId = orderTypeController.UpdateCaseType(value);
+
+                return Request.CreateResponse(HttpStatusCode.OK, "Case type updated successfully.");
+
+            }
+            catch (Exception ex)
+            {
+                return Request.CreateErrorResponse(HttpStatusCode.BadRequest, "something went wrong" + ex.Message);
+            }
+        }
+
+        [HttpPut]
+        [Route("api/v1/DeleteCaseType/{id}")]
+        public HttpResponseMessage DeleteCaseType(int id)
+        {
+            try
+            {
+                CaseTypeController orderTypeController = ControllerFactory.CreateCaseTypeController();
+                int itemId = orderTypeController.DeleteCaseType(id);
+
+                return Request.CreateResponse(HttpStatusCode.OK, "Case type deleted successfully.");
+
+            }
+            catch (Exception ex)
+            {
+                return Request.CreateErrorResponse(HttpStatusCode.BadRequest, "something went wrong" + ex.Message);
+            }
+        }
+    }
+}

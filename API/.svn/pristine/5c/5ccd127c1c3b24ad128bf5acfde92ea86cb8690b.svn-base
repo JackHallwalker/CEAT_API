@@ -1,0 +1,226 @@
+﻿using SupremeCourtCore.Common;
+using SupremeCourtCore.Domain;
+using System;
+using System.Collections.Generic;
+using System.Data.OracleClient;
+using System.Globalization;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+
+namespace SupremeCourtCore.Infrastructure
+{
+    public interface AdminLoginDAO
+    {
+        int getMaxLoginId(DBConnection dbConnection);
+        int SaveLogin(CustomerLogin customerLogin, DBConnection dbConnection);
+       // int GetLoginDetails(string username, string password, DBConnection dbConnection);
+        AdminLogin GetLoginDetails(string username, string password, DBConnection dbConnection);
+        int GetLoginIdByUsername(string username, DBConnection dbConnection);
+        CustomerLogin GetLoginDetailsByCustomerID(int id, DBConnection dbConnection);
+        int GetLoginAttempts(string username, DBConnection dbConnection);
+        int UpdateLoginAttempts(string username, int attempts, DBConnection dbConnection);
+        int UpdateLoginAttemptsWithDate(string username, int attempts, DBConnection dbConnection);
+        int CheckUserName(string username, DBConnection dbConnection);
+        int CheckPassword(string password, DBConnection dbConnection);
+        int UpdateIsLocked(string username, int count, DBConnection dbConnection);
+        int GetCustomerIsMobileValidated(int custId, DBConnection dbConnection);
+        //int CheckLogin(string username, string password, DBConnection dbConnection);
+        int UpdatePasswordByUserId(int userId, string newPassword, DBConnection dbConnection);
+
+        int CreateAdminUser(AdminLogin adminLogin, DBConnection dbConnection);
+        int UpdateUserName(AdminLogin adminLogin, DBConnection dbConnection);
+        int UpdatePassword(AdminLogin adminLogin, DBConnection dbConnection);
+        /*List<UserType> GetUserTypes(DBConnection dbConnection);*/
+        int DeleteUser(int adminId, DBConnection dbConnection);
+        List<AdminLogin> GetAllUsers(DBConnection dbConnection);
+    }
+
+    public class AdminLoginDAOImpl : AdminLoginDAO
+    {
+        public int getMaxLoginId(DBConnection dbConnection)
+        {
+            dbConnection.cmd.CommandText = "SELECT NVL(MAX(ID),0) FROM USER_LOGIN";
+            int loginId = Convert.ToInt32(dbConnection.cmd.ExecuteScalar());
+            if (loginId == 0)
+            {
+                loginId = 1;
+            }
+            else
+                loginId = loginId + 1;
+
+            return loginId;
+        }
+
+        public int SaveLogin(CustomerLogin customerLogin, DBConnection dbConnection)
+        {
+            //dbConnection.cmd.CommandText = "SELECT EMAIL_ADDRESS FROM TEMPORARY_CUSTOMER WHERE ID = " + customerLogin.CustomerId + "";
+            //string emailAddress = dbConnection.cmd.ExecuteScalar().ToString();
+
+            //dbConnection.cmd.CommandText = "SELECT ID FROM CUSTOMER WHERE EMAIL_ADDRESS = '" + emailAddress + "'";
+            //int logingId = int.Parse(dbConnection.cmd.ExecuteScalar().ToString());
+
+            dbConnection.cmd.CommandText = "INSERT INTO CUSTOMER_LOGIN(ID,CUSTOMER_ID,USER_NAME,PASSWORD_2,LAST_LOGIN,LOGIN_ATTEMPT,IS_LOCKED,RESET_CODE,RESET_EXPIRY_DATE)" +
+               "VALUES(" + customerLogin.loginId + "," + customerLogin.CustomerId + ",'" + customerLogin.UserName + "','" + customerLogin.Password + "',sysdate," + customerLogin.LoginAttempt + "," + customerLogin.IsLocked + ",'" + customerLogin.ResetCode + "',sysdate" + ")";
+
+            return dbConnection.cmd.ExecuteNonQuery();
+        }
+
+
+        public AdminLogin GetLoginDetails(string username, string password, DBConnection dbConnection)
+        {
+           // dbConnection.cmd.CommandText = "SELECT COUNT(ID) FROM CUSTOMER_LOGIN WHERE USER_NAME = '" + username + "' AND PASSWORD_2 = '" + password + "' AND IS_LOCKED = 0";
+            dbConnection.cmd.CommandText = "SELECT * FROM user_login WHERE USER_NAME = '" + username + "' AND PASSWORD = '" + password + "' AND IS_ACTIVE = 1";
+
+
+            //int count = Convert.ToInt32(dbConnection.cmd.ExecuteScalar());
+            //return count;
+            dbConnection.dr = dbConnection.cmd.ExecuteReader();
+            DataAccessObject dataAccessObject = new DataAccessObject();
+            return dataAccessObject.GetSingleOject<AdminLogin>(dbConnection.dr);
+        }
+
+        public CustomerLogin GetLoginDetailsByCustomerID(int id, DBConnection dbConnection)
+        {
+            dbConnection.cmd.CommandText = "SELECT CUSTOMER_ID FROM CUSTOMER_LOGIN WHERE CUSTOMER_ID = " + id + " ";
+
+            dbConnection.dr = dbConnection.cmd.ExecuteReader();
+            DataAccessObject dataAccessObject = new DataAccessObject();
+            return dataAccessObject.GetSingleOject<CustomerLogin>(dbConnection.dr);
+        }
+
+        public int GetLoginAttempts(string username, DBConnection dbConnection)
+        {
+            dbConnection.cmd.CommandText = "SELECT LOGIN_ATTEMPT FROM CUSTOMER_LOGIN WHERE USER_NAME = '" + username + "' ";
+            int attempts = Convert.ToInt32(dbConnection.cmd.ExecuteScalar());
+            return attempts;
+            
+        }
+
+        public int UpdateLoginAttempts(string username, int attempts, DBConnection dbConnection)
+        {
+            dbConnection.cmd.CommandText = "UPDATE CUSTOMER_LOGIN SET " +
+                "LOGIN_ATTEMPT =" + attempts +
+                "  WHERE USER_NAME = '" + username + "' ";
+
+            return dbConnection.cmd.ExecuteNonQuery();
+        }
+        
+        public int UpdateLoginAttemptsWithDate(string username, int attempts, DBConnection dbConnection)
+        {
+            dbConnection.cmd.CommandText = "UPDATE CUSTOMER_LOGIN SET " +
+                "LOGIN_ATTEMPT =" + attempts +
+                ", LAST_LOGIN = sysdate WHERE USER_NAME = '" + username + "' ";
+
+            return dbConnection.cmd.ExecuteNonQuery();
+        }
+
+        public int CheckUserName(string username, DBConnection dbConnection)
+        {
+            dbConnection.cmd.Parameters.Clear();
+            dbConnection.cmd.CommandText = "SELECT COUNT(ID) FROM USER_LOGIN WHERE USER_NAME = '" + username + "' ";
+            
+            int count = Convert.ToInt32(dbConnection.cmd.ExecuteScalar());
+            return count;
+        }
+
+        public int CheckPassword(string password, DBConnection dbConnection)
+        {
+            dbConnection.cmd.CommandText = "SELECT PASSWORD_2 FROM CUSTOMER_LOGIN WHERE PASSWORD_2 = '" + password + "' ";
+            return dbConnection.cmd.ExecuteNonQuery();
+        }
+
+        public int UpdateIsLocked(string username, int count, DBConnection dbConnection)
+        {
+            dbConnection.cmd.CommandText = "UPDATE CUSTOMER_LOGIN SET " +
+                "IS_LOCKED =" + count +
+                " , USER_LOCKED_DATE=sysdate WHERE USER_NAME = '" + username + "' ";
+
+            return dbConnection.cmd.ExecuteNonQuery();
+        }
+
+        public int GetCustomerIsMobileValidated(int custId, DBConnection dbConnection)
+        {
+            dbConnection.cmd.CommandText = "SELECT IS_MOBILE_VALIDATED FROM CUSTOMER WHERE ID = '" + custId + "' ";
+            int mobileValidated = Convert.ToInt32(dbConnection.cmd.ExecuteScalar());
+            return mobileValidated;
+        }
+
+        public int GetLoginIdByUsername(string username, DBConnection dbConnection)
+        {
+            dbConnection.cmd.Parameters.Clear();
+            dbConnection.cmd.CommandText = "SELECT CUSTOMER_ID FROM CUSTOMER_LOGIN WHERE USER_NAME = '" + username + "' ";
+
+            int CustomerID = Convert.ToInt32(dbConnection.cmd.ExecuteScalar());
+            return CustomerID;
+        }
+        public int UpdatePasswordByUserId(int userId, string newPassword, DBConnection dbConnection)
+        {
+            dbConnection.cmd.Parameters.Clear();
+            dbConnection.cmd.CommandText = "UPDATE CUSTOMER_LOGIN SET PASSWORD_2='"+ newPassword + "' WHERE CUSTOMER_ID=" + userId + "";
+
+            return dbConnection.cmd.ExecuteNonQuery();
+        }
+
+
+        public int CreateAdminUser(AdminLogin adminLogin, DBConnection dbConnection)
+        {
+            dbConnection.cmd.CommandText = "SELECT * FROM user_login WHERE USER_NAME = '"+ adminLogin.UserName+ "'";
+
+            dbConnection.dr = dbConnection.cmd.ExecuteReader();
+            DataAccessObject dataAccessObject = new DataAccessObject();
+            var res = dataAccessObject.ReadCollection<AdminLogin>(dbConnection.dr);
+
+            if (res.Count() == 0)
+            {
+                int userId = getMaxLoginId(dbConnection);
+
+                dbConnection.cmd.CommandText = "INSERT INTO USER_LOGIN(ID,USER_NAME,PASSWORD,USER_TYPE_ID,OUTLET_ID)" +
+                   "VALUES(" + userId + ",'" + adminLogin.UserName + "','" + adminLogin.Password + "'," + adminLogin.UserType + ", " + adminLogin.OutletId + ")";
+
+                return dbConnection.cmd.ExecuteNonQuery();
+            }
+            else
+            {
+                return 0;
+            }
+        }
+
+        public int UpdateUserName(AdminLogin adminLogin, DBConnection dbConnection)
+        {
+            dbConnection.cmd.CommandText = "UPDATE USER_LOGIN SET USER_NAME = '"+adminLogin.UserName+"' WHERE ID = " + adminLogin.ID;
+
+            return dbConnection.cmd.ExecuteNonQuery();
+        }
+
+        public int DeleteUser(int adminId, DBConnection dbConnection)
+        {
+            dbConnection.cmd.CommandText = "UPDATE USER_LOGIN SET IS_ACTIVE = 0 WHERE ID = " + adminId;
+
+            return dbConnection.cmd.ExecuteNonQuery();
+        }
+
+        public int UpdatePassword(AdminLogin adminLogin, DBConnection dbConnection)
+        {
+            dbConnection.cmd.CommandText = "UPDATE USER_LOGIN SET PASSWORD = '"+adminLogin.Password+"' WHERE ID = " + adminLogin.ID;
+
+            return dbConnection.cmd.ExecuteNonQuery();
+        }
+/*        public List<UserType> GetUserTypes(DBConnection dbConnection)
+        {
+            dbConnection.cmd.CommandText = "SELECT * FROM USER_TYPE WHERE ID <> 9";
+
+            dbConnection.dr = dbConnection.cmd.ExecuteReader();
+            DataAccessObject dataAccessObject = new DataAccessObject();
+            return dataAccessObject.ReadCollection<UserType>(dbConnection.dr);
+        }*/
+        public List<AdminLogin> GetAllUsers(DBConnection dbConnection)
+        {
+            dbConnection.cmd.CommandText = "SELECT * FROM user_login WHERE IS_ACTIVE = 1";
+
+            dbConnection.dr = dbConnection.cmd.ExecuteReader();
+            DataAccessObject dataAccessObject = new DataAccessObject();
+            return dataAccessObject.ReadCollection<AdminLogin>(dbConnection.dr);
+        }
+    }
+}

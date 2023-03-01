@@ -1,0 +1,99 @@
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Net;
+using System.Net.Http;
+using System.Web;
+using System.Web.Http;
+using SupremeCourtCore.Common;
+using SupremeCourtCore.Controller;
+using SupremeCourtCore.Domain;
+
+namespace SupremeCourtAPI.Controllers
+{
+    public class JournalApiController : ApiController
+    {
+        [HttpPost]
+        [Route("api/v1/AddJournal/")]
+        public HttpResponseMessage AddJournal([FromBody] Journal value)
+        {
+            try
+            {
+                JournalController orderTypeController = ControllerFactory.CreateJournalController();
+                int itemId = orderTypeController.AddJournal(value);
+
+                return Request.CreateResponse(HttpStatusCode.OK, "Journal created successfully. Id-" + itemId);
+
+            }
+            catch (Exception ex)
+            {
+                return Request.CreateErrorResponse(HttpStatusCode.BadRequest, "something went wrong" + ex.Message);
+            }
+        }
+
+        [HttpGet]
+        [Route("api/v1/GetAllJournals/{applicationId}")]
+        public IEnumerable<Journal> GetAllJournals(int applicationId)
+        {
+            JournalController orderTypeController = ControllerFactory.CreateJournalController();
+
+            //return orderTypeController.GetAllJournalsWithPartyTypeId(applicationId, partyTypeId);
+            return orderTypeController.GetAllJournals(applicationId);
+        }
+
+        [HttpGet]
+        [Route("api/v1/GetJournalByCaseNo")]
+        public IEnumerable<Journal> GetJournalByCaseNo(string caseNo)
+        {
+            JournalController orderTypeController = ControllerFactory.CreateJournalController();
+
+            //return orderTypeController.GetAllJournalsWithPartyTypeId(applicationId, partyTypeId);
+            return orderTypeController.GetJournalByCaseNo(caseNo);
+        }
+
+        [HttpGet]
+        [Route("api/v1/GetJournal/{id?}")]
+        public Journal GetJournal(int id)
+        {
+            JournalController orderTypeController = ControllerFactory.CreateJournalController();
+
+            return orderTypeController.GetJournal(id);
+        }
+
+        [HttpPut]
+        [Route("api/v1/UpdateJournal/")]
+        public HttpResponseMessage UpdateJournal([FromBody] Journal value)
+        {
+            try
+            {
+                JournalController orderTypeController = ControllerFactory.CreateJournalController();
+                int itemId = orderTypeController.UpdateJournal(value);
+
+                return Request.CreateResponse(HttpStatusCode.OK, "Journal updated successfully.");
+
+            }
+            catch (Exception ex)
+            {
+                return Request.CreateErrorResponse(HttpStatusCode.BadRequest, "something went wrong" + ex.Message);
+            }
+        }
+
+        [HttpDelete]
+        [Route("api/v1/DeleteJournal/{id}")]
+        public HttpResponseMessage DeleteJournal(int id)
+        {
+            try
+            {
+                JournalController orderTypeController = ControllerFactory.CreateJournalController();
+                int itemId = orderTypeController.DeleteJournal(id);
+
+                return Request.CreateResponse(HttpStatusCode.OK, "Journal deleted successfully.");
+
+            }
+            catch (Exception ex)
+            {
+                return Request.CreateErrorResponse(HttpStatusCode.BadRequest, "something went wrong" + ex.Message);
+            }
+        }
+    }
+}

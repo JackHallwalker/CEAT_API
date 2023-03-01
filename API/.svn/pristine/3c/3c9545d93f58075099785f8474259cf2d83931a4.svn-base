@@ -1,0 +1,191 @@
+﻿using SupremeCourtCore.Common;
+using SupremeCourtCore.Domain;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+
+namespace SupremeCourtCore.Infrastructure
+{
+    public interface JudgeDAO
+    {
+        List<Judge> GetAllJudges(DBConnection dbConnection);
+        Judge GetJudge(int id, DBConnection dbConnection);
+        int AddJudge(Judge judge, DBConnection dbConnection);
+        int UpdateJudge(Judge judge, DBConnection dbConnection);
+        int DeleteJudge(int judgeId, DBConnection dbConnection);
+        List<Schedule> GetJudgeSchedule(int judgeId, string date, DBConnection dbConnection);
+        List<Schedule> GetJudgeScheduleByDate(string date, DBConnection dbConnection);
+    }
+    public class JudgeSqlDAOImpl : JudgeDAO
+    {
+        public int AddJudge(Judge judge, DBConnection dbConnection)
+        {
+            dbConnection.cmd.CommandText = "INSERT INTO JUDGE(NAME,IS_ACTIVE) VALUES('" + judge.name + "',1) SELECT SCOPE_IDENTITY()";
+            return Convert.ToInt32(dbConnection.cmd.ExecuteScalar());
+        }
+
+        public int DeleteJudge(int judgeId, DBConnection dbConnection)
+        {
+            dbConnection.cmd.CommandText = "UPDATE JUDGE SET IS_ACTIVE = 0 WHERE ID = " + judgeId;
+            return dbConnection.cmd.ExecuteNonQuery();
+        }
+
+        public List<Judge> GetAllJudges(DBConnection dbConnection)
+        {
+            dbConnection.cmd.CommandText = "SELECT * FROM JUDGE WHERE IS_ACTIVE = 1";
+
+            dbConnection.dr = dbConnection.cmd.ExecuteReader();
+            DataAccessObject dataAccessObject = new DataAccessObject();
+            return dataAccessObject.ReadCollection<Judge>(dbConnection.dr);
+        }
+
+        public Judge GetJudge(int id, DBConnection dbConnection)
+        {
+            dbConnection.cmd.CommandText = "SELECT * FROM JUDGE WHERE ID = " + id + " ";
+
+            dbConnection.dr = dbConnection.cmd.ExecuteReader();
+            DataAccessObject dataAccessObject = new DataAccessObject();
+            return dataAccessObject.GetSingleOject<Judge>(dbConnection.dr);
+        }
+
+        public int UpdateJudge(Judge judge, DBConnection dbConnection)
+        {
+            dbConnection.cmd.CommandText = "UPDATE JUDGE SET NAME = '" + judge.name + "', IS_ACTIVE = " + judge.isActive + " WHERE ID = " + judge.id;
+            return dbConnection.cmd.ExecuteNonQuery();
+        }
+
+        public List<Schedule> GetJudgeSchedule(int judgeId, string date, DBConnection dbConnection)
+        {
+            dbConnection.cmd.Parameters.Clear();
+            dbConnection.cmd.CommandText = $@"select distinct na.*, app.category_id,app.case_type_id,app.case_no,app.serial_no,app.lower_court_no,app.description,
+                                              app.reg_date,app.is_active,cat.name,ct.name as case_type_name,ct.short_code,pet.name as petition_name,
+                                              co.name as court_name, co.short_code as court_short_code
+                                              from case_judge as cj
+                                              inner join next_action as na on cj.application_id = na.application_id
+                                              inner join application as app on app.id = na.application_id
+                                              inner join petition as pet on pet.id = na.petition_id
+                                              inner join court as co on co.id = na.court_id
+                                              inner join category as cat on cat.id = app.category_id
+                                              inner join case_type as ct on ct.id = app.case_type_id 
+                                              where cj.judge_id={judgeId} and CAST(na.trial_date AS DATE) = '{date}'
+                                             ";
+            dbConnection.cmd.CommandType = System.Data.CommandType.Text;
+            using (dbConnection.dr = dbConnection.cmd.ExecuteReader())
+            {
+                DataAccessObject dataAccessObject = new DataAccessObject();
+                return dataAccessObject.ReadCollection<Schedule>(dbConnection.dr);
+            }
+        }
+
+        public List<Schedule> GetJudgeScheduleByDate(string date, DBConnection dbConnection)
+        {
+            dbConnection.cmd.Parameters.Clear();
+            dbConnection.cmd.CommandText = $@"select distinct na.*, app.category_id,app.case_type_id,app.case_no,app.serial_no,app.lower_court_no,app.description,
+                                              app.reg_date,app.is_active,cat.name,ct.name as case_type_name,ct.short_code,
+                                              co.name as court_name, co.short_code as court_short_code
+                                              from case_judge as cj
+                                              inner join next_action as na on cj.application_id = na.application_id
+                                              inner join application as app on app.id = na.application_id
+                                              
+                                              inner join court as co on co.id = na.court_id
+                                              inner join category as cat on cat.id = app.category_id
+                                              inner join case_type as ct on ct.id = app.case_type_id 
+                                              where CAST(na.trial_date AS DATE) = '{date}'
+                                             ";
+            dbConnection.cmd.CommandType = System.Data.CommandType.Text;
+            using (dbConnection.dr = dbConnection.cmd.ExecuteReader())
+            {
+                DataAccessObject dataAccessObject = new DataAccessObject();
+                return dataAccessObject.ReadCollection<Schedule>(dbConnection.dr);
+            }
+        }
+
+    }
+    public class JudgeDAOImpl : JudgeDAO
+    {
+        public int AddJudge(Judge judge, DBConnection dbConnection)
+        {
+            dbConnection.cmd.CommandText = "INSERT INTO JUDGE(NAME,IS_ACTIVE) VALUES('" + judge.name + "',1); SELECT currval('judge_id_seq');";
+            return Convert.ToInt32(dbConnection.cmd.ExecuteScalar());
+        }
+
+        public int DeleteJudge(int judgeId, DBConnection dbConnection)
+        {
+            dbConnection.cmd.CommandText = "UPDATE JUDGE SET IS_ACTIVE = 0 WHERE ID = " + judgeId;
+            return dbConnection.cmd.ExecuteNonQuery();
+        }
+
+        public List<Judge> GetAllJudges(DBConnection dbConnection)
+        {
+            dbConnection.cmd.CommandText = "SELECT * FROM JUDGE WHERE IS_ACTIVE = 1";
+
+            dbConnection.dr = dbConnection.cmd.ExecuteReader();
+            DataAccessObject dataAccessObject = new DataAccessObject();
+            return dataAccessObject.ReadCollection<Judge>(dbConnection.dr);
+        }
+
+        public Judge GetJudge(int id, DBConnection dbConnection)
+        {
+            dbConnection.cmd.CommandText = "SELECT * FROM JUDGE WHERE ID = " + id + " ";
+
+            dbConnection.dr = dbConnection.cmd.ExecuteReader();
+            DataAccessObject dataAccessObject = new DataAccessObject();
+            return dataAccessObject.GetSingleOject<Judge>(dbConnection.dr);
+        }
+
+        public int UpdateJudge(Judge judge, DBConnection dbConnection)
+        {
+            dbConnection.cmd.CommandText = "UPDATE JUDGE SET NAME = '" + judge.name + "', IS_ACTIVE = " + judge.isActive + " WHERE ID = " + judge.id;
+            return dbConnection.cmd.ExecuteNonQuery();
+        }
+
+        public List<Schedule> GetJudgeSchedule(int judgeId, string date, DBConnection dbConnection)
+        {
+            dbConnection.cmd.Parameters.Clear();
+            dbConnection.cmd.CommandText = $@"select distinct na.*, app.category_id,app.case_type_id,app.case_no,app.serial_no,app.lower_court_no,app.description,
+                                              app.reg_date,app.is_active,cat.name,ct.name as case_type_name,ct.short_code,
+                                              co.name as court_name, co.short_code as court_short_code
+                                              from case_judge as cj
+                                              inner join next_action as na on cj.application_id = na.application_id
+                                              inner join application as app on app.id = na.application_id
+                                              
+                                              inner join court as co on co.id = na.court_id
+                                              inner join category as cat on cat.id = app.category_id
+                                              inner join case_type as ct on ct.id = app.case_type_id 
+                                              where cj.judge_id={judgeId} and na.trial_date = '{date}'
+                                             ";
+            dbConnection.cmd.CommandType = System.Data.CommandType.Text;
+            using (dbConnection.dr = dbConnection.cmd.ExecuteReader())
+            {
+                DataAccessObject dataAccessObject = new DataAccessObject();
+                return dataAccessObject.ReadCollection<Schedule>(dbConnection.dr);
+            }
+        }
+
+        public List<Schedule> GetJudgeScheduleByDate(string date, DBConnection dbConnection)
+        {
+            dbConnection.cmd.Parameters.Clear();
+            dbConnection.cmd.CommandText = $@"select distinct na.*, app.category_id,app.case_type_id,app.case_no,app.serial_no,app.lower_court_no,app.description,
+                                              app.reg_date,app.is_active,cat.name,ct.name as case_type_name,j.name as judge_name,ct.short_code,
+                                              co.name as court_name, co.short_code as court_short_code
+                                              from case_judge as cj
+                                              inner join next_action as na on cj.application_id = na.application_id
+                                              inner join application as app on app.id = na.application_id
+                                              inner join judge as j on j.id=cj.judge_id
+                                              inner join court as co on co.id = na.court_id
+                                              inner join category as cat on cat.id = app.category_id
+                                              inner join case_type as ct on ct.id = app.case_type_id 
+                                              where CAST(na.trial_date AS DATE) = '{date}'
+                                             ";
+            dbConnection.cmd.CommandType = System.Data.CommandType.Text;
+            using (dbConnection.dr = dbConnection.cmd.ExecuteReader())
+            {
+                DataAccessObject dataAccessObject = new DataAccessObject();
+                return dataAccessObject.ReadCollection<Schedule>(dbConnection.dr);
+            }
+        }
+
+    }
+}

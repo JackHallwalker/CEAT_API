@@ -1,0 +1,23 @@
+﻿using SupremeCourtCore.Common;
+using SupremeCourtCore.Controller;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Web;
+using System.Web.Http;
+
+namespace SupremeCourtAPI.Controllers
+{
+    public class AppVersionApiController : ApiController
+    {
+        [HttpGet]
+        [Route("api/v1/LatestAPIVersion")]
+        public string Get()
+        {
+           
+            ApiVersionController apiVersionController = ControllerFactory.createApiVersionController();
+
+            return apiVersionController.GetAPILatestVersion();
+        }
+    }
+}

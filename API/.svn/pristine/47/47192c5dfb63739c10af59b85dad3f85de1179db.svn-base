@@ -1,0 +1,219 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<!--
+https://go.microsoft.com/fwlink/?LinkID=208121. 
+-->
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <PropertyGroup>
+    <_PublishTargetUrl>D:\Documents\Bellvantage\Abayamandapa\HotelAPI\Publish</_PublishTargetUrl>
+    <History>True|2022-04-06T03:31:17.1910519Z;True|2022-03-31T07:52:53.6898643+05:30;True|2022-03-02T23:25:49.9983630+05:30;True|2022-02-28T14:36:36.4353253+05:30;True|2022-02-27T22:03:18.1396144+05:30;True|2022-02-27T21:58:52.1175887+05:30;True|2022-02-27T21:38:36.7559570+05:30;True|2022-02-27T21:23:19.6327206+05:30;True|2022-02-25T20:55:36.0084531+05:30;True|2022-02-25T18:50:39.9970708+05:30;False|2022-02-25T18:48:48.4320834+05:30;True|2022-02-25T14:17:25.6630817+05:30;True|2022-02-25T00:56:09.5336329+05:30;True|2022-02-25T00:52:18.6650494+05:30;True|2022-02-25T00:49:14.2857748+05:30;True|2022-02-24T17:03:27.1769571+05:30;True|2022-02-24T08:26:19.0204892+05:30;True|2022-02-23T22:49:56.1983722+05:30;True|2022-02-23T12:05:14.7503579+05:30;True|2022-02-23T08:32:45.9252263+05:30;True|2022-02-22T17:31:32.2931750+05:30;True|2022-02-22T14:01:16.9092070+05:30;True|2022-02-22T13:57:13.5675135+05:30;</History>
+  </PropertyGroup>
+  <ItemGroup>
+    <File Include="bin/HotelAPI.dll">
+      <publishTime>04/06/2022 09:01:16</publishTime>
+    </File>
+    <File Include="bin/HotelAPI.pdb">
+      <publishTime>04/06/2022 09:01:16</publishTime>
+    </File>
+    <File Include="bin/HotelCore.dll">
+      <publishTime>04/06/2022 09:01:12</publishTime>
+    </File>
+    <File Include="bin/HotelCore.pdb">
+      <publishTime>04/06/2022 09:01:12</publishTime>
+    </File>
+    <File Include="bin/Microsoft.CodeDom.Providers.DotNetCompilerPlatform.dll">
+      <publishTime>04/06/2022 08:56:33</publishTime>
+    </File>
+    <File Include="bin/Microsoft.Owin.Cors.dll">
+      <publishTime>04/06/2022 08:56:32</publishTime>
+    </File>
+    <File Include="bin/Microsoft.Owin.dll">
+      <publishTime>04/06/2022 08:56:14</publishTime>
+    </File>
+    <File Include="bin/Microsoft.Owin.Host.SystemWeb.dll">
+      <publishTime>04/06/2022 08:56:49</publishTime>
+    </File>
+    <File Include="bin/Microsoft.Owin.Security.dll">
+      <publishTime>04/06/2022 08:56:33</publishTime>
+    </File>
+    <File Include="bin/Microsoft.Owin.Security.OAuth.dll">
+      <publishTime>04/06/2022 08:56:49</publishTime>
+    </File>
+    <File Include="bin/Microsoft.Web.Infrastructure.dll">
+      <publishTime>04/06/2022 08:56:33</publishTime>
+    </File>
+    <File Include="bin/Newtonsoft.Json.dll">
+      <publishTime>04/06/2022 08:56:33</publishTime>
+    </File>
+    <File Include="bin/Owin.dll">
+      <publishTime>04/06/2022 08:56:49</publishTime>
+    </File>
+    <File Include="bin/roslyn/csc.exe">
+      <publishTime>04/06/2022 08:56:23</publishTime>
+    </File>
+    <File Include="bin/roslyn/csc.exe.config">
+      <publishTime>04/06/2022 08:56:23</publishTime>
+    </File>
+    <File Include="bin/roslyn/csc.rsp">
+      <publishTime>04/06/2022 08:56:23</publishTime>
+    </File>
+    <File Include="bin/roslyn/csi.exe">
+      <publishTime>04/06/2022 08:56:23</publishTime>
+    </File>
+    <File Include="bin/roslyn/csi.exe.config">
+      <publishTime>04/06/2022 08:56:23</publishTime>
+    </File>
+    <File Include="bin/roslyn/csi.rsp">
+      <publishTime>04/06/2022 08:56:22</publishTime>
+    </File>
+    <File Include="bin/roslyn/Microsoft.Build.Tasks.CodeAnalysis.dll">
+      <publishTime>04/06/2022 08:56:23</publishTime>
+    </File>
+    <File Include="bin/roslyn/Microsoft.CodeAnalysis.CSharp.dll">
+      <publishTime>04/06/2022 08:56:23</publishTime>
+    </File>
+    <File Include="bin/roslyn/Microsoft.CodeAnalysis.CSharp.Scripting.dll">
+      <publishTime>04/06/2022 08:56:23</publishTime>
+    </File>
+    <File Include="bin/roslyn/Microsoft.CodeAnalysis.dll">
+      <publishTime>04/06/2022 08:56:23</publishTime>
+    </File>
+    <File Include="bin/roslyn/Microsoft.CodeAnalysis.Scripting.dll">
+      <publishTime>04/06/2022 08:56:23</publishTime>
+    </File>
+    <File Include="bin/roslyn/Microsoft.CodeAnalysis.VisualBasic.dll">
+      <publishTime>04/06/2022 08:56:23</publishTime>
+    </File>
+    <File Include="bin/roslyn/Microsoft.CSharp.Core.targets">
+      <publishTime>04/06/2022 08:56:23</publishTime>
+    </File>
+    <File Include="bin/roslyn/Microsoft.DiaSymReader.Native.amd64.dll">
+      <publishTime>04/06/2022 08:56:23</publishTime>
+    </File>
+    <File Include="bin/roslyn/Microsoft.DiaSymReader.Native.x86.dll">
+      <publishTime>04/06/2022 08:56:23</publishTime>
+    </File>
+    <File Include="bin/roslyn/Microsoft.VisualBasic.Core.targets">
+      <publishTime>04/06/2022 08:56:23</publishTime>
+    </File>
+    <File Include="bin/roslyn/Microsoft.Win32.Primitives.dll">
+      <publishTime>04/06/2022 08:56:23</publishTime>
+    </File>
+    <File Include="bin/roslyn/System.AppContext.dll">
+      <publishTime>04/06/2022 08:56:23</publishTime>
+    </File>
+    <File Include="bin/roslyn/System.Collections.Immutable.dll">
+      <publishTime>04/06/2022 08:56:23</publishTime>
+    </File>
+    <File Include="bin/roslyn/System.Console.dll">
+      <publishTime>04/06/2022 08:56:23</publishTime>
+    </File>
+    <File Include="bin/roslyn/System.Diagnostics.FileVersionInfo.dll">
+      <publishTime>04/06/2022 08:56:23</publishTime>
+    </File>
+    <File Include="bin/roslyn/System.Diagnostics.Process.dll">
+      <publishTime>04/06/2022 08:56:22</publishTime>
+    </File>
+    <File Include="bin/roslyn/System.Diagnostics.StackTrace.dll">
+      <publishTime>04/06/2022 08:56:23</publishTime>
+    </File>
+    <File Include="bin/roslyn/System.IO.Compression.dll">
+      <publishTime>04/06/2022 08:56:23</publishTime>
+    </File>
+    <File Include="bin/roslyn/System.IO.FileSystem.dll">
+      <publishTime>04/06/2022 08:56:22</publishTime>
+    </File>
+    <File Include="bin/roslyn/System.IO.FileSystem.DriveInfo.dll">
+      <publishTime>04/06/2022 08:56:23</publishTime>
+    </File>
+    <File Include="bin/roslyn/System.IO.FileSystem.Primitives.dll">
+      <publishTime>04/06/2022 08:56:23</publishTime>
+    </File>
+    <File Include="bin/roslyn/System.IO.Pipes.dll">
+      <publishTime>04/06/2022 08:56:22</publishTime>
+    </File>
+    <File Include="bin/roslyn/System.Reflection.Metadata.dll">
+      <publishTime>04/06/2022 08:56:23</publishTime>
+    </File>
+    <File Include="bin/roslyn/System.Security.AccessControl.dll">
+      <publishTime>04/06/2022 08:56:23</publishTime>
+    </File>
+    <File Include="bin/roslyn/System.Security.Claims.dll">
+      <publishTime>04/06/2022 08:56:23</publishTime>
+    </File>
+    <File Include="bin/roslyn/System.Security.Cryptography.Algorithms.dll">
+      <publishTime>04/06/2022 08:56:23</publishTime>
+    </File>
+    <File Include="bin/roslyn/System.Security.Cryptography.Encoding.dll">
+      <publishTime>04/06/2022 08:56:22</publishTime>
+    </File>
+    <File Include="bin/roslyn/System.Security.Cryptography.Primitives.dll">
+      <publishTime>04/06/2022 08:56:23</publishTime>
+    </File>
+    <File Include="bin/roslyn/System.Security.Cryptography.X509Certificates.dll">
+      <publishTime>04/06/2022 08:56:22</publishTime>
+    </File>
+    <File Include="bin/roslyn/System.Security.Principal.Windows.dll">
+      <publishTime>04/06/2022 08:56:23</publishTime>
+    </File>
+    <File Include="bin/roslyn/System.Text.Encoding.CodePages.dll">
+      <publishTime>04/06/2022 08:56:23</publishTime>
+    </File>
+    <File Include="bin/roslyn/System.Threading.Thread.dll">
+      <publishTime>04/06/2022 08:56:23</publishTime>
+    </File>
+    <File Include="bin/roslyn/System.ValueTuple.dll">
+      <publishTime>04/06/2022 08:56:23</publishTime>
+    </File>
+    <File Include="bin/roslyn/System.Xml.ReaderWriter.dll">
+      <publishTime>04/06/2022 08:56:23</publishTime>
+    </File>
+    <File Include="bin/roslyn/System.Xml.XmlDocument.dll">
+      <publishTime>04/06/2022 08:56:23</publishTime>
+    </File>
+    <File Include="bin/roslyn/System.Xml.XPath.dll">
+      <publishTime>04/06/2022 08:56:23</publishTime>
+    </File>
+    <File Include="bin/roslyn/System.Xml.XPath.XDocument.dll">
+      <publishTime>04/06/2022 08:56:23</publishTime>
+    </File>
+    <File Include="bin/roslyn/vbc.exe">
+      <publishTime>04/06/2022 08:56:23</publishTime>
+    </File>
+    <File Include="bin/roslyn/vbc.exe.config">
+      <publishTime>04/06/2022 08:56:23</publishTime>
+    </File>
+    <File Include="bin/roslyn/vbc.rsp">
+      <publishTime>04/06/2022 08:56:23</publishTime>
+    </File>
+    <File Include="bin/roslyn/VBCSCompiler.exe">
+      <publishTime>04/06/2022 08:56:23</publishTime>
+    </File>
+    <File Include="bin/roslyn/VBCSCompiler.exe.config">
+      <publishTime>04/06/2022 08:56:23</publishTime>
+    </File>
+    <File Include="bin/Swashbuckle.Core.dll">
+      <publishTime>04/06/2022 08:56:48</publishTime>
+    </File>
+    <File Include="bin/System.Net.Http.Formatting.dll">
+      <publishTime>04/06/2022 08:56:32</publishTime>
+    </File>
+    <File Include="bin/System.Web.Cors.dll">
+      <publishTime>04/06/2022 08:56:47</publishTime>
+    </File>
+    <File Include="bin/System.Web.Http.dll">
+      <publishTime>04/06/2022 08:56:47</publishTime>
+    </File>
+    <File Include="bin/System.Web.Http.WebHost.dll">
+      <publishTime>04/06/2022 08:56:15</publishTime>
+    </File>
+    <File Include="bin/WebActivatorEx.dll">
+      <publishTime>04/06/2022 08:56:32</publishTime>
+    </File>
+    <File Include="Global.asax">
+      <publishTime>04/06/2022 08:56:02</publishTime>
+    </File>
+    <File Include="Web.config">
+      <publishTime>04/06/2022 09:01:16</publishTime>
+    </File>
+  </ItemGroup>
+</Project>

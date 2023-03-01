@@ -1,0 +1,36 @@
+﻿using SupremeCourtCore.Common;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+
+namespace SupremeCourtCore.Domain
+{
+    public class ApplicationParty
+    {
+        [DBField("ID")]
+        public int id { get; set; }
+        
+        [DBField("APPLICATION_ID")]
+        public int applicationId { get; set; }
+        
+        [DBField("NAME")]
+        public string name { get; set; }
+        
+        [DBField("NIC")]
+        public string nic { get; set; }
+        
+        [DBField("PASSPORT")]
+        public string passport { get; set; }
+        
+        [DBField("ADDRESS")]
+        public string address { get; set; }
+        
+        [DBField("PARTY_TYPE_ID")]
+        public int partyTypeId { get; set; }
+        
+        [DBField("IS_ACTIVE")]
+        public int isActive { get; set; }
+    }
+}

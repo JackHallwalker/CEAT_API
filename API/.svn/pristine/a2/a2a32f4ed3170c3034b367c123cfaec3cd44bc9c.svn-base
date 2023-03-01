@@ -1,0 +1,18 @@
+﻿using SupremeCourtCore.Common;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+
+namespace SupremeCourtCore.Domain
+{
+    public class RoleFunction
+    {
+        [DBField("SYSTEM_ROLE_ID")]
+        public int systemRoleId { get; set; }
+        
+        [DBField("SYSTEM_FUNCTION_ID")]
+        public int systemFunctionId { get; set; }
+    }
+}

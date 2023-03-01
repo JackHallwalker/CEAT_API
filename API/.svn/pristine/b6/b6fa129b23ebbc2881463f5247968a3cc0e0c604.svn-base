@@ -1,0 +1,146 @@
+﻿using SupremeCourtCore.Common;
+using SupremeCourtCore.Domain;
+using SupremeCourtCore.Infrastructure;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+
+namespace SupremeCourtCore.Controller
+{
+    public interface CaseLawyerController
+    {
+        List<CaseLawyer> GetAllCaseLawyerByApplicationId(int applicationId);
+        List<CaseLawyer> GetAllCaseLawyerByLawyerId(int lawyerId);
+        List<CaseLawyer> GetAllCaseLawyerByPartyTypeId(int partyTypeId);
+        int AddCaseLawyer(CaseLawyer caseType);
+        int UpdateCaseLawyer(CaseLawyer caseType);
+        int DeleteCaseLawyer(int applicationId, int lawyerId, int partyId);
+    }
+
+    public class CaseLawyerControllerImpl : CaseLawyerController
+    {
+        DBConnection dBConnection;
+        CaseLawyerDAO OrderTypeDAO = DAOFactory.CreateCaseLawyerDAO();
+        public int AddCaseLawyer(CaseLawyer caseType)
+        {
+            try
+            {
+                dBConnection = new DBConnection();
+                return OrderTypeDAO.AddCaseLawyer(caseType, dBConnection);
+            }
+            catch (Exception)
+            {
+                dBConnection.RollBack();
+
+                throw;
+            }
+            finally
+            {
+                if (dBConnection.con.State == System.Data.ConnectionState.Open)
+                    dBConnection.Commit();
+            }
+        }
+
+        public int DeleteCaseLawyer(int applicationId, int lawyerId, int partyId)
+        {
+            try
+            {
+                dBConnection = new DBConnection();
+                return OrderTypeDAO.DeleteCaseLawyer(applicationId, lawyerId, partyId, dBConnection);
+            }
+            catch (Exception)
+            {
+                dBConnection.RollBack();
+
+                throw;
+            }
+            finally
+            {
+                if (dBConnection.con.State == System.Data.ConnectionState.Open)
+                    dBConnection.Commit();
+            }
+        }
+
+        public List<CaseLawyer> GetAllCaseLawyerByApplicationId(int applicationId)
+        {
+            try
+            {
+                dBConnection = new DBConnection();
+                return OrderTypeDAO.GetAllCaseLawyerByApplicationId(applicationId, dBConnection);
+            }
+            catch (Exception)
+            {
+                dBConnection.RollBack();
+
+                throw;
+            }
+            finally
+            {
+                if (dBConnection.con.State == System.Data.ConnectionState.Open)
+                    dBConnection.Commit();
+            }
+        }
+
+        public List<CaseLawyer> GetAllCaseLawyerByLawyerId(int lawyerId)
+        {
+            try
+            {
+                dBConnection = new DBConnection();
+                return OrderTypeDAO.GetAllCaseLawyerByLawyerId(lawyerId, dBConnection);
+            }
+            catch (Exception)
+            {
+                dBConnection.RollBack();
+
+                throw;
+            }
+            finally
+            {
+                if (dBConnection.con.State == System.Data.ConnectionState.Open)
+                    dBConnection.Commit();
+            }
+        }
+
+        public List<CaseLawyer> GetAllCaseLawyerByPartyTypeId(int partyTypeId)
+        {
+            try
+            {
+                dBConnection = new DBConnection();
+                return OrderTypeDAO.GetAllCaseLawyerByPartyTypeId(partyTypeId, dBConnection);
+            }
+            catch (Exception)
+            {
+                dBConnection.RollBack();
+
+                throw;
+            }
+            finally
+            {
+                if (dBConnection.con.State == System.Data.ConnectionState.Open)
+                    dBConnection.Commit();
+            }
+        }
+
+        public int UpdateCaseLawyer(CaseLawyer caseType)
+        {
+            try
+            {
+                dBConnection = new DBConnection();
+                return OrderTypeDAO.UpdateCaseLawyer(caseType, dBConnection);
+            }
+            catch (Exception)
+            {
+                dBConnection.RollBack();
+
+                throw;
+            }
+            finally
+            {
+                if (dBConnection.con.State == System.Data.ConnectionState.Open)
+                    dBConnection.Commit();
+            }
+        }
+    }
+}

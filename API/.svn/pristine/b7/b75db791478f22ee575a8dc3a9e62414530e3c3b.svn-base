@@ -1,0 +1,29 @@
+﻿using HotelCore.Common;
+using HotelCore.Controller;
+using HotelCore.Domain;
+using HotelCore.Controller;
+using HotelCore.Domain;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Net;
+using System.Net.Http;
+using System.Web;
+using System.Web.Http;
+
+
+namespace HotelAPI.Controllers
+{
+    public class AvailableInCalenderApi:ApiController
+    {
+        [HttpGet]
+        [Route("api/v1/GetAllAvailable/")]
+        public List<AvailblesInCalendar> GetAllAvailableRoomByDate(DateTime date)
+        {
+            AvailableInCalendarController Allrooms = ControllerFactory.CreateAvailableInCalendarController();
+
+            return Allrooms.GetAllAvailableRoomByDate(date);
+        }
+
+    }
+}

@@ -1,0 +1,27 @@
+﻿using SupremeCourtCore.Common;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+
+namespace SupremeCourtCore.Infrastructure
+{
+    public interface ApiVersionDAO
+    {
+        //List<Category> GetCategories(DBConnection dbConnection);
+        //Category GetCategoryByCategoryId(int id, DBConnection dbConnection);
+        //string GetCategoryNameByCategoryId(int id, DBConnection dbConnection);
+        string GetAPILatestVersion(DBConnection dbConnection);
+    }
+
+    public class ApiVersionDAOImpl : ApiVersionDAO
+    {
+        public string GetAPILatestVersion(DBConnection dbConnection)
+        {
+            dbConnection.cmd.CommandText = "select * from (SELECT VERSION_NUMBER FROM APP_VERSION ORDER BY ID DESC) where ROWNUM =1";
+
+            return (string)dbConnection.cmd.ExecuteScalar();
+        }
+    }
+}

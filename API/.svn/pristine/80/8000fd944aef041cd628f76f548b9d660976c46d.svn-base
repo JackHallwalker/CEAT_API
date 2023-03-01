@@ -1,0 +1,51 @@
+﻿using SupremeCourtCore.Common;
+using SupremeCourtCore.Domain;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+
+namespace SupremeCourtCore.Infrastructure
+{
+    public interface UserSystemFunctionDAO
+    {
+        List<UserSystemFunction> GetAllUserSystemFunctionsBySystemFunctionId(int systemFunctionId, DBConnection dbConnection);
+        List<UserSystemFunction> GetAllUserSystemFunctionsBySystemUserId(int systemUserId, DBConnection dbConnection);
+        int AddUserSystemFunction(UserSystemFunction userSystemFunction, DBConnection dbConnection);
+        int DeleteUserSystemFunction(int systemFunctionId, int systemUserId, DBConnection dbConnection);
+    }
+
+    public class UserSystemFunctionDAOImpl : UserSystemFunctionDAO
+    {
+        public int AddUserSystemFunction(UserSystemFunction userSystemFunction, DBConnection dbConnection)
+        {
+            dbConnection.cmd.CommandText = "INSERT INTO USER_SYSTEM_FUNCTION(SYSTEM_FUNCTION_ID,SYS_USER_ID,CREATED_DATE,CREATED_BY) VALUES("+userSystemFunction.systemFunctionId+","+userSystemFunction.systemUserId+ ",'" + userSystemFunction.createdDate.ToString("yyyy/MM/dd") + "','"+ userSystemFunction.createdBy+ "')";
+            return Convert.ToInt32(dbConnection.cmd.ExecuteScalar());
+        }
+
+        public int DeleteUserSystemFunction(int systemFunctionId, int systemUserId, DBConnection dbConnection)
+        {
+            dbConnection.cmd.CommandText = "DELETE FROM USER_SYSTEM_FUNCTION WHERE SYSTEM_FUNCTION_ID = "+systemFunctionId+" AND SYS_USER_ID = "+systemUserId;
+            return dbConnection.cmd.ExecuteNonQuery();
+        }
+
+        public List<UserSystemFunction> GetAllUserSystemFunctionsBySystemFunctionId(int systemFunctionId, DBConnection dbConnection)
+        {
+            dbConnection.cmd.CommandText = "SELECT * FROM USER_SYSTEM_FUNCTION WHERE SYSTEM_FUNCTION_ID =" + systemFunctionId;
+
+            dbConnection.dr = dbConnection.cmd.ExecuteReader();
+            DataAccessObject dataAccessObject = new DataAccessObject();
+            return dataAccessObject.ReadCollection<UserSystemFunction>(dbConnection.dr);
+        }
+
+        public List<UserSystemFunction> GetAllUserSystemFunctionsBySystemUserId(int systemUserId, DBConnection dbConnection)
+        {
+            dbConnection.cmd.CommandText = "SELECT * FROM USER_SYSTEM_FUNCTION WHERE SYS_USER_ID =" + systemUserId;
+
+            dbConnection.dr = dbConnection.cmd.ExecuteReader();
+            DataAccessObject dataAccessObject = new DataAccessObject();
+            return dataAccessObject.ReadCollection<UserSystemFunction>(dbConnection.dr);
+        }
+    }
+}

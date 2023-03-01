@@ -1,0 +1,105 @@
+﻿using System;
+using System.Collections.Generic;
+using SupremeCourtCore.Common;
+using SupremeCourtCore.Domain;
+using SupremeCourtCore.Infrastructure;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+
+namespace SupremeCourtCore.Controller
+{
+    public interface RoleFunctionController
+    {
+        int AddRoleFunction(RoleFunction roldeFunction);
+        int DeleteRoleFunction(int systemRoleId, int systemFunctionId);
+        List<RoleFunction> GetAllRoleFunctionsBySystemRoleId(int systemRoleId);
+        List<RoleFunction> GetAllRoleFunctionsBySystemFunctionId(int systemFunctionId);
+    }
+
+    public class RoleFunctionControllerImpl : RoleFunctionController
+    {
+        DBConnection dBConnection;
+        RoleFunctionDAO OrderTypeDAO = DAOFactory.CreateRoleFunctionDAO();
+
+        public int AddRoleFunction(RoleFunction roldeFunction)
+        {
+            try
+            {
+                dBConnection = new DBConnection();
+                return OrderTypeDAO.AddRoleFunction(roldeFunction, dBConnection);
+            }
+            catch (Exception)
+            {
+                dBConnection.RollBack();
+
+                throw;
+            }
+            finally
+            {
+                if (dBConnection.con.State == System.Data.ConnectionState.Open)
+                    dBConnection.Commit();
+            }
+        }
+
+        public int DeleteRoleFunction(int systemRoleId, int systemFunctionId)
+        {
+            try
+            {
+                dBConnection = new DBConnection();
+                return OrderTypeDAO.DeleteRoleFunction(systemRoleId, systemFunctionId, dBConnection);
+            }
+            catch (Exception)
+            {
+                dBConnection.RollBack();
+
+                throw;
+            }
+            finally
+            {
+                if (dBConnection.con.State == System.Data.ConnectionState.Open)
+                    dBConnection.Commit();
+            }
+        }
+
+        public List<RoleFunction> GetAllRoleFunctionsBySystemFunctionId(int systemFunctionId)
+        {
+            try
+            {
+                dBConnection = new DBConnection();
+                return OrderTypeDAO.GetAllRoleFunctionsBySystemFunctionId(systemFunctionId, dBConnection);
+            }
+            catch (Exception)
+            {
+                dBConnection.RollBack();
+
+                throw;
+            }
+            finally
+            {
+                if (dBConnection.con.State == System.Data.ConnectionState.Open)
+                    dBConnection.Commit();
+            }
+        }
+
+        public List<RoleFunction> GetAllRoleFunctionsBySystemRoleId(int systemRoleId)
+        {
+            try
+            {
+                dBConnection = new DBConnection();
+                return OrderTypeDAO.GetAllRoleFunctionsBySystemRoleId(systemRoleId, dBConnection);
+            }
+            catch (Exception)
+            {
+                dBConnection.RollBack();
+
+                throw;
+            }
+            finally
+            {
+                if (dBConnection.con.State == System.Data.ConnectionState.Open)
+                    dBConnection.Commit();
+            }
+        }
+    }
+}

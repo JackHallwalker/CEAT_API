@@ -1,0 +1,200 @@
+﻿using SupremeCourtCore.Common;
+using SupremeCourtCore.Domain;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+
+namespace SupremeCourtCore.Infrastructure
+{
+    public interface LawyerDAO
+    {
+        List<Lawyer> GetAllLawyers(DBConnection dbConnection);
+        Lawyer GetLawyer(int id, DBConnection dbConnection);
+        int AddLawyer(Lawyer lawyer, DBConnection dbConnection);
+        int UpdateLawyer(Lawyer lawyer, DBConnection dbConnection);
+        int DeleteLawyer(int lawyerId, DBConnection dbConnection);
+        List<Schedule> GetLawyerSchedule(int lawyerId, DBConnection dbConnection);
+        List<Schedule> GetLawyerScheduleByDate(int lawyerId, string date, DBConnection dbConnection);
+    }
+    public class LawyerSqlDAOImpl : LawyerDAO
+    {
+        public int AddLawyer(Lawyer lawyer, DBConnection dbConnection)
+        {
+            dbConnection.cmd.CommandText = "INSERT INTO LAWYER(CER_NO,L_TITLE,L_INITIAL,L_FNAME,L_LNAME,STATUS,DATE_ADMIN,DESCRIPTION,NIC_NO,EMAIL,CONTACT_NO,ADDRESS,IS_ACTIVE) " +
+               "VALUES('" + lawyer.cerNo + "'," + lawyer.lTitle + ",'" + lawyer.lInitial + "','" + lawyer.fName + "','" + lawyer.lName + "','" + lawyer.status + "','" + lawyer.dateAdmin + "','" + lawyer.description + "','" + lawyer.nicNo + "','" + lawyer.email + "','" + lawyer.contactNo + "','" + lawyer.address + "',1); SELECT currval('lawyer_id_seq');";
+            return Convert.ToInt32(dbConnection.cmd.ExecuteScalar());
+        }
+
+        public int DeleteLawyer(int lawyerId, DBConnection dbConnection)
+        {
+            dbConnection.cmd.CommandText = "UPDATE LAWYER SET IS_ACTIVE = 0 WHERE ID = " + lawyerId;
+            return dbConnection.cmd.ExecuteNonQuery();
+        }
+
+        public List<Lawyer> GetAllLawyers(DBConnection dbConnection)
+        {
+            dbConnection.cmd.CommandText = "SELECT * FROM LAWYER WHERE IS_ACTIVE = 1";
+
+            dbConnection.dr = dbConnection.cmd.ExecuteReader();
+            DataAccessObject dataAccessObject = new DataAccessObject();
+            return dataAccessObject.ReadCollection<Lawyer>(dbConnection.dr);
+        }
+
+        public Lawyer GetLawyer(int id, DBConnection dbConnection)
+        {
+            dbConnection.cmd.CommandText = "SELECT * FROM LAWYER WHERE ID = " + id + " ";
+
+            dbConnection.dr = dbConnection.cmd.ExecuteReader();
+            DataAccessObject dataAccessObject = new DataAccessObject();
+            return dataAccessObject.GetSingleOject<Lawyer>(dbConnection.dr);
+        }
+
+        public int UpdateLawyer(Lawyer lawyer, DBConnection dbConnection)
+        {
+            dbConnection.cmd.CommandText = "UPDATE LAWYER SET CER_NO = '" + lawyer.cerNo + "', L_TITLE = " + lawyer.lTitle + ", L_INITIAL = '" + lawyer.lInitial + "', L_FNAME = '" + lawyer.fName + "', L_LNAME = '" + lawyer.lName + "', IS_ACTIVE = " + lawyer.isActive + " WHERE ID = " + lawyer.id;
+            return dbConnection.cmd.ExecuteNonQuery();
+        }
+
+        public List<Schedule> GetLawyerSchedule(int lawyerId, DBConnection dbConnection)
+        {
+            dbConnection.cmd.Parameters.Clear();
+            dbConnection.cmd.CommandText = $@"  select distinct na.*, app.category_id,app.case_type_id,app.case_no,app.serial_no,app.lower_court_no,app.description,
+                                                app.reg_date,app.is_active,cat.name,ct.name as case_type_name,ct.short_code,pet.name as petition_name,
+                                                co.name as court_name, co.short_code as court_short_code
+                                                from case_lawyer as cl
+                                                inner join next_action as na on cl.application_id = na.application_id
+                                                inner join application as app on app.id = na.application_id
+                                                inner join petition as pet on pet.id = na.petition_id
+                                                inner join court as co on co.id = na.court_id
+                                                inner join category as cat on cat.id = app.category_id
+                                                inner join case_type as ct on ct.id = app.case_type_id
+                                                where cl.lawyer_id = {lawyerId} order by na.trial_date desc'
+                                             ";
+            dbConnection.cmd.CommandType = System.Data.CommandType.Text;
+            using (dbConnection.dr = dbConnection.cmd.ExecuteReader())
+            {
+                DataAccessObject dataAccessObject = new DataAccessObject();
+                return dataAccessObject.ReadCollection<Schedule>(dbConnection.dr);
+            }
+        }
+
+        public List<Schedule> GetLawyerScheduleByDate(int lawyerId, string date, DBConnection dbConnection)
+        {
+            string dateSql = "";
+            if (date != null)
+                dateSql = "and na.trial_date= '" + DateTime.ParseExact(date, "yyyy-MM-dd", System.Globalization.CultureInfo.InvariantCulture).ToString("dd-MMM-yyyy") + "' ";
+
+            dbConnection.cmd.Parameters.Clear();
+            dbConnection.cmd.CommandText = $@"  select distinct na.*, app.category_id,app.case_type_id,app.case_no,l.l_fname as lawyer_name,app.serial_no,app.lower_court_no,app.description,
+                                                app.reg_date,app.is_active,cat.name,ct.name as case_type_name,ct.short_code,
+                                                co.name as court_name, co.short_code as court_short_code
+                                                from case_lawyer as cl
+                                                inner join next_action as na on cl.application_id = na.application_id
+                                                inner join application as app on app.id = na.application_id
+                                                inner join lawyer as l on l.id=cl.lawyer_id
+                                                inner join court as co on co.id = na.court_id
+                                                inner join category as cat on cat.id = app.category_id
+                                                inner join case_type as ct on ct.id = app.case_type_id
+                                                where cl.lawyer_id = {lawyerId}
+                                             " + dateSql;
+            dbConnection.cmd.CommandType = System.Data.CommandType.Text;
+            using (dbConnection.dr = dbConnection.cmd.ExecuteReader())
+            {
+                DataAccessObject dataAccessObject = new DataAccessObject();
+                return dataAccessObject.ReadCollection<Schedule>(dbConnection.dr);
+            }
+        }
+    }
+    public class LawyerDAOImpl : LawyerDAO
+    {
+        public int AddLawyer(Lawyer lawyer, DBConnection dbConnection)
+        {
+            dbConnection.cmd.CommandText = "INSERT INTO LAWYER(CER_NO,L_TITLE,L_INITIAL,L_FNAME,L_LNAME,STATUS,DATE_ADMIN,DESCRIPTION,NIC_NO,EMAIL,CONTACT_NO,ADDRESS,IS_ACTIVE) " +
+               "VALUES('" + lawyer.cerNo + "'," + lawyer.lTitle + ",'" + lawyer.lInitial + "','" + lawyer.fName + "','" + lawyer.lName + "','" + lawyer.status + "','" + lawyer.dateAdmin + "','" + lawyer.description + "','" + lawyer.nicNo + "','" + lawyer.email + "','" + lawyer.contactNo + "','" + lawyer.address + "',1); SELECT currval('lawyer_id_seq');";
+            return Convert.ToInt32(dbConnection.cmd.ExecuteScalar());
+        }
+
+        public int DeleteLawyer(int lawyerId, DBConnection dbConnection)
+        {
+            dbConnection.cmd.CommandText = "UPDATE LAWYER SET IS_ACTIVE = 0 WHERE ID = " + lawyerId;
+            return dbConnection.cmd.ExecuteNonQuery();
+        }
+
+        public List<Lawyer> GetAllLawyers(DBConnection dbConnection)
+        {
+            dbConnection.cmd.CommandText = "SELECT * FROM LAWYER WHERE IS_ACTIVE = 1";
+
+            dbConnection.dr = dbConnection.cmd.ExecuteReader();
+            DataAccessObject dataAccessObject = new DataAccessObject();
+            return dataAccessObject.ReadCollection<Lawyer>(dbConnection.dr);
+        }
+
+        public Lawyer GetLawyer(int id, DBConnection dbConnection)
+        {
+            dbConnection.cmd.CommandText = "SELECT * FROM LAWYER WHERE ID = " + id + " ";
+
+            dbConnection.dr = dbConnection.cmd.ExecuteReader();
+            DataAccessObject dataAccessObject = new DataAccessObject();
+            return dataAccessObject.GetSingleOject<Lawyer>(dbConnection.dr);
+        }
+
+        public int UpdateLawyer(Lawyer lawyer, DBConnection dbConnection)
+        {
+            dbConnection.cmd.CommandText = "UPDATE LAWYER SET CER_NO= '" + lawyer.cerNo + "', L_TITLE = " + lawyer.lTitle + ", L_INITIAL = '" + lawyer.lInitial + "', L_FNAME = '" + lawyer.fName + "', L_LNAME = '" + lawyer.lName + "', IS_ACTIVE = " + lawyer.isActive + " WHERE ID = " + lawyer.id;
+
+            return dbConnection.cmd.ExecuteNonQuery();
+        }
+
+        public List<Schedule> GetLawyerSchedule(int lawyerId, DBConnection dbConnection)
+        {
+            dbConnection.cmd.Parameters.Clear();
+            dbConnection.cmd.CommandText = $@"  select distinct na.*, app.category_id,app.case_type_id,app.case_no,app.serial_no,app.lower_court_no,app.description,
+                                                app.reg_date,app.is_active,cat.name,ct.name as case_type_name,ct.short_code,
+                                                co.name as court_name, co.short_code as court_short_code
+                                                from case_lawyer as cl
+                                                inner join next_action as na on cl.application_id = na.application_id
+                                                inner join application as app on app.id = na.application_id
+                                                
+                                                inner join court as co on co.id = na.court_id
+                                                inner join category as cat on cat.id = app.category_id
+                                                inner join case_type as ct on ct.id = app.case_type_id
+                                                where cl.lawyer_id = {lawyerId} order by na.trial_date desc
+                                             ";
+            dbConnection.cmd.CommandType = System.Data.CommandType.Text;
+            using (dbConnection.dr = dbConnection.cmd.ExecuteReader())
+            {
+                DataAccessObject dataAccessObject = new DataAccessObject();
+                return dataAccessObject.ReadCollection<Schedule>(dbConnection.dr);
+            }
+        }
+
+        public List<Schedule> GetLawyerScheduleByDate(int lawyerId, string date, DBConnection dbConnection)
+        {
+            string dateSql = "";
+            if (date != null)
+                dateSql = "and na.trial_date= '" + DateTime.ParseExact(date, "yyyy-MM-dd", System.Globalization.CultureInfo.InvariantCulture).ToString("dd-MMM-yyyy") + "' ";
+
+            dbConnection.cmd.Parameters.Clear();
+            dbConnection.cmd.CommandText = $@"  select distinct na.*, app.category_id,app.case_type_id,app.case_no,l.l_fname as lawyer_name,app.serial_no,app.lower_court_no,app.description,
+                                                app.reg_date,app.is_active,cat.name,ct.name as case_type_name,ct.short_code,
+                                                co.name as court_name, co.short_code as court_short_code
+                                                from case_lawyer as cl
+                                                inner join next_action as na on cl.application_id = na.application_id
+                                                inner join application as app on app.id = na.application_id
+                                                inner join lawyer as l on l.id=cl.lawyer_id
+                                                inner join court as co on co.id = na.court_id
+                                                inner join category as cat on cat.id = app.category_id
+                                                inner join case_type as ct on ct.id = app.case_type_id
+                                                where cl.lawyer_id = {lawyerId}
+                                             " + dateSql;
+            dbConnection.cmd.CommandType = System.Data.CommandType.Text;
+            using (dbConnection.dr = dbConnection.cmd.ExecuteReader())
+            {
+                DataAccessObject dataAccessObject = new DataAccessObject();
+                return dataAccessObject.ReadCollection<Schedule>(dbConnection.dr);
+            }
+        }
+    }
+}

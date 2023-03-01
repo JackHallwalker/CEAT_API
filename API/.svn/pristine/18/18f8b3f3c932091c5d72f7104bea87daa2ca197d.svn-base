@@ -1,0 +1,136 @@
+﻿using SupremeCourtCore.Common;
+using SupremeCourtCore.Domain;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+
+namespace SupremeCourtCore.Infrastructure
+{
+    public interface JournalDAO
+    {
+        List<Journal> GetAllJournals(int applicationId, DBConnection dbConnection);
+        List<Journal> GetJournalByCaseNo(string caseNo, DBConnection dbConnection);
+        List<Journal> GetAllJournalsWithPartyTypeId(int applicationId, int partyTypeId, DBConnection dbConnection);
+        Journal GetJournal(int id, DBConnection dbConnection);
+        int AddJournal(Journal journal, DBConnection dbConnection);
+        int UpdateJournal(Journal journal, DBConnection dbConnection);
+        int DeleteJournal(int journalId, DBConnection dbConnection);
+    }
+    public class JournalSqlDAOImpl : JournalDAO
+    {
+        public int AddJournal(Journal journal, DBConnection dbConnection)
+        {
+            dbConnection.cmd.CommandText = "INSERT INTO JOURNAL(APPLICATION_ID,DATE,JOURNAL_RECORD,CREATED_BY,CREATED_DATE,CASE_NO,S_FILE) VALUES(" + journal.applicationId + ",'" + journal.date.ToString("yyyy/MM/dd") + "','" + journal.journalRecord + "','" + journal.createdBy + "','" + journal.createdDate.ToString("yyyy/MM/dd") + "', '" + journal.caseNo + "','" + journal.sFile + "') SELECT SCOPE_IDENTITY()";
+            return Convert.ToInt32(dbConnection.cmd.ExecuteScalar());
+        }
+
+        public int DeleteJournal(int journalId, DBConnection dbConnection)
+        {
+            dbConnection.cmd.CommandText = "DELETE FROM JOURNAL WHERE ID = " + journalId;
+            return dbConnection.cmd.ExecuteNonQuery();
+        }
+
+        public List<Journal> GetAllJournals(int applicationId, DBConnection dbConnection)
+        {
+            dbConnection.cmd.CommandText = "SELECT * FROM JOURNAL WHERE APPLICATION_ID = " + applicationId;
+
+            dbConnection.dr = dbConnection.cmd.ExecuteReader();
+            DataAccessObject dataAccessObject = new DataAccessObject();
+            return dataAccessObject.ReadCollection<Journal>(dbConnection.dr);
+        }
+
+        public List<Journal> GetJournalByCaseNo(string caseNo, DBConnection dbConnection)
+        {
+            dbConnection.cmd.CommandText = "SELECT * FROM JOURNAL WHERE CASE_NO =  '" + caseNo + "'";
+
+            dbConnection.dr = dbConnection.cmd.ExecuteReader();
+            DataAccessObject dataAccessObject = new DataAccessObject();
+            return dataAccessObject.ReadCollection<Journal>(dbConnection.dr);
+        }
+
+        public List<Journal> GetAllJournalsWithPartyTypeId(int applicationId, int partyTypeId, DBConnection dbConnection)
+        {
+            dbConnection.cmd.CommandText = "SELECT JOU.*,AP.NAME FROM JOURNAL AS JOU" +
+                                            "INNER JOIN APPLICATION_PARTY AS AP ON AP.APPLICATION_ID = JOU.APPLICATION_ID " +
+                                            "WHERE JOU.APPLICATION_ID = " + applicationId + " and AP.PARTY_TYPE_ID=" + partyTypeId + "";
+
+            dbConnection.dr = dbConnection.cmd.ExecuteReader();
+            DataAccessObject dataAccessObject = new DataAccessObject();
+            return dataAccessObject.ReadCollection<Journal>(dbConnection.dr);
+        }
+
+        public Journal GetJournal(int id, DBConnection dbConnection)
+        {
+            dbConnection.cmd.CommandText = "SELECT * FROM JOURNAL WHERE ID = " + id + " ";
+
+            dbConnection.dr = dbConnection.cmd.ExecuteReader();
+            DataAccessObject dataAccessObject = new DataAccessObject();
+            return dataAccessObject.GetSingleOject<Journal>(dbConnection.dr);
+        }
+
+        public int UpdateJournal(Journal journal, DBConnection dbConnection)
+        {
+            dbConnection.cmd.CommandText = "UPDATE JOURNAL SET APPLICATION_ID = " + journal.applicationId + ", DATE = '" + journal.date.ToString("yyyy/MM/dd") + "', JOURNAL_RECORD = '" + journal.journalRecord + "',CREATED_BY = '" + journal.createdBy + "', CREATED_DATE = '" + journal.createdDate.ToString("yyyy/MM/dd") + "'  WHERE ID = " + journal.id;
+            return dbConnection.cmd.ExecuteNonQuery();
+        }
+    }
+    public class JournalDAOImpl : JournalDAO
+    {
+        public int AddJournal(Journal journal, DBConnection dbConnection)
+        {
+            dbConnection.cmd.CommandText = "INSERT INTO JOURNAL(APPLICATION_ID,DATE,JOURNAL_RECORD,CREATED_BY,CREATED_DATE,CASE_NO,S_FILE) VALUES(" + journal.applicationId + ",'" + journal.date.ToString("yyyy/MM/dd") + "','" + journal.journalRecord + "','" + journal.createdBy + "','" + journal.createdDate.ToString("yyyy/MM/dd") + "', '" + journal.caseNo + "','" + journal.sFile + "'); SELECT currval('journal_id_seq');";
+            return Convert.ToInt32(dbConnection.cmd.ExecuteScalar());
+        }
+
+        public int DeleteJournal(int journalId, DBConnection dbConnection)
+        {
+            dbConnection.cmd.CommandText = "DELETE FROM JOURNAL WHERE ID = " + journalId;
+            return dbConnection.cmd.ExecuteNonQuery();
+        }
+
+        public List<Journal> GetAllJournals(int applicationId, DBConnection dbConnection)
+        {
+            dbConnection.cmd.CommandText = "SELECT * FROM JOURNAL WHERE APPLICATION_ID = " + applicationId;
+
+            dbConnection.dr = dbConnection.cmd.ExecuteReader();
+            DataAccessObject dataAccessObject = new DataAccessObject();
+            return dataAccessObject.ReadCollection<Journal>(dbConnection.dr);
+        }
+
+        public List<Journal> GetJournalByCaseNo(string caseNo, DBConnection dbConnection)
+        {
+            dbConnection.cmd.CommandText = "SELECT * FROM JOURNAL WHERE CASE_NO =  '" + caseNo + "'";
+
+            dbConnection.dr = dbConnection.cmd.ExecuteReader();
+            DataAccessObject dataAccessObject = new DataAccessObject();
+            return dataAccessObject.ReadCollection<Journal>(dbConnection.dr);
+        }
+        public List<Journal> GetAllJournalsWithPartyTypeId(int applicationId, int partyTypeId, DBConnection dbConnection)
+        {
+            dbConnection.cmd.CommandText = "SELECT JOU.*,AP.NAME FROM JOURNAL AS JOU " +
+                                            "INNER JOIN APPLICATION_PARTY AS AP ON AP.APPLICATION_ID = JOU.APPLICATION_ID " +
+                                            "WHERE JOU.APPLICATION_ID = " + applicationId + " and AP.PARTY_TYPE_ID=" + partyTypeId + "";
+
+            dbConnection.dr = dbConnection.cmd.ExecuteReader();
+            DataAccessObject dataAccessObject = new DataAccessObject();
+            return dataAccessObject.ReadCollection<Journal>(dbConnection.dr);
+        }
+
+        public Journal GetJournal(int id, DBConnection dbConnection)
+        {
+            dbConnection.cmd.CommandText = "SELECT * FROM JOURNAL WHERE ID = " + id + " ";
+
+            dbConnection.dr = dbConnection.cmd.ExecuteReader();
+            DataAccessObject dataAccessObject = new DataAccessObject();
+            return dataAccessObject.GetSingleOject<Journal>(dbConnection.dr);
+        }
+
+        public int UpdateJournal(Journal journal, DBConnection dbConnection)
+        {
+            dbConnection.cmd.CommandText = "UPDATE JOURNAL SET APPLICATION_ID = " + journal.applicationId + ", DATE = '" + journal.date.ToString("yyyy/MM/dd") + "', JOURNAL_RECORD = '" + journal.journalRecord + "',CREATED_BY = '" + journal.createdBy + "', CREATED_DATE = '" + journal.createdDate.ToString("yyyy/MM/dd") + "'  WHERE ID = " + journal.id;
+            return dbConnection.cmd.ExecuteNonQuery();
+        }
+    }
+}

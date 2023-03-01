@@ -1,0 +1,338 @@
+﻿using SupremeCourtCore.Common;
+using SupremeCourtCore.Domain;
+using System;
+using System.Collections.Generic;
+using System.Data.OracleClient;
+using System.Globalization;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+
+namespace SupremeCourtCore.Infrastructure
+{
+    public interface SysUserDAO
+    {
+        int SaveLogin(SystemUser userLogin, DBConnection dbConnection);
+        int UpdateLogin(SystemUser userLogin, DBConnection dbConnection);
+        SystemUser GetLoginDetails(string username, string password, DBConnection dbConnection);
+        int GetLoginIdByUsername(string username, DBConnection dbConnection);
+        SystemUser GetUserByUsername(string username, DBConnection dbConnection);
+        bool CheckUserExitsByUserId(int userId,DBConnection dbConnection);
+        int CheckUserName(string username, DBConnection dbConnection);
+        int UpdatePasswordByUserId(int loginId, string newPassword, DBConnection dbConnection);
+        int UpdateUserNamePasswordByUserId(int loginId, string newUserName, string newPassword, DBConnection dbConnection);
+        int UpdateLoginDate(SystemUser systemUser, DBConnection dbConnection);
+        int UpdateLoginAttempt(SystemUser systemUser, DBConnection dbConnection);
+        int DeleteUser(int sysUserId, DBConnection dbConnection);
+        List<SystemUserReturn> GetAllUsers(DBConnection dbConnection);
+        List<SystemUser> GetAllUsers(int roleId,DBConnection dbConnection);
+        int UpdateLockStatusByUserId(int userId,int isLocked, DBConnection dbConnection);
+        int UpdateActiveStatusByUserId(int userId, int isActive, DBConnection dbConnection);
+    }
+    public class SysUserSqlDAOImpl : SysUserDAO
+    {
+        public int SaveLogin(SystemUser userLogin, DBConnection dbConnection)
+        {
+
+            dbConnection.cmd.CommandText = "INSERT INTO SYS_USER (SYSTEM_ROLE_ID, ETF, NIC, USERNAME, USER_PASSWORD,IS_LOCKED,LOGIN_ATTEMPT,IS_ACTIVE) values(" + userLogin.systemRoleId + ",'" + userLogin.etf + "','" + userLogin.nic + "','" + userLogin.username + "','" + userLogin.userPassword + "',0,0,1) SELECT SCOPE_IDENTITY()";
+
+            return dbConnection.cmd.ExecuteNonQuery();
+        }
+
+        public int UpdateLogin(SystemUser userLogin, DBConnection dbConnection)
+        {
+            dbConnection.cmd.CommandText = "update SYS_USER set SYSTEM_ROLE_ID = " + userLogin.systemRoleId + ", ETF = '" + userLogin.etf + "', NIC = '" + userLogin.nic + "', IS_LOCKED = " + userLogin.isLocked + ", IS_ACTIVE = " + userLogin.isActive + " where ID = " + userLogin.id;
+            return dbConnection.cmd.ExecuteNonQuery();
+        }
+
+        public SystemUser GetLoginDetails(string username, string password, DBConnection dbConnection)
+        {
+            dbConnection.cmd.Parameters.Clear();
+            dbConnection.cmd.CommandText = "SELECT * FROM SYS_USER WHERE USERNAME = '" + username + "' AND USER_PASSWORD = '" + password + "' AND IS_LOCKED = 0 AND IS_ACTIVE = 1";
+
+
+            //int count = Convert.ToInt32(dbConnection.cmd.ExecuteScalar());
+            //return count;
+            //dbConnection.dr = dbConnection.cmd.ExecuteReader();
+            //DataAccessObject dataAccessObject = new DataAccessObject();
+            //return dataAccessObject.GetSingleOject<SystemUser>(dbConnection.dr);
+
+            using (dbConnection.dr = dbConnection.cmd.ExecuteReader())
+            {
+                DataAccessObject dataAccessObject = new DataAccessObject();
+                return dataAccessObject.GetSingleOject<SystemUser>(dbConnection.dr);
+            }
+        }
+
+        public int GetLoginIdByUsername(string username, DBConnection dbConnection)
+        {
+            dbConnection.cmd.Parameters.Clear();
+            dbConnection.cmd.CommandText = "SELECT ID FROM SYS_USER WHERE USERNAME = '" + username + "' ";
+
+            int id = Convert.ToInt32(dbConnection.cmd.ExecuteScalar());
+            return id;
+        }
+        public SystemUser GetUserByUsername(string username, DBConnection dbConnection)
+        {
+            dbConnection.cmd.Parameters.Clear();
+            dbConnection.cmd.CommandText = "SELECT ID FROM SYS_USER WHERE USERNAME = '" + username + "' ";
+
+            //dbConnection.dr = dbConnection.cmd.ExecuteReader();
+            //DataAccessObject dataAccessObject = new DataAccessObject();
+            //return dataAccessObject.GetSingleOject<SystemUser>(dbConnection.dr);
+
+            using (dbConnection.dr = dbConnection.cmd.ExecuteReader())
+            {
+                DataAccessObject dataAccessObject = new DataAccessObject();
+                return dataAccessObject.GetSingleOject<SystemUser>(dbConnection.dr);
+            }
+
+        }
+
+        public int CheckUserName(string username, DBConnection dbConnection)
+        {
+            dbConnection.cmd.Parameters.Clear();
+            dbConnection.cmd.CommandText = "SELECT COUNT(*) FROM SYS_USER WHERE USERNAME = '" + username + "' ";
+
+            int count = Convert.ToInt32(dbConnection.cmd.ExecuteScalar());
+            return count;
+        }
+
+        public int UpdatePasswordByUserId(int loginId, string newPassword, DBConnection dbConnection)
+        {
+            dbConnection.cmd.Parameters.Clear();
+            dbConnection.cmd.CommandText = "UPDATE SYS_USER SET USER_PASSWORD='" + newPassword + "' WHERE ID =" + loginId + "";
+
+            return dbConnection.cmd.ExecuteNonQuery();
+        }
+
+        public int UpdateUserNamePasswordByUserId(int loginId, string newUserName, string newPassword, DBConnection dbConnection)
+        {
+            dbConnection.cmd.Parameters.Clear();
+            dbConnection.cmd.CommandText = "UPDATE SYS_USER SET USERNAME = '"+ newUserName + "' , USER_PASSWORD='" + newPassword + "' WHERE ID =" + loginId + "";
+
+            return dbConnection.cmd.ExecuteNonQuery();
+        }
+
+        public int UpdateLoginDate(SystemUser systemUser, DBConnection dbConnection)
+        {
+            dbConnection.cmd.Parameters.Clear();
+            dbConnection.cmd.CommandText = "UPDATE SYS_USER SET LOGIN_ATTEMPT = 0, LAST_LOGIN_DATE='" + DateTime.Now.ToString("yyyy/MM/dd") + "' WHERE ID =" + systemUser.id;
+
+            return dbConnection.cmd.ExecuteNonQuery();
+        }
+
+        public int UpdateLoginAttempt(SystemUser systemUser, DBConnection dbConnection)
+        {
+            dbConnection.cmd.Parameters.Clear();
+            if (systemUser.loginAttempt + 1 >= 10)
+            {
+                dbConnection.cmd.CommandText = "UPDATE SYS_USER SET IS_LOCKED = 1, LOGIN_ATTEMPT = LOGIN_ATTEMPT + 1 WHERE ID =" + systemUser.id;
+            }
+            else
+            {
+                dbConnection.cmd.CommandText = "UPDATE SYS_USER SET LOGIN_ATTEMPT = LOGIN_ATTEMPT + 1 WHERE ID =" + systemUser.id;
+            }
+            return dbConnection.cmd.ExecuteNonQuery();
+        }
+
+        public int DeleteUser(int sysUserId, DBConnection dbConnection)
+        {
+            dbConnection.cmd.CommandText = "UPDATE SYS_USER SET IS_ACTIVE = 0 WHERE ID =" + sysUserId;
+
+            return dbConnection.cmd.ExecuteNonQuery();
+        }
+
+        public List<SystemUserReturn> GetAllUsers(DBConnection dbConnection)
+        {
+           // dbConnection.cmd.CommandText = "SELECT * FROM SYS_USER WHERE IS_ACTIVE = 1";
+            dbConnection.cmd.CommandText = "SELECT SU.*,SR.NAME FROM SYS_USER SU " +
+                                           "INNER JOIN SYSTEM_ROLE SR ON SR.ID = SU.SYSTEM_ROLE_ID WHERE IS_ACTIVE = 1";
+
+            dbConnection.dr = dbConnection.cmd.ExecuteReader();
+            DataAccessObject dataAccessObject = new DataAccessObject();
+            return dataAccessObject.ReadCollection<SystemUserReturn>(dbConnection.dr);
+        }
+
+        public List<SystemUser> GetAllUsers(int roleId, DBConnection dbConnection)
+        {
+            dbConnection.cmd.CommandText = "SELECT * FROM SYS_USER WHERE IS_ACTIVE = 1 AND SYSTEM_ROLE_ID = " + roleId;
+
+            dbConnection.dr = dbConnection.cmd.ExecuteReader();
+            DataAccessObject dataAccessObject = new DataAccessObject();
+            return dataAccessObject.ReadCollection<SystemUser>(dbConnection.dr);
+        }
+
+        public int UpdateLockStatusByUserId(int userId, int isLocked, DBConnection dbConnection)
+        {
+            dbConnection.cmd.CommandText = "UPDATE SYS_USER SET IS_LOCKED ="+ isLocked + " WHERE ID = "+ userId +" ";
+         
+            return dbConnection.cmd.ExecuteNonQuery();
+        }
+
+        public int UpdateActiveStatusByUserId(int userId, int isActive, DBConnection dbConnection)
+        {
+            dbConnection.cmd.CommandText = "UPDATE SYS_USER SET IS_ACTIVE =" + isActive + " WHERE ID = " + userId + " ";
+
+            return dbConnection.cmd.ExecuteNonQuery();
+        }
+
+        public bool CheckUserExitsByUserId(int userId, DBConnection dbConnection)
+        {
+            dbConnection.cmd.CommandText = "SELECT * FROM SYS_USER WHERE ID = " + userId + " ";
+
+            return Convert.ToBoolean(dbConnection.cmd.ExecuteNonQuery());
+        }
+    }
+    public class SysUserDAOImpl : SysUserDAO
+    {
+        public int SaveLogin(SystemUser userLogin, DBConnection dbConnection)
+        {
+
+            dbConnection.cmd.CommandText = "INSERT INTO SYS_USER (SYSTEM_ROLE_ID, ETF, NIC, USERNAME, USER_PASSWORD,IS_LOCKED,LOGIN_ATTEMPT,IS_ACTIVE) values("+userLogin.systemRoleId+",'"+userLogin.etf+"','"+userLogin.nic+"','"+userLogin.username+"','"+userLogin.userPassword+ "',0,0,1); SELECT currval('sys_user_id_seq');";
+
+            return dbConnection.cmd.ExecuteNonQuery();
+        }
+
+        public int UpdateLogin(SystemUser userLogin, DBConnection dbConnection)
+        {
+            dbConnection.cmd.CommandText = "update SYS_USER set SYSTEM_ROLE_ID = " + userLogin.systemRoleId+", ETF = '"+userLogin.etf+"', NIC = '"+userLogin.nic+ "', IS_LOCKED = "+userLogin.isLocked+ ", IS_ACTIVE = "+userLogin.isActive+" where ID = " + userLogin.id;
+            return dbConnection.cmd.ExecuteNonQuery();
+        }
+
+        public SystemUser GetLoginDetails(string username, string password, DBConnection dbConnection)
+        {
+            dbConnection.cmd.Parameters.Clear();
+            dbConnection.cmd.CommandText = "SELECT * FROM SYS_USER WHERE USERNAME = '" + username + "' AND USER_PASSWORD = '" + password + "' AND IS_LOCKED = 0 AND IS_ACTIVE = 1";
+
+
+            //int count = Convert.ToInt32(dbConnection.cmd.ExecuteScalar());
+            //return count;
+            //dbConnection.dr = dbConnection.cmd.ExecuteReader();
+            //DataAccessObject dataAccessObject = new DataAccessObject();
+            //return dataAccessObject.GetSingleOject<SystemUser>(dbConnection.dr);
+            using (dbConnection.dr = dbConnection.cmd.ExecuteReader())
+            {
+                DataAccessObject dataAccessObject = new DataAccessObject();
+                return dataAccessObject.GetSingleOject<SystemUser>(dbConnection.dr);
+            }
+        }
+
+        public int GetLoginIdByUsername(string username, DBConnection dbConnection)
+        {
+            dbConnection.cmd.Parameters.Clear();
+            dbConnection.cmd.CommandText = "SELECT ID FROM SYS_USER WHERE USERNAME = '" + username + "' ";
+
+            int id = Convert.ToInt32(dbConnection.cmd.ExecuteScalar());
+            return id;
+        }
+        public SystemUser GetUserByUsername(string username, DBConnection dbConnection)
+        {
+            dbConnection.cmd.Parameters.Clear();
+            dbConnection.cmd.CommandText = "SELECT ID FROM SYS_USER WHERE USERNAME = '" + username + "' ";
+
+            //dbConnection.dr = dbConnection.cmd.ExecuteReader();
+            //DataAccessObject dataAccessObject = new DataAccessObject();
+            //return dataAccessObject.GetSingleOject<SystemUser>(dbConnection.dr);
+            using (dbConnection.dr = dbConnection.cmd.ExecuteReader())
+            {
+                DataAccessObject dataAccessObject = new DataAccessObject();
+                return dataAccessObject.GetSingleOject<SystemUser>(dbConnection.dr);
+            }
+        }
+
+        public int CheckUserName(string username, DBConnection dbConnection)
+        {
+            dbConnection.cmd.Parameters.Clear();
+            dbConnection.cmd.CommandText = "SELECT COUNT(*) FROM SYS_USER WHERE USERNAME = '" + username + "' ";
+
+            int count = Convert.ToInt32(dbConnection.cmd.ExecuteScalar());
+            return count;
+        }
+
+        public int UpdatePasswordByUserId(int loginId, string newPassword, DBConnection dbConnection)
+        {
+            dbConnection.cmd.Parameters.Clear();
+            dbConnection.cmd.CommandText = "UPDATE SYS_USER SET USER_PASSWORD='" + newPassword + "' WHERE ID =" + loginId + "";
+
+            return dbConnection.cmd.ExecuteNonQuery();
+        }
+
+        public int UpdateLoginDate(SystemUser systemUser, DBConnection dbConnection)
+        {
+            dbConnection.cmd.Parameters.Clear();
+            dbConnection.cmd.CommandText = "UPDATE SYS_USER SET LOGIN_ATTEMPT = 0, LAST_LOGIN_DATE='" + DateTime.Now.ToString("yyyy/MM/dd") + "' WHERE ID =" + systemUser.id;
+
+            return dbConnection.cmd.ExecuteNonQuery();
+        }
+        
+        public int UpdateLoginAttempt(SystemUser systemUser, DBConnection dbConnection)
+        {
+            dbConnection.cmd.Parameters.Clear();
+            if (systemUser.loginAttempt + 1 >= 10)
+            {
+                dbConnection.cmd.CommandText = "UPDATE SYS_USER SET IS_LOCKED = 1, LOGIN_ATTEMPT = LOGIN_ATTEMPT + 1 WHERE ID =" + systemUser.id;
+            }
+            else
+            {
+                dbConnection.cmd.CommandText = "UPDATE SYS_USER SET LOGIN_ATTEMPT = LOGIN_ATTEMPT + 1 WHERE ID =" + systemUser.id;
+            }
+            return dbConnection.cmd.ExecuteNonQuery();
+        }
+
+        public int DeleteUser(int sysUserId, DBConnection dbConnection)
+        {
+            dbConnection.cmd.CommandText = "UPDATE SYS_USER SET IS_ACTIVE = 0 WHERE ID =" + sysUserId;
+
+            return dbConnection.cmd.ExecuteNonQuery();
+        }
+
+        public List<SystemUserReturn> GetAllUsers(DBConnection dbConnection)
+        {
+            // dbConnection.cmd.CommandText = "SELECT * FROM SYS_USER WHERE IS_ACTIVE = 1";
+            dbConnection.cmd.CommandText = "SELECT SU.*,SR.NAME FROM SYS_USER SU " +
+                                            "INNER JOIN SYSTEM_ROLE SR ON SR.ID = SU.SYSTEM_ROLE_ID WHERE IS_ACTIVE = 1";
+
+            dbConnection.dr = dbConnection.cmd.ExecuteReader();
+            DataAccessObject dataAccessObject = new DataAccessObject();
+            return dataAccessObject.ReadCollection<SystemUserReturn>(dbConnection.dr);
+        }
+
+        public List<SystemUser> GetAllUsers(int roleId, DBConnection dbConnection)
+        {
+            dbConnection.cmd.CommandText = "SELECT * FROM SYS_USER WHERE IS_ACTIVE = 1 AND SYSTEM_ROLE_ID = "+roleId;
+
+            dbConnection.dr = dbConnection.cmd.ExecuteReader();
+            DataAccessObject dataAccessObject = new DataAccessObject();
+            return dataAccessObject.ReadCollection<SystemUser>(dbConnection.dr);
+        }
+
+        public int UpdateLockStatusByUserId(int userId, int isLocked, DBConnection dbConnection)
+        {
+            dbConnection.cmd.CommandText = "UPDATE SYS_USER SET IS_LOCKED =" + isLocked + " WHERE ID = " + userId + " ";
+
+            return dbConnection.cmd.ExecuteNonQuery();
+        }
+
+        public int UpdateActiveStatusByUserId(int userId, int isActive, DBConnection dbConnection)
+        {
+            dbConnection.cmd.CommandText = "UPDATE SYS_USER SET IS_ACTIVE =" + isActive + " WHERE ID = " + userId + " ";
+
+            return dbConnection.cmd.ExecuteNonQuery();
+        }
+
+        public int UpdateUserNamePasswordByUserId(int loginId, string newUserName, string newPassword, DBConnection dbConnection)
+        {
+            dbConnection.cmd.Parameters.Clear();
+            dbConnection.cmd.CommandText = "UPDATE SYS_USER SET USERNAME = '" + newUserName + "' , USER_PASSWORD='" + newPassword + "' WHERE ID =" + loginId + "";
+
+            return dbConnection.cmd.ExecuteNonQuery();
+        }
+        public bool CheckUserExitsByUserId(int userId, DBConnection dbConnection)
+        {
+            dbConnection.cmd.CommandText = "SELECT * FROM SYS_USER WHERE ID = " + userId + " ";
+
+            return Convert.ToBoolean(dbConnection.cmd.ExecuteNonQuery());
+        }
+    }
+}

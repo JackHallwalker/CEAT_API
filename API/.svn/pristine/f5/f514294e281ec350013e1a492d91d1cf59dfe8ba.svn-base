@@ -1,0 +1,132 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="15.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProjectGuid>{D49A20A6-4FF2-42E5-A7F6-4D66B6DD889E}</ProjectGuid>
+    <OutputType>Library</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>SupremeCourtCore</RootNamespace>
+    <AssemblyName>SupremeCourtCore</AssemblyName>
+    <TargetFrameworkVersion>v4.8</TargetFrameworkVersion>
+    <FileAlignment>512</FileAlignment>
+    <TargetFrameworkProfile />
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="System" />
+    <Reference Include="System.Core" />
+    <Reference Include="System.Data.OracleClient" />
+    <Reference Include="System.Xml.Linq" />
+    <Reference Include="System.Data.DataSetExtensions" />
+    <Reference Include="Microsoft.CSharp" />
+    <Reference Include="System.Data" />
+    <Reference Include="System.Net.Http" />
+    <Reference Include="System.Xml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="Common\ControllerFactory.cs" />
+    <Compile Include="Common\DAOFactory.cs" />
+    <Compile Include="Common\DataAccessObject.cs" />
+    <Compile Include="Common\DBConnection.cs" />
+    <Compile Include="Common\DBFieldAttribute.cs" />
+    <Compile Include="Common\EmailGenerator.cs" />
+    <Compile Include="Common\Utility.cs" />
+    <Compile Include="Controller\UserActionLogController.cs" />
+    <Compile Include="Controller\ActionTypeController.cs" />
+    <Compile Include="Controller\AdminLoginController.cs" />
+    <Compile Include="Controller\ApiVersionController.cs" />
+    <Compile Include="Controller\ApplicationController.cs" />
+    <Compile Include="Controller\ApplicationPartyController.cs" />
+    <Compile Include="Controller\CaseJudgeController.cs" />
+    <Compile Include="Controller\CaseLawyerController.cs" />
+    <Compile Include="Controller\CaseTypeController.cs" />
+    <Compile Include="Controller\CategoryController.cs" />
+    <Compile Include="Controller\CourtController.cs" />
+    <Compile Include="Controller\JournalController.cs" />
+    <Compile Include="Controller\JudgeController.cs" />
+    <Compile Include="Controller\LawyerController.cs" />
+    <Compile Include="Controller\MealPlanController.cs" />
+    <Compile Include="Controller\NextActionController.cs" />
+    <Compile Include="Controller\PartyTypeController.cs" />
+    <Compile Include="Controller\PetitionController.cs" />
+    <Compile Include="Controller\RoleFunctionController.cs" />
+    <Compile Include="Controller\SystemController.cs" />
+    <Compile Include="Controller\SystemFunctionController.cs" />
+    <Compile Include="Controller\SystemRoleController.cs" />
+    <Compile Include="Controller\SysUserController.cs" />
+    <Compile Include="Controller\UserLoginController.cs" />
+    <Compile Include="Controller\UserSystemFunctionController.cs" />
+    <Compile Include="Domain\ActionType.cs" />
+    <Compile Include="Domain\AdminLogin.cs" />
+    <Compile Include="Domain\Application.cs" />
+    <Compile Include="Domain\ApplicationParty.cs" />
+    <Compile Include="Domain\CaseJudge.cs" />
+    <Compile Include="Domain\CaseLawyer.cs" />
+    <Compile Include="Domain\CaseType.cs" />
+    <Compile Include="Domain\Category.cs" />
+    <Compile Include="Domain\Court.cs" />
+    <Compile Include="Domain\CustomerLogin.cs" />
+    <Compile Include="Domain\Journal.cs" />
+    <Compile Include="Domain\Judge.cs" />
+    <Compile Include="Domain\Lawyer.cs" />
+    <Compile Include="Domain\MealPlan.cs" />
+    <Compile Include="Domain\NextAction.cs" />
+    <Compile Include="Domain\PartyType.cs" />
+    <Compile Include="Domain\Petition.cs" />
+    <Compile Include="Domain\RoleFunction.cs" />
+    <Compile Include="Domain\Schedule.cs" />
+    <Compile Include="Domain\System.cs" />
+    <Compile Include="Domain\SystemFunction.cs" />
+    <Compile Include="Domain\SystemRole.cs" />
+    <Compile Include="Domain\SystemUser.cs" />
+    <Compile Include="Domain\UserActionLog.cs" />
+    <Compile Include="Domain\UserLogin.cs" />
+    <Compile Include="Domain\UserSystemFunction.cs" />
+    <Compile Include="Infrastructure\UserActionLogDAO.cs" />
+    <Compile Include="Infrastructure\ActionTypeDAO.cs" />
+    <Compile Include="Infrastructure\AdminLoginDAO.cs" />
+    <Compile Include="Infrastructure\ApiVersionDAO.cs" />
+    <Compile Include="Infrastructure\ApplicationDAO.cs" />
+    <Compile Include="Infrastructure\ApplicationPartyDAO.cs" />
+    <Compile Include="Infrastructure\CaseJudgeDAO.cs" />
+    <Compile Include="Infrastructure\CaseLawyerDAO.cs" />
+    <Compile Include="Infrastructure\CaseTypeDAO.cs" />
+    <Compile Include="Infrastructure\CategoryDAO.cs" />
+    <Compile Include="Infrastructure\CourtDAO.cs" />
+    <Compile Include="Infrastructure\JournalDAO.cs" />
+    <Compile Include="Infrastructure\JudgeDAO.cs" />
+    <Compile Include="Infrastructure\LawyerDAO.cs" />
+    <Compile Include="Infrastructure\MealPlanDAO.cs" />
+    <Compile Include="Infrastructure\NextActionDAO.cs" />
+    <Compile Include="Infrastructure\PartyTypeDAO.cs" />
+    <Compile Include="Infrastructure\PetitionDAO.cs" />
+    <Compile Include="Infrastructure\RoleFunctionDAO.cs" />
+    <Compile Include="Infrastructure\SystemDAO.cs" />
+    <Compile Include="Infrastructure\SystemFunctionDAO.cs" />
+    <Compile Include="Infrastructure\SystemRoleDAO.cs" />
+    <Compile Include="Infrastructure\SysUserDAO.cs" />
+    <Compile Include="Infrastructure\UserLoginDAO.cs" />
+    <Compile Include="Infrastructure\UserSystemFunctionDAO.cs" />
+    <Compile Include="Properties\AssemblyInfo.cs" />
+  </ItemGroup>
+  <ItemGroup />
+  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+</Project>

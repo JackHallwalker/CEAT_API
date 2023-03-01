@@ -1,0 +1,70 @@
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Net;
+using System.Net.Http;
+using System.Web;
+using System.Web.Http;
+using SupremeCourtCore.Common;
+using SupremeCourtCore.Controller;
+using SupremeCourtCore.Domain;
+
+namespace SupremeCourtAPI.Controllers
+{
+    public class UserSystemFunctionApiController : ApiController
+    {
+        [HttpPost]
+        [Route("api/v1/AddUserSystemFunction/")]
+        public HttpResponseMessage AddUserSystemFunction([FromBody] UserSystemFunction value)
+        {
+            try
+            {
+                UserSystemFunctionController orderTypeController = ControllerFactory.CreateUserSystemFunctionController();
+                int itemId = orderTypeController.AddUserSystemFunction(value);
+
+                return Request.CreateResponse(HttpStatusCode.OK, "User system function created successfully. Id-" + itemId);
+
+            }
+            catch (Exception ex)
+            {
+                return Request.CreateErrorResponse(HttpStatusCode.BadRequest, "something went wrong" + ex.Message);
+            }
+        }
+
+        [HttpGet]
+        [Route("api/v1/GetAllUserSystemFunctionsBySystemFunctionId/{systemFunctionId}")]
+        public IEnumerable<UserSystemFunction> GetAllUserSystemFunctionsBySystemFunctionId(int systemFunctionId)
+        {
+            UserSystemFunctionController orderTypeController = ControllerFactory.CreateUserSystemFunctionController();
+
+            return orderTypeController.GetAllUserSystemFunctionsBySystemFunctionId(systemFunctionId);
+        }
+        
+        [HttpGet]
+        [Route("api/v1/GetAllUserSystemFunctionsBySystemUserId/{systemUserId}")]
+        public IEnumerable<UserSystemFunction> GetAllUserSystemFunctionsBySystemUserId(int systemUserId)
+        {
+            UserSystemFunctionController orderTypeController = ControllerFactory.CreateUserSystemFunctionController();
+
+            return orderTypeController.GetAllUserSystemFunctionsBySystemUserId(systemUserId);
+        }
+
+        [HttpDelete]
+        [Route("api/v1/DeleteUserSystemFunction/{systemFunctionId}/{systemUserId}")]
+        public HttpResponseMessage DeleteUserSystemFunction(int systemFunctionId, int systemUserId)
+        {
+            try
+            {
+                UserSystemFunctionController orderTypeController = ControllerFactory.CreateUserSystemFunctionController();
+                int itemId = orderTypeController.DeleteUserSystemFunction(systemFunctionId, systemUserId);
+
+                return Request.CreateResponse(HttpStatusCode.OK, "User system function deleted successfully.");
+
+            }
+            catch (Exception ex)
+            {
+                return Request.CreateErrorResponse(HttpStatusCode.BadRequest, "something went wrong" + ex.Message);
+            }
+        }
+    }
+}

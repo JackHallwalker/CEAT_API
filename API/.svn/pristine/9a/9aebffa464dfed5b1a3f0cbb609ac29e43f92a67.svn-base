@@ -1,0 +1,102 @@
+﻿using SupremeCourtCore.Common;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+
+namespace SupremeCourtCore.Domain
+{
+    public class SystemUser
+    {
+        [DBField("ID")]
+        public int id { get; set; }
+        
+        [DBField("SYSTEM_ROLE_ID")]
+        public int systemRoleId { get; set; }
+        
+        [DBField("ETF")]
+        public string etf { get; set; }
+        
+        [DBField("NIC")]
+        public string nic { get; set; }
+        
+        [DBField("USERNAME")]
+        public string username { get; set; }
+        
+        [DBField("USER_PASSWORD")]
+        public string userPassword { get; set; }
+        
+        [DBField("IS_LOCKED")]
+        public int isLocked { get; set; }
+        
+        [DBField("LOCKED_DATE")]
+        public DateTime lockedDate { get; set; }
+        
+        [DBField("LAST_LOGIN_DATE")]
+        public DateTime lastLoginDate { get; set; }
+        
+        [DBField("LOGIN_ATTEMPT")]
+        public int loginAttempt { get; set; }
+        
+        [DBField("PASSWORD_CHANGE_DATE")]
+        public DateTime passwordChangeDate { get; set; }
+        
+        [DBField("RESET_CODE")]
+        public string resetCode { get; set; }
+        
+        [DBField("RESET_VALID_PERIOD")]
+        public DateTime resetValidPeriod { get; set; }
+        
+        [DBField("IS_ACTIVE")]
+        public int isActive { get; set; }
+    }
+
+    public class SystemUserReturn
+    {
+        [DBField("ID")]
+        public int id { get; set; }
+
+        [DBField("SYSTEM_ROLE_ID")]
+        public int systemRoleId { get; set; }
+
+        [DBField("ETF")]
+        public string etf { get; set; }
+
+        [DBField("NIC")]
+        public string nic { get; set; }
+
+        [DBField("USERNAME")]
+        public string username { get; set; }
+
+        [DBField("USER_PASSWORD")]
+        public string userPassword { get; set; }
+
+        [DBField("IS_LOCKED")]
+        public int isLocked { get; set; }
+
+        [DBField("LOCKED_DATE")]
+        public DateTime lockedDate { get; set; }
+
+        [DBField("LAST_LOGIN_DATE")]
+        public DateTime lastLoginDate { get; set; }
+
+        [DBField("LOGIN_ATTEMPT")]
+        public int loginAttempt { get; set; }
+
+        [DBField("PASSWORD_CHANGE_DATE")]
+        public DateTime passwordChangeDate { get; set; }
+
+        [DBField("RESET_CODE")]
+        public string resetCode { get; set; }
+
+        [DBField("RESET_VALID_PERIOD")]
+        public DateTime resetValidPeriod { get; set; }
+
+        [DBField("IS_ACTIVE")]
+        public int isActive { get; set; }
+
+        [DBField("NAME")]
+        public string systemRoleName { get; set; }
+    }
+}

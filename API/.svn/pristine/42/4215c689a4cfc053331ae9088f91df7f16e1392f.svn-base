@@ -1,0 +1,54 @@
+﻿using SupremeCourtCore.Common;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+
+namespace SupremeCourtCore.Domain
+{
+    public class Lawyer
+    {
+        [DBField("ID")]
+        public int id { get; set; }
+
+        [DBField("CER_NO")]
+        public string cerNo { get; set; }
+
+        [DBField("L_TITLE")]
+        public int lTitle { get; set; }
+
+        [DBField("L_INITIAL")]
+        public string lInitial { get; set; }
+
+        [DBField("L_FNAME")]
+        public string fName { get; set; }
+
+        [DBField("L_LNAME")]
+        public string lName { get; set; }
+
+        [DBField("IS_ACTIVE")]
+        public int isActive { get; set; }
+
+        [DBField("STATUS")]
+        public string status { get; set; }
+
+        [DBField("DATE_ADMIN")]
+        public DateTime dateAdmin { get; set; }
+
+        [DBField("DESCRIPTION")]
+        public string description { get; set; }
+
+        [DBField("NIC_NO")]
+        public string nicNo { get; set; }
+
+        [DBField("EMAIL")]
+        public string email { get; set; }
+
+        [DBField("CONTACT_NO")]
+        public string contactNo { get; set; }
+
+        [DBField("ADDRESS")]
+        public string address { get; set; }
+    }
+}

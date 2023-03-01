@@ -1,0 +1,88 @@
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Net;
+using System.Net.Http;
+using System.Web;
+using System.Web.Http;
+using SupremeCourtCore.Common;
+using SupremeCourtCore.Controller;
+using SupremeCourtCore.Domain;
+namespace SupremeCourtAPI.Controllers
+{
+    public class PartyTypeApiController : ApiController
+    {
+        [HttpPost]
+        [Route("api/v1/AddPartyType/")]
+        public HttpResponseMessage AddPartyType([FromBody] PartyType value)
+        {
+            try
+            {
+                PartyTypeController orderTypeController = ControllerFactory.CreatePartyTypeController();
+                int itemId = orderTypeController.AddPartyType(value);
+
+                return Request.CreateResponse(HttpStatusCode.OK, "Pparty type created successfully.");
+
+            }
+            catch (Exception ex)
+            {
+                return Request.CreateErrorResponse(HttpStatusCode.BadRequest, "something went wrong" + ex.Message);
+            }
+        }
+
+        [HttpGet]
+        [Route("api/v1/GetAllPartyTypes/")]
+        public IEnumerable<PartyType> GetAllPartyTypes()
+        {
+            PartyTypeController orderTypeController = ControllerFactory.CreatePartyTypeController();
+
+            return orderTypeController.GetAllPartyTypes();
+        }
+
+        [HttpGet]
+        [Route("api/v1/GetPartyType/{id?}")]
+        public PartyType GetPartyType(int id)
+        {
+            PartyTypeController orderTypeController = ControllerFactory.CreatePartyTypeController();
+
+            return orderTypeController.GetPartyType(id);
+        }
+
+
+        [HttpPut]
+        [Route("api/v1/UpdatePartyType/")]
+        public HttpResponseMessage UpdatePartyType([FromBody] PartyType value)
+        {
+            try
+            {
+                PartyTypeController orderTypeController = ControllerFactory.CreatePartyTypeController();
+                int itemId = orderTypeController.UpdatePartyType(value);
+
+                return Request.CreateResponse(HttpStatusCode.OK, "Party type updated successfully.");
+
+            }
+            catch (Exception ex)
+            {
+                return Request.CreateErrorResponse(HttpStatusCode.BadRequest, "something went wrong" + ex.Message);
+            }
+        }
+
+        [HttpPut]
+        [Route("api/v1/DeletePartyType/{id}")]
+        public HttpResponseMessage DeletePartyType(int id)
+        {
+            try
+            {
+                PartyTypeController orderTypeController = ControllerFactory.CreatePartyTypeController();
+                int itemId = orderTypeController.DeletePartyType(id);
+
+                return Request.CreateResponse(HttpStatusCode.OK, "Party type deleted successfully.");
+
+            }
+            catch (Exception ex)
+            {
+                return Request.CreateErrorResponse(HttpStatusCode.BadRequest, "something went wrong" + ex.Message);
+            }
+        }
+    }
+}

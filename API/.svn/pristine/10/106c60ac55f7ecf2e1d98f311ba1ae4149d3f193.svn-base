@@ -1,0 +1,43 @@
+﻿using System;
+using System.Collections.Generic;
+using System.Globalization;
+using System.Linq;
+using System.Net;
+using System.Net.Http;
+using System.Web;
+using System.Web.Http;
+using SupremeCourtCore.Common;
+using SupremeCourtCore.Controller;
+using SupremeCourtCore.Domain;
+
+namespace SupremeCourtAPI.Controllers
+{
+    public class UserActionLogApiController : ApiController
+    {
+        [HttpPost]
+        [Route("api/v1/AddUserActionLog/")]
+        public HttpResponseMessage AddUserActionLog([FromBody] UserActionLogOnline value)
+        {
+            try
+            {
+                UserActionLogController userActionLogController = ControllerFactory.CreateUserActionLogController();
+                int itemId = userActionLogController.AddUserActionLog(value);
+
+                return Request.CreateResponse(HttpStatusCode.OK, "User Action Log created successfully.");
+            }
+            catch (Exception ex)
+            {
+                return Request.CreateErrorResponse(HttpStatusCode.BadRequest, "something went wrong" + ex.Message);
+            }
+        }
+
+        [HttpGet]
+        [Route("api/v1/GetUserActionLog")]
+        public IEnumerable<UserActionLog> GetUserActionLogTaken(string username, string FromDate, string ToDate, string caseId)
+        {
+            UserActionLogController orderTypeController = ControllerFactory.CreateUserActionLogController();
+
+            return orderTypeController.GetUserActionLogTaken(username, FromDate, ToDate, caseId);
+        }
+    }
+}

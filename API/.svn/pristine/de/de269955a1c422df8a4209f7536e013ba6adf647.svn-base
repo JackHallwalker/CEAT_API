@@ -1,0 +1,151 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="15.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProjectGuid>{D49A20A6-4FF2-42E5-A7F6-4D66B6DD889E}</ProjectGuid>
+    <OutputType>Library</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>SathosaCore</RootNamespace>
+    <AssemblyName>SathosaCore</AssemblyName>
+    <TargetFrameworkVersion>v4.6.1</TargetFrameworkVersion>
+    <FileAlignment>512</FileAlignment>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="System" />
+    <Reference Include="System.Core" />
+    <Reference Include="System.Data.OracleClient" />
+    <Reference Include="System.Xml.Linq" />
+    <Reference Include="System.Data.DataSetExtensions" />
+    <Reference Include="Microsoft.CSharp" />
+    <Reference Include="System.Data" />
+    <Reference Include="System.Net.Http" />
+    <Reference Include="System.Xml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="Common\ControllerFactory.cs" />
+    <Compile Include="Common\DAOFactory.cs" />
+    <Compile Include="Common\DataAccessObject.cs" />
+    <Compile Include="Common\DBConnection.cs" />
+    <Compile Include="Common\DBFieldAttribute.cs" />
+    <Compile Include="Common\EmailGenerator.cs" />
+    <Compile Include="Common\Utility.cs" />
+    <Compile Include="Controller\AbhimanaController.cs" />
+    <Compile Include="Controller\UserLoginController.cs" />
+    <Compile Include="Controller\StateController.cs" />
+    <Compile Include="Controller\ContryController.cs" />
+    <Compile Include="Controller\DeliveryOptionController.cs" />
+    <Compile Include="Controller\MobileConfigController.cs" />
+    <Compile Include="Controller\ApiVersionController.cs" />
+    <Compile Include="Controller\DiscountController.cs" />
+    <Compile Include="Controller\CompanyItemController.cs" />
+    <Compile Include="Controller\CustomerShippingController.cs" />
+    <Compile Include="Controller\CustomerBillingController.cs" />
+    <Compile Include="Controller\CustomerController.cs" />
+    <Compile Include="Controller\CategoryController.cs" />
+    <Compile Include="Controller\CustomerLoginController.cs" />
+    <Compile Include="Controller\DebtorSettlementController.cs" />
+    <Compile Include="Controller\DebtorMasterController.cs" />
+    <Compile Include="Controller\OrderStatusLogController.cs" />
+    <Compile Include="Controller\OutletItemController.cs" />
+    <Compile Include="Controller\OrderTypeController.cs" />
+    <Compile Include="Controller\PaymentTypeController.cs" />
+    <Compile Include="Controller\ItemMasterController.cs" />
+    <Compile Include="Controller\OutletStaffController.cs" />
+    <Compile Include="Controller\OutletController.cs" />
+    <Compile Include="Controller\DistrictLeaderController.cs" />
+    <Compile Include="Controller\DistrictController.cs" />
+    <Compile Include="Controller\CustomerMasterController.cs" />
+    <Compile Include="Controller\SliderController.cs" />
+    <Compile Include="Controller\TsrMasterController.cs" />
+    <Compile Include="Controller\OrderDetailController.cs" />
+    <Compile Include="Controller\DeliveryStatusController.cs" />
+    <Compile Include="Controller\OrderMasterController.cs" />
+    <Compile Include="Domain\Abhimana.cs" />
+    <Compile Include="Domain\UserType.cs" />
+    <Compile Include="Domain\UserLogin.cs" />
+    <Compile Include="Domain\State.cs" />
+    <Compile Include="Domain\Country.cs" />
+    <Compile Include="Domain\DeliveryOption.cs" />
+    <Compile Include="Domain\Discount.cs" />
+    <Compile Include="Domain\CompanyItemWithCategoryName.cs" />
+    <Compile Include="Domain\Customer.cs" />
+    <Compile Include="Domain\CustomerShipping.cs" />
+    <Compile Include="Domain\CustomerBilling.cs" />
+    <Compile Include="Domain\Category.cs" />
+    <Compile Include="Domain\CustomerLogin.cs" />
+    <Compile Include="Domain\CompanyItem.cs" />
+    <Compile Include="Domain\DebtorSettlement.cs" />
+    <Compile Include="Domain\DebtorDetail.cs" />
+    <Compile Include="Domain\DebtorMaster.cs" />
+    <Compile Include="Domain\OrderStatusLog.cs" />
+    <Compile Include="Domain\OutletItem.cs" />
+    <Compile Include="Domain\OrderType.cs" />
+    <Compile Include="Domain\PaymentType.cs" />
+    <Compile Include="Domain\ItemMaster.cs" />
+    <Compile Include="Domain\Outlet.cs" />
+    <Compile Include="Domain\District.cs" />
+    <Compile Include="Domain\OutletStaff.cs" />
+    <Compile Include="Domain\CustomerMaster.cs" />
+    <Compile Include="Domain\Slider.cs" />
+    <Compile Include="Domain\TemporaryCustomerDetails.cs" />
+    <Compile Include="Domain\TsrMaster.cs" />
+    <Compile Include="Domain\DistrictLeader.cs" />
+    <Compile Include="Domain\OrderDetail.cs" />
+    <Compile Include="Domain\DeliveryStatus.cs" />
+    <Compile Include="Domain\OrderMaster.cs" />
+    <Compile Include="Infrastructure\AbhimanaDAO.cs" />
+    <Compile Include="Infrastructure\UserLoginDAO.cs" />
+    <Compile Include="Infrastructure\StateDAO.cs" />
+    <Compile Include="Infrastructure\CountryDAO.cs" />
+    <Compile Include="Infrastructure\DeliveryOptionDAO.cs" />
+    <Compile Include="Infrastructure\MobileConfigDAO.cs" />
+    <Compile Include="Infrastructure\ApiVersionDAO.cs" />
+    <Compile Include="Infrastructure\DiscountDAO .cs" />
+    <Compile Include="Infrastructure\CustomerShippingDAO.cs" />
+    <Compile Include="Infrastructure\CustomerBillingDAO.cs" />
+    <Compile Include="Infrastructure\CustomerDAO.cs" />
+    <Compile Include="Infrastructure\CategoryDAO.cs" />
+    <Compile Include="Infrastructure\CompanyItemDAO.cs" />
+    <Compile Include="Infrastructure\CustomerLoginDAO.cs" />
+    <Compile Include="Infrastructure\DebtorSettlementDAO.cs" />
+    <Compile Include="Infrastructure\DebtorDetailDAO.cs" />
+    <Compile Include="Infrastructure\DebtorMasterDAO.cs" />
+    <Compile Include="Infrastructure\OrderStatusLogDAO.cs" />
+    <Compile Include="Infrastructure\OutletItemDAO.cs" />
+    <Compile Include="Infrastructure\OrderTypeDAO.cs" />
+    <Compile Include="Infrastructure\PaymentTypeDAO.cs" />
+    <Compile Include="Infrastructure\ItemMasterDAO.cs" />
+    <Compile Include="Infrastructure\OutletStaffDAO.cs" />
+    <Compile Include="Infrastructure\OutletDAO.cs" />
+    <Compile Include="Infrastructure\CustomerMasterDAO.cs" />
+    <Compile Include="Infrastructure\SliderDAO.cs" />
+    <Compile Include="Infrastructure\TsrMasterDAO.cs" />
+    <Compile Include="Infrastructure\DistrictLeaderDAO.cs" />
+    <Compile Include="Infrastructure\DistrictDAO.cs" />
+    <Compile Include="Infrastructure\DeliveryStatusDAO.cs" />
+    <Compile Include="Infrastructure\OrderDetailDAO.cs" />
+    <Compile Include="Infrastructure\OrderMasterDAO.cs" />
+    <Compile Include="Properties\AssemblyInfo.cs" />
+  </ItemGroup>
+  <ItemGroup />
+  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+</Project>

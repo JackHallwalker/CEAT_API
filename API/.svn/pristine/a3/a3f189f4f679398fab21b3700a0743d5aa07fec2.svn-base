@@ -1,0 +1,65 @@
+﻿using SupremeCourtCore.Common;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+
+namespace SupremeCourtCore.Domain
+{
+    public class Application
+    {
+        [DBField("ID")]
+        public int id { get; set; }
+        
+        [DBField("CATEGORY_ID")]
+        public int CategoryID { get; set; }
+        
+        [DBField("CASE_TYPE_ID")]
+        public int caseTypeId { get; set; }
+        
+        [DBField("CASE_NO")]
+        public string caseNo { get; set; }
+        
+        [DBField("SERIAL_NO")]
+        public int serialNo { get; set; }
+        
+        [DBField("LOWER_COURT_NO")]
+        public string lowerCourtNo { get; set; }
+        
+        [DBField("DESCRIPTION")]
+        public string description { get; set; }
+        
+        [DBField("REG_DATE")]
+        public DateTime regDate { get; set; }
+        
+        [DBField("CREATED_BY")]
+        public string createdBy { get; set; }
+        
+        [DBField("CREATED_DATE")]
+        public DateTime createdDate { get; set; }
+        
+        [DBField("IS_ACTIVE")]
+        public int isActive { get; set; }
+
+        [DBField("REG_YEAR")]
+        public int regYear { get; set; }
+
+        public CaseType caseType { get; set; }
+        public Category category { get; set; }
+        public List<ApplicationParty> applicationParties { get; set; }
+        public List<CaseLawyer> caseLawyers { get; set; }
+        public List<CaseJudge> caseJudges { get; set; }
+        public List<Journal> journals { get; set; }
+        public List<NextAction> nextActions { get; set; }
+    }
+
+    public class ApplicationOnline
+    {
+       public DateTime fromDate { get; set; }
+       public DateTime toDate { get; set; }
+       public int caseType { get; set; }
+       public string caseNo { get; set; }
+       public int serialNo { get; set; }
+    }
+}

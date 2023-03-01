@@ -1,0 +1,82 @@
+﻿using SupremeCourtCore.Common;
+using SupremeCourtCore.Domain;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+
+namespace SupremeCourtCore.Infrastructure
+{
+    public interface CategoryDAO
+    {
+        List<Category> GetAllCategories(DBConnection dbConnection);
+        Category GetCategory(int id, DBConnection dbConnection);
+        int AddCategory(Category category, DBConnection dbConnection);
+        int UpdateCategory(Category category, DBConnection dbConnection);
+    }
+    public class CategorySqlDAOImpl : CategoryDAO
+    {
+        public int AddCategory(Category category, DBConnection dbConnection)
+        {
+            dbConnection.cmd.CommandText = "INSERT INTO CATEGORY(NAME) VALUES('" + category.name + "') SELECT SCOPE_IDENTITY()";
+            return Convert.ToInt32(dbConnection.cmd.ExecuteScalar());
+        }
+
+        public List<Category> GetAllCategories(DBConnection dbConnection)
+        {
+            dbConnection.cmd.CommandText = "SELECT * FROM CATEGORY";
+
+            dbConnection.dr = dbConnection.cmd.ExecuteReader();
+            DataAccessObject dataAccessObject = new DataAccessObject();
+            return dataAccessObject.ReadCollection<Category>(dbConnection.dr);
+        }
+
+        public Category GetCategory(int id, DBConnection dbConnection)
+        {
+            dbConnection.cmd.CommandText = "SELECT * FROM CATEGORY WHERE ID = " + id + " ";
+
+            dbConnection.dr = dbConnection.cmd.ExecuteReader();
+            DataAccessObject dataAccessObject = new DataAccessObject();
+            return dataAccessObject.GetSingleOject<Category>(dbConnection.dr);
+        }
+
+        public int UpdateCategory(Category category, DBConnection dbConnection)
+        {
+            dbConnection.cmd.CommandText = "UPDATE CATEGORY SET NAME = '" + category.name + "'  WHERE ID = " + category.id;
+            return dbConnection.cmd.ExecuteNonQuery();
+        }
+    }
+    public class CategoryDAOImpl : CategoryDAO
+    {
+        public int AddCategory(Category category, DBConnection dbConnection)
+        {
+            dbConnection.cmd.CommandText = "INSERT INTO CATEGORY(NAME) VALUES('"+category.name+ "'); SELECT currval('category_id_seq');";
+            return Convert.ToInt32(dbConnection.cmd.ExecuteScalar());
+        }
+
+        public List<Category> GetAllCategories(DBConnection dbConnection)
+        {
+            dbConnection.cmd.CommandText = "SELECT * FROM CATEGORY";
+
+            dbConnection.dr = dbConnection.cmd.ExecuteReader();
+            DataAccessObject dataAccessObject = new DataAccessObject();
+            return dataAccessObject.ReadCollection<Category>(dbConnection.dr);
+        }
+
+        public Category GetCategory(int id, DBConnection dbConnection)
+        {
+            dbConnection.cmd.CommandText = "SELECT * FROM CATEGORY WHERE ID = " + id + " ";
+
+            dbConnection.dr = dbConnection.cmd.ExecuteReader();
+            DataAccessObject dataAccessObject = new DataAccessObject();
+            return dataAccessObject.GetSingleOject<Category>(dbConnection.dr);
+        }
+
+        public int UpdateCategory(Category category, DBConnection dbConnection)
+        {
+            dbConnection.cmd.CommandText = "UPDATE CATEGORY SET NAME = '"+category.name+"'  WHERE ID = " + category.id;
+            return dbConnection.cmd.ExecuteNonQuery();
+        }
+    }
+}

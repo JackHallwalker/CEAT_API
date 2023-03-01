@@ -1,0 +1,30 @@
+﻿using SupremeCourtCore.Common;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+
+namespace SupremeCourtCore.Domain
+{
+    public class CaseType
+    {
+        [DBField("ID")]
+        public int id { get; set; }
+        
+        [DBField("NAME")]
+        public string name { get; set; }
+        
+        [DBField("SHORT_CODE")]
+        public string shortCode { get; set; }
+        
+        [DBField("IS_ACTIVE")]
+        public int isActive { get; set; }
+        
+        [DBField("CREATED_BY")]
+        public string createdBy { get; set; }
+        
+        [DBField("CREATED_DATE")]
+        public DateTime createdDate { get; set; }
+    }
+}

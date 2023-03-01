@@ -1,0 +1,70 @@
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Net;
+using System.Net.Http;
+using System.Web;
+using System.Web.Http;
+using SupremeCourtCore.Common;
+using SupremeCourtCore.Controller;
+using SupremeCourtCore.Domain;
+
+namespace SupremeCourtAPI.Controllers
+{
+    public class CategoryApiController : ApiController
+    {
+        [HttpPost]
+        [Route("api/v1/AddCategory/")]
+        public HttpResponseMessage AddCategory([FromBody] Category value)
+        {
+            try
+            {
+                CategoryController orderTypeController = ControllerFactory.CreateCategoryController();
+                int itemId = orderTypeController.AddCategory(value);
+
+                return Request.CreateResponse(HttpStatusCode.OK, "Category created successfully. Id-" + itemId);
+
+            }
+            catch (Exception ex)
+            {
+                return Request.CreateErrorResponse(HttpStatusCode.BadRequest, "something went wrong" + ex.Message);
+            }
+        }
+
+        [HttpGet]
+        [Route("api/v1/GetAllCategories/")]
+        public IEnumerable<Category> GetAllCategories()
+        {
+            CategoryController orderTypeController = ControllerFactory.CreateCategoryController();
+
+            return orderTypeController.GetAllCategories();
+        }
+
+        [HttpGet]
+        [Route("api/v1/GetCategory/{id?}")]
+        public Category GetCategory(int id)
+        {
+            CategoryController orderTypeController = ControllerFactory.CreateCategoryController();
+
+            return orderTypeController.GetCategory(id);
+        }
+
+        [HttpPut]
+        [Route("api/v1/UpdateCategory/")]
+        public HttpResponseMessage UpdateCategory([FromBody] Category value)
+        {
+            try
+            {
+                CategoryController orderTypeController = ControllerFactory.CreateCategoryController();
+                int itemId = orderTypeController.UpdateCategory(value);
+
+                return Request.CreateResponse(HttpStatusCode.OK, "Category updated successfully.");
+
+            }
+            catch (Exception ex)
+            {
+                return Request.CreateErrorResponse(HttpStatusCode.BadRequest, "something went wrong" + ex.Message);
+            }
+        }
+    }
+}

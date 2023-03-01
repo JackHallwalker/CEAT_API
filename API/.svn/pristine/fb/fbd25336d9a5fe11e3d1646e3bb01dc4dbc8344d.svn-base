@@ -1,0 +1,69 @@
+﻿using SupremeCourtCore.Common;
+using SupremeCourtCore.Domain;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+
+namespace SupremeCourtCore.Infrastructure
+{
+    public interface CaseLawyerDAO
+    {
+        List<CaseLawyer> GetAllCaseLawyerByApplicationId(int applicationId, DBConnection dbConnection);
+        List<CaseLawyer> GetAllCaseLawyerByLawyerId(int lawyerId, DBConnection dbConnection);
+        List<CaseLawyer> GetAllCaseLawyerByPartyTypeId(int partyTypeId, DBConnection dbConnection);
+        int AddCaseLawyer(CaseLawyer caseType, DBConnection dbConnection);
+        int UpdateCaseLawyer(CaseLawyer caseType, DBConnection dbConnection);
+        int DeleteCaseLawyer(int applicationId, int lawyerId, int partyId, DBConnection dbConnection);
+    }
+
+    public class CaseLawyerDAOImpl : CaseLawyerDAO
+    {
+        public int AddCaseLawyer(CaseLawyer caseType, DBConnection dbConnection)
+        {
+            dbConnection.cmd.CommandText = "INSERT INTO CASE_LAWYER(PARTY_TYPE_ID,LAWYER_ID,APPLICATION_ID,CREATED_BY,CREATED_DATE) " +
+                "VALUES("+caseType.partyTypeId+","+caseType.lawyerId+","+caseType.applicationId+",'" + caseType.createdBy + "','"+caseType.createdDate.ToString("yyyy/MM/dd") + "')";
+            return dbConnection.cmd.ExecuteNonQuery();
+        }
+
+        public int DeleteCaseLawyer(int applicationId, int lawyerId, int partyId, DBConnection dbConnection)
+        {
+            dbConnection.cmd.CommandText = "DELETE FROM CASE_LAWYER WHERE APPLICATION_ID = " + applicationId + " AND LAWYER_ID = " + lawyerId + " AND PARTY_TYPE_ID = "+partyId;
+            return dbConnection.cmd.ExecuteNonQuery();
+        }
+
+        public List<CaseLawyer> GetAllCaseLawyerByApplicationId(int applicationId, DBConnection dbConnection)
+        {
+            dbConnection.cmd.CommandText = "SELECT * FROM CASE_LAWYER WHERE APPLICATION_ID = " + applicationId;
+
+            dbConnection.dr = dbConnection.cmd.ExecuteReader();
+            DataAccessObject dataAccessObject = new DataAccessObject();
+            return dataAccessObject.ReadCollection<CaseLawyer>(dbConnection.dr);
+        }
+
+        public List<CaseLawyer> GetAllCaseLawyerByLawyerId(int lawyerId, DBConnection dbConnection)
+        {
+            dbConnection.cmd.CommandText = "SELECT * FROM CASE_LAWYER, LAWYER WHERE CASE_LAWYER.LAWYER_ID = LAWYER.ID" + lawyerId;
+
+            dbConnection.dr = dbConnection.cmd.ExecuteReader();
+            DataAccessObject dataAccessObject = new DataAccessObject();
+            return dataAccessObject.ReadCollection<CaseLawyer>(dbConnection.dr);
+        }
+
+        public List<CaseLawyer> GetAllCaseLawyerByPartyTypeId(int partyTypeId, DBConnection dbConnection)
+        {
+            dbConnection.cmd.CommandText = "SELECT * FROM CASE_LAWYER WHERE PARTY_TYPE_ID = " + partyTypeId;
+
+            dbConnection.dr = dbConnection.cmd.ExecuteReader();
+            DataAccessObject dataAccessObject = new DataAccessObject();
+            return dataAccessObject.ReadCollection<CaseLawyer>(dbConnection.dr);
+        }
+
+        public int UpdateCaseLawyer(CaseLawyer caseType, DBConnection dbConnection)
+        {
+            dbConnection.cmd.CommandText = "UPDATE CASE_LAWYER SET LAWYER_ID = " + caseType.lawyerId + ", CREATED_BY = '" + caseType.createdBy + "', CREATED_DATE = '" + caseType.createdDate.ToString("yyyy/MM/dd") + "'  WHERE APPLICATION_ID = " + caseType.applicationId + " AND PARTY_TYPE_ID = " + caseType.partyTypeId +"AND ID = "+caseType.id;
+            return dbConnection.cmd.ExecuteNonQuery();
+        }
+    }
+}

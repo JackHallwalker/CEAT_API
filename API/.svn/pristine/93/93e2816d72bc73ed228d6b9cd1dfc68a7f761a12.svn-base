@@ -1,0 +1,95 @@
+﻿using SupremeCourtCore.Common;
+using SupremeCourtCore.Domain;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+
+namespace SupremeCourtCore.Infrastructure
+{
+    public interface CaseTypeDAO
+    {
+        List<CaseType> GetAllCaseTypes(DBConnection dbConnection);
+        CaseType GetCaseType(int id, DBConnection dbConnection);
+        int AddCaseType(CaseType caseType, DBConnection dbConnection);
+        int UpdateCaseType(CaseType caseType, DBConnection dbConnection);
+        int DeleteCaseType(int caseTypeId, DBConnection dbConnection);
+    }
+    public class CaseTypeSqlDAOImpl : CaseTypeDAO
+    {
+        public int AddCaseType(CaseType caseType, DBConnection dbConnection)
+        {
+            dbConnection.cmd.CommandText = "INSERT INTO CASE_TYPE(NAME,SHORT_CODE,IS_ACTIVE,CREATED_BY,CREATED_DATE) VALUES('" + caseType.name + "','" + caseType.shortCode + "',1,'" + caseType.createdBy + "','" + caseType.createdDate.ToString("yyyy/MM/dd") + "') SELECT SCOPE_IDENTITY()";
+            return Convert.ToInt32(dbConnection.cmd.ExecuteScalar());
+        }
+
+        public int DeleteCaseType(int caseTypeId, DBConnection dbConnection)
+        {
+            dbConnection.cmd.CommandText = "UPDATE CASE_TYPE SET IS_ACTIVE = 0 WHERE ID = " + caseTypeId;
+            return dbConnection.cmd.ExecuteNonQuery();
+        }
+
+        public List<CaseType> GetAllCaseTypes(DBConnection dbConnection)
+        {
+            dbConnection.cmd.CommandText = "SELECT * FROM CASE_TYPE WHERE IS_ACTIVE = 1";
+
+            dbConnection.dr = dbConnection.cmd.ExecuteReader();
+            DataAccessObject dataAccessObject = new DataAccessObject();
+            return dataAccessObject.ReadCollection<CaseType>(dbConnection.dr);
+        }
+
+        public CaseType GetCaseType(int id, DBConnection dbConnection)
+        {
+            dbConnection.cmd.CommandText = "SELECT * FROM CASE_TYPE WHERE ID = " + id + " ";
+
+            dbConnection.dr = dbConnection.cmd.ExecuteReader();
+            DataAccessObject dataAccessObject = new DataAccessObject();
+            return dataAccessObject.GetSingleOject<CaseType>(dbConnection.dr);
+        }
+
+        public int UpdateCaseType(CaseType caseType, DBConnection dbConnection)
+        {
+            dbConnection.cmd.CommandText = "UPDATE CASE_TYPE SET NAME = '" + caseType.name + "', SHORT_CODE = '" + caseType.shortCode + "', IS_ACTIVE = " + caseType.isActive + ",CREATED_BY = '" + caseType.createdBy + "', CREATED_DATE = '" + caseType.createdDate.ToString("yyyy/MM/dd") + "'  WHERE ID = " + caseType.id;
+            return dbConnection.cmd.ExecuteNonQuery();
+        }
+    }
+    public class CaseTypeDAOImpl : CaseTypeDAO
+    {
+        public int AddCaseType(CaseType caseType, DBConnection dbConnection)
+        {
+            dbConnection.cmd.CommandText = "INSERT INTO CASE_TYPE(NAME,SHORT_CODE,IS_ACTIVE,CREATED_BY,CREATED_DATE) VALUES('" + caseType.name + "','"+caseType.shortCode+"',1,'"+caseType.createdBy+ "','" + caseType.createdDate.ToString("yyyy/MM/dd") + "'); SELECT currval('case_type_id_seq');";
+            return Convert.ToInt32(dbConnection.cmd.ExecuteScalar());
+        }
+
+        public int DeleteCaseType(int caseTypeId, DBConnection dbConnection)
+        {
+            dbConnection.cmd.CommandText = "UPDATE CASE_TYPE SET IS_ACTIVE = 0 WHERE ID = " + caseTypeId;
+            return dbConnection.cmd.ExecuteNonQuery();
+        }
+
+        public List<CaseType> GetAllCaseTypes(DBConnection dbConnection)
+        {
+            dbConnection.cmd.CommandText = "SELECT * FROM CASE_TYPE WHERE IS_ACTIVE = 1";
+
+            dbConnection.dr = dbConnection.cmd.ExecuteReader();
+            DataAccessObject dataAccessObject = new DataAccessObject();
+            return dataAccessObject.ReadCollection<CaseType>(dbConnection.dr);
+        }
+
+        public CaseType GetCaseType(int id, DBConnection dbConnection)
+        {
+            dbConnection.cmd.CommandText = "SELECT * FROM CASE_TYPE WHERE ID = " + id + " ";
+
+            dbConnection.dr = dbConnection.cmd.ExecuteReader();
+            DataAccessObject dataAccessObject = new DataAccessObject();
+            return dataAccessObject.GetSingleOject<CaseType>(dbConnection.dr);
+        }
+
+        public int UpdateCaseType(CaseType caseType, DBConnection dbConnection)
+        {
+            dbConnection.cmd.CommandText = "UPDATE CASE_TYPE SET NAME = '" + caseType.name + "', SHORT_CODE = '"+caseType.shortCode+"', IS_ACTIVE = " + caseType.isActive + ",CREATED_BY = '"+caseType.createdBy+ "', CREATED_DATE = '" + caseType.createdDate.ToString("yyyy/MM/dd") + "'  WHERE ID = " + caseType.id;
+            return dbConnection.cmd.ExecuteNonQuery();
+        }
+    }
+}

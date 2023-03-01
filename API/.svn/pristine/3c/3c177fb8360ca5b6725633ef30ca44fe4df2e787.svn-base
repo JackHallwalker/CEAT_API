@@ -1,0 +1,108 @@
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Net;
+using System.Net.Http;
+using System.Web;
+using System.Web.Http;
+using SupremeCourtCore.Common;
+using SupremeCourtCore.Controller;
+using SupremeCourtCore.Domain;
+
+namespace SupremeCourtAPI.Controllers
+{
+    public class LawyerApiController : ApiController
+    {
+        [HttpPost]
+        [Route("api/v1/AddLawyer/")]
+        public HttpResponseMessage AddLawyer([FromBody] Lawyer value)
+        {
+            try
+            {
+                LawyerController orderTypeController = ControllerFactory.CreateLawyerController();
+                int itemId = orderTypeController.AddLawyer(value);
+
+                return Request.CreateResponse(HttpStatusCode.OK, "Lawyer created successfully. Id-" + itemId);
+
+            }
+            catch (Exception ex)
+            {
+                return Request.CreateErrorResponse(HttpStatusCode.BadRequest, "something went wrong" + ex.Message);
+            }
+        }
+
+        [HttpGet]
+        [Route("api/v1/GetAllLawyers/")]
+        public IEnumerable<Lawyer> GetAllLawyers()
+        {
+            LawyerController orderTypeController = ControllerFactory.CreateLawyerController();
+
+            return orderTypeController.GetAllLawyers();
+        }
+
+        [HttpGet]
+        [Route("api/v1/GetLawyer/{id?}")]
+        public Lawyer GetLawyer(int id)
+        {
+            LawyerController orderTypeController = ControllerFactory.CreateLawyerController();
+
+            return orderTypeController.GetLawyer(id);
+        }
+
+        [HttpPut]
+        [Route("api/v1/UpdateLawyer/")]
+        public HttpResponseMessage UpdateLawyer([FromBody] Lawyer value)
+        {
+            try
+            {
+                LawyerController orderTypeController = ControllerFactory.CreateLawyerController();
+                int itemId = orderTypeController.UpdateLawyer(value);
+
+                return Request.CreateResponse(HttpStatusCode.OK, "Lawyer updated successfully.");
+
+            }
+            catch (Exception ex)
+            {
+                return Request.CreateErrorResponse(HttpStatusCode.BadRequest, "something went wrong" + ex.Message);
+            }
+        }
+
+        [HttpPut]
+        [Route("api/v1/DeleteLawyer/{id}")]
+        public HttpResponseMessage DeleteLawyer(int id)
+        {
+            try
+            {
+                LawyerController orderTypeController = ControllerFactory.CreateLawyerController();
+                int itemId = orderTypeController.DeleteLawyer(id);
+
+                return Request.CreateResponse(HttpStatusCode.OK, "Lawyer deleted successfully.");
+
+            }
+            catch (Exception ex)
+            {
+                return Request.CreateErrorResponse(HttpStatusCode.BadRequest, "something went wrong" + ex.Message);
+            }
+        }
+
+        [HttpGet]
+        [Route("api/v1/GetLawyerSchedule/{lawyerId}")]
+        public IEnumerable<Schedule> GetLawyerSchedule(int lawyerId)
+        {
+
+            LawyerController orderTypeController = ControllerFactory.CreateLawyerController();
+            return orderTypeController.GetLawyerSchedule(lawyerId);
+
+        }
+
+        [HttpGet]
+        [Route("api/v1/GetLawyerScheduleByDate")]
+        public IEnumerable<Schedule> GetLawyerScheduleByDate(int lawyerId, string date)
+        {
+
+            LawyerController orderTypeController = ControllerFactory.CreateLawyerController();
+            return orderTypeController.GetLawyerScheduleByDate(lawyerId, date);
+
+        }
+    }
+}

@@ -1,0 +1,88 @@
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Net;
+using System.Net.Http;
+using System.Web;
+using System.Web.Http;
+using SupremeCourtCore.Common;
+using SupremeCourtCore.Controller;
+using SupremeCourtCore.Domain;
+
+namespace SupremeCourtAPI.Controllers
+{
+    public class CaseJudgeApiController : ApiController
+    {
+        [HttpPost]
+        [Route("api/v1/AddCaseJudge/")]
+        public HttpResponseMessage AddCaseJudge([FromBody] CaseJudgeOnline value)
+        {
+            try
+            {
+                CaseJudgeController orderTypeController = ControllerFactory.CreateCaseJudgeController();
+                int itemId = orderTypeController.AddCaseJudge(value);
+
+                return Request.CreateResponse(HttpStatusCode.OK, "Case judge created successfully.");
+
+            }
+            catch (Exception ex)
+            {
+                return Request.CreateErrorResponse(HttpStatusCode.BadRequest, "something went wrong" + ex.Message);
+            }
+        }
+
+        [HttpGet]
+        [Route("api/v1/GetAllCaseByApplicationId/{applicationId}")]
+        public IEnumerable<CaseJudge> GetAllCaseByApplicationId(int applicationId)
+        {
+            CaseJudgeController orderTypeController = ControllerFactory.CreateCaseJudgeController();
+
+            return orderTypeController.GetAllCaseByApplicationId(applicationId);
+        }
+        
+        [HttpGet]
+        [Route("api/v1/GetAllCaseByJudgeId/{judgeId}")]
+        public IEnumerable<CaseJudge> GetAllCaseByJudgeId(int judgeId)
+        {
+            CaseJudgeController orderTypeController = ControllerFactory.CreateCaseJudgeController();
+
+            return orderTypeController.GetAllCaseByJudgeId(judgeId);
+        }
+
+        [HttpPut]
+        [Route("api/v1/UpdateCaseJudge/")]
+        public HttpResponseMessage UpdateCaseJudge([FromBody] CaseJudgeOnline value)
+        {
+            try
+            {
+                CaseJudgeController orderTypeController = ControllerFactory.CreateCaseJudgeController();
+                int itemId = orderTypeController.UpdateCaseJudge(value);
+
+                return Request.CreateResponse(HttpStatusCode.OK, "Case judge updated successfully.");
+
+            }
+            catch (Exception ex)
+            {
+                return Request.CreateErrorResponse(HttpStatusCode.BadRequest, "something went wrong" + ex.Message);
+            }
+        }
+
+        [HttpDelete]
+        [Route("api/v1/DeleteCaseJudge/{applicationId}/{judgeId}")]
+        public HttpResponseMessage DeleteCaseJudge(int applicationId, int judgeId)
+        {
+            try
+            {
+                CaseJudgeController orderTypeController = ControllerFactory.CreateCaseJudgeController();
+                int itemId = orderTypeController.DeleteCaseJudge(applicationId, judgeId);
+
+                return Request.CreateResponse(HttpStatusCode.OK, "Case judge deleted successfully.");
+
+            }
+            catch (Exception ex)
+            {
+                return Request.CreateErrorResponse(HttpStatusCode.BadRequest, "something went wrong" + ex.Message);
+            }
+        }
+    }
+}

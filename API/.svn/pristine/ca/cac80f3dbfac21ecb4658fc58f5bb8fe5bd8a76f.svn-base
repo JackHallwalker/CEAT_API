@@ -1,0 +1,52 @@
+﻿using SupremeCourtCore.Common;
+using SupremeCourtCore.Domain;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+
+namespace SupremeCourtCore.Infrastructure
+{
+    public interface RoleFunctionDAO
+    {
+        int AddRoleFunction(RoleFunction roldeFunction, DBConnection dbConnection);
+        /*int UpdateRoleFunction(RoleFunction roldeFunction, DBConnection dbConnection);*/
+        int DeleteRoleFunction(int systemRoleId, int systemFunctionId, DBConnection dbConnection);
+        List<RoleFunction> GetAllRoleFunctionsBySystemRoleId(int systemRoleId, DBConnection dbConnection);
+        List<RoleFunction> GetAllRoleFunctionsBySystemFunctionId(int systemFunctionId, DBConnection dbConnection);
+    }
+
+    public class RoleFunctionDAOImpl : RoleFunctionDAO
+    {
+        public int AddRoleFunction(RoleFunction roldeFunction, DBConnection dbConnection)
+        {
+            dbConnection.cmd.CommandText = "INSERT INTO ROLE_FUNCTION(SYSTEM_ROLE_ID,SYSTEM_FUNCTION_ID) VALUES("+roldeFunction.systemRoleId+","+roldeFunction.systemFunctionId+")";
+            return Convert.ToInt32(dbConnection.cmd.ExecuteScalar());
+        }
+
+        public int DeleteRoleFunction(int systemRoleId, int systemFunctionId, DBConnection dbConnection)
+        {
+            dbConnection.cmd.CommandText = "DELETE FROM ROLE_FUNCTION WHERE SYSTEM_ROLE_ID = "+systemRoleId+" AND SYSTEM_FUNCTION_ID = "+systemFunctionId;
+            return Convert.ToInt32(dbConnection.cmd.ExecuteScalar());
+        }
+
+        public List<RoleFunction> GetAllRoleFunctionsBySystemFunctionId(int systemFunctionId, DBConnection dbConnection)
+        {
+            dbConnection.cmd.CommandText = "SELECT * FROM ROLE_FUNCTION WHERE SYSTEM_FUNCTION_ID =" + systemFunctionId;
+
+            dbConnection.dr = dbConnection.cmd.ExecuteReader();
+            DataAccessObject dataAccessObject = new DataAccessObject();
+            return dataAccessObject.ReadCollection<RoleFunction>(dbConnection.dr);
+        }
+
+        public List<RoleFunction> GetAllRoleFunctionsBySystemRoleId(int systemRoleId, DBConnection dbConnection)
+        {
+            dbConnection.cmd.CommandText = "SELECT * FROM ROLE_FUNCTION WHERE SYSTEM_ROLE_ID =" + systemRoleId;
+
+            dbConnection.dr = dbConnection.cmd.ExecuteReader();
+            DataAccessObject dataAccessObject = new DataAccessObject();
+            return dataAccessObject.ReadCollection<RoleFunction>(dbConnection.dr);
+        }
+    }
+}

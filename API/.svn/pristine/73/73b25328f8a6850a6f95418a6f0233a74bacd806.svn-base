@@ -1,0 +1,108 @@
+﻿using SathosaCore.Common;
+using SathosaCore.Controller;
+using SathosaCore.Domain;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Net;
+using System.Net.Http;
+using System.Web;
+using System.Web.Http;
+
+namespace SathosaAPI.Controllers
+{
+    public class UserLoginApiController : ApiController
+    {
+        [HttpPost]
+        [Route("api/v1/UserLogin/SaveLogin/")]
+        /// <summary>
+        /// Get Create User
+        /// </summary>
+        /// <returns>Order list Json</returns>
+        public HttpResponseMessage Post([FromBody] List<UserLogin> value)
+        {
+            DBConnection dBConnection = null;
+
+            try
+            {
+                dBConnection = new DBConnection();
+
+                UserLoginController userLoginController = ControllerFactory.CreateUserLoginController();
+
+                foreach (var userLogin in value)
+                {
+                    try
+                    {
+                        //customerLogin.loginId = userLoginController.getMaxLoginId();
+                        // customerLogin.Password = userLoginController.Encryptword(customerLogin.Password);
+                        userLoginController.SaveLogin(userLogin);
+                    }
+                    catch (Exception ex)
+                    {
+                        Console.WriteLine(ex);
+                        return Request.CreateResponse(HttpStatusCode.BadRequest, "something went wrong" + ex.Message);
+                    }
+                }
+                return Request.CreateResponse(HttpStatusCode.OK, "Successfully Inserted");
+            }
+            catch (Exception ex)
+            {
+                dBConnection.RollBack();
+                return Request.CreateErrorResponse(HttpStatusCode.BadRequest, "something went wrong" + ex.Message);
+            }
+            finally
+            {
+                if (dBConnection.con.State == System.Data.ConnectionState.Open)
+                    dBConnection.Commit();
+            }
+        }
+
+        [HttpGet]
+        [Route("api/v1/UserLogin/UserLoginDetails/{username}/{password}")]
+        public UserLogin Get(string username, string password)
+        {
+            UserLoginController userLoginApiController = ControllerFactory.CreateUserLoginController();
+           // password = userLoginApiController.Encryptword(password);
+            return userLoginApiController.GetLoginDetails(username, password);
+        }
+
+        [HttpGet]
+        [Route("api/v1/UserLogin/LoginIdByUsername/")]
+        public int Get(string username)
+        {
+            UserLoginController userLoginApiController = ControllerFactory.CreateUserLoginController();
+
+            return userLoginApiController.GetLoginIdByUsername(username);
+        }
+
+        [HttpPost]
+        [Route("api/v1/UserLogin/UpdatePasswordByUserId/{userId}/{newPassword}")]
+        public HttpResponseMessage Post(int userId, string newPassword)
+        {
+            try
+            {
+                UserLoginController userLoginApiController = ControllerFactory.CreateUserLoginController();
+               // newPassword = customerLoginController.Encryptword(newPassword);
+               
+                if (userLoginApiController.UpdatePasswordByUserId(userId, newPassword) > 0)
+                {
+                    return Request.CreateResponse(HttpStatusCode.OK, "Successfully Updated");
+                }
+                else
+                {
+                    return Request.CreateResponse(HttpStatusCode.BadRequest, "something went wrong");
+                }
+
+            }
+            catch (Exception ex)
+            {
+
+                return Request.CreateResponse(HttpStatusCode.BadRequest, "something went wrong" + ex.Message);
+            }
+
+
+        }
+
+
+    }
+}

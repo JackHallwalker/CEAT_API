@@ -1,0 +1,209 @@
+﻿using System;
+using System.Collections.Generic;
+using SupremeCourtCore.Common;
+using SupremeCourtCore.Domain;
+using SupremeCourtCore.Infrastructure;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+
+namespace SupremeCourtCore.Controller
+{
+    public interface NextActionController
+    {
+        List<NextActionOnline> GetAllNextActions();
+        List<NextAction> GetAllNextActions(int applicationId);
+        List<NextActionForGetAllNextActionsByAppId> GetAllNextActions(string trialDate, string trialTime);
+        List<NextActionForGetAllNextActionsByAppId> GetAllNextActionsByAppId(int applicationId);
+        NextAction GetNextAction(int nextActionId);
+        int AddNextAction(NextAction nextAction);
+        int UpdateNextAction(NextAction nextAction);
+        int DeleteNextAction(int nextActionId);
+        List<NextAction> GetAllNextApplicationsByDate(string date);
+    }
+
+    public class NextActionControllerImpl : NextActionController
+    {
+        DBConnection dBConnection;
+        NextActionDAO OrderTypeDAO = DAOFactory.CreateNextActionDAO();
+
+        public int AddNextAction(NextAction nextAction)
+        {
+            try
+            {
+                dBConnection = new DBConnection();
+                return OrderTypeDAO.AddNextAction(nextAction, dBConnection);
+            }
+            catch (Exception)
+            {
+                dBConnection.RollBack();
+
+                throw;
+            }
+            finally
+            {
+                if (dBConnection.con.State == System.Data.ConnectionState.Open)
+                    dBConnection.Commit();
+            }
+        }
+
+        public int DeleteNextAction(int nextActionId)
+        {
+            try
+            {
+                dBConnection = new DBConnection();
+                return OrderTypeDAO.DeleteNextAction(nextActionId, dBConnection);
+            }
+            catch (Exception)
+            {
+                dBConnection.RollBack();
+
+                throw;
+            }
+            finally
+            {
+                if (dBConnection.con.State == System.Data.ConnectionState.Open)
+                    dBConnection.Commit();
+            }
+        }
+
+        public List<NextActionOnline> GetAllNextActions()
+        {
+            try
+            {
+                dBConnection = new DBConnection();
+                return OrderTypeDAO.GetAllNextActions(dBConnection);
+            }
+            catch (Exception)
+            {
+                dBConnection.RollBack();
+
+                throw;
+            }
+            finally
+            {
+                if (dBConnection.con.State == System.Data.ConnectionState.Open)
+                    dBConnection.Commit();
+            }
+        }
+
+        public List<NextAction> GetAllNextActions(int applicationId)
+        {
+            try
+            {
+                dBConnection = new DBConnection();
+                return OrderTypeDAO.GetAllNextActions(applicationId, dBConnection);
+            }
+            catch (Exception)
+            {
+                dBConnection.RollBack();
+
+                throw;
+            }
+            finally
+            {
+                if (dBConnection.con.State == System.Data.ConnectionState.Open)
+                    dBConnection.Commit();
+            }
+        }
+
+        public List<NextActionForGetAllNextActionsByAppId> GetAllNextActionsByAppId(int applicationId)
+        {
+            try
+            {
+                dBConnection = new DBConnection();
+                return OrderTypeDAO.GetAllNextActionsByAppId(applicationId, dBConnection);
+            }
+            catch (Exception)
+            {
+                dBConnection.RollBack();
+
+                throw;
+            }
+            finally
+            {
+                if (dBConnection.con.State == System.Data.ConnectionState.Open)
+                    dBConnection.Commit();
+            }
+        }
+
+        public NextAction GetNextAction(int nextActionId)
+        {
+            try
+            {
+                dBConnection = new DBConnection();
+                return OrderTypeDAO.GetNextAction(nextActionId, dBConnection);
+            }
+            catch (Exception)
+            {
+                dBConnection.RollBack();
+
+                throw;
+            }
+            finally
+            {
+                if (dBConnection.con.State == System.Data.ConnectionState.Open)
+                    dBConnection.Commit();
+            }
+        }
+
+        public int UpdateNextAction(NextAction nextAction)
+        {
+            try
+            {
+                dBConnection = new DBConnection();
+                return OrderTypeDAO.UpdateNextAction(nextAction, dBConnection);
+            }
+            catch (Exception)
+            {
+                dBConnection.RollBack();
+
+                throw;
+            }
+            finally
+            {
+                if (dBConnection.con.State == System.Data.ConnectionState.Open)
+                    dBConnection.Commit();
+            }
+        }
+
+        public List<NextActionForGetAllNextActionsByAppId> GetAllNextActions(string trialDate, string trialTime)
+        {
+            try
+            {
+                dBConnection = new DBConnection();
+                return OrderTypeDAO.GetAllNextActions(trialDate, trialTime, dBConnection);
+            }
+            catch (Exception)
+            {
+                dBConnection.RollBack();
+
+                throw;
+            }
+            finally
+            {
+                if (dBConnection.con.State == System.Data.ConnectionState.Open)
+                    dBConnection.Commit();
+            }
+        }
+        public List<NextAction> GetAllNextApplicationsByDate(string date)
+        {
+            try
+            {
+                dBConnection = new DBConnection();
+                return OrderTypeDAO.GetAllNextApplicationsByDate(date, dBConnection);
+            }
+            catch (Exception)
+            {
+                dBConnection.RollBack();
+
+                throw;
+            }
+            finally
+            {
+                if (dBConnection.con.State == System.Data.ConnectionState.Open)
+                    dBConnection.Commit();
+            }
+        }
+    }
+}

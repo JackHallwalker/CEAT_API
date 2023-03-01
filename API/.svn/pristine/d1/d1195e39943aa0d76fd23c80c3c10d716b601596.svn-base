@@ -1,0 +1,88 @@
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Net;
+using System.Net.Http;
+using System.Web;
+using System.Web.Http;
+using SupremeCourtCore.Common;
+using SupremeCourtCore.Controller;
+using SupremeCourtCore.Domain;
+
+namespace SupremeCourtAPI.Controllers
+{
+    public class ActionTypeApiController : ApiController
+    {
+        [HttpPost]
+        [Route("api/v1/AddActionType/")]
+        public HttpResponseMessage AddActionType([FromBody] ActionType value)
+        {
+            try
+            {
+                ActionTypeController orderTypeController = ControllerFactory.CreateActionTypeController();
+                int itemId = orderTypeController.AddActionType(value);
+
+                return Request.CreateResponse(HttpStatusCode.OK, "Action type created successfully. Id-" + itemId);
+
+            }
+            catch (Exception ex)
+            {
+                return Request.CreateErrorResponse(HttpStatusCode.BadRequest, "something went wrong" + ex.Message);
+            }
+        }
+
+        [HttpGet]
+        [Route("api/v1/GetAllActionTypes/")]
+        public IEnumerable<ActionType> GetAllActionTypes()
+        {
+            ActionTypeController orderTypeController = ControllerFactory.CreateActionTypeController();
+
+            return orderTypeController.GetAllActionTypes();
+        }
+
+        [HttpGet]
+        [Route("api/v1/GetActionType/{id?}")]
+        public ActionType GetCategory(int id)
+        {
+            ActionTypeController orderTypeController = ControllerFactory.CreateActionTypeController();
+
+            return orderTypeController.GetActionType(id);
+        }
+
+        [HttpPut]
+        [Route("api/v1/UpdateActionType/")]
+        public HttpResponseMessage UpdateActionType([FromBody] ActionType value)
+        {
+            try
+            {
+                ActionTypeController orderTypeController = ControllerFactory.CreateActionTypeController();
+                int itemId = orderTypeController.UpdateActionType(value);
+
+                return Request.CreateResponse(HttpStatusCode.OK, "Action type updated successfully.");
+
+            }
+            catch (Exception ex)
+            {
+                return Request.CreateErrorResponse(HttpStatusCode.BadRequest, "something went wrong" + ex.Message);
+            }
+        }
+        
+        [HttpPut]
+        [Route("api/v1/DeleteActionType/{actionTypeId}")]
+        public HttpResponseMessage DeleteActionType(int actionTypeId)
+        {
+            try
+            {
+                ActionTypeController orderTypeController = ControllerFactory.CreateActionTypeController();
+                int itemId = orderTypeController.DeleteActionType(actionTypeId);
+
+                return Request.CreateResponse(HttpStatusCode.OK, "Action type deleted successfully.");
+
+            }
+            catch (Exception ex)
+            {
+                return Request.CreateErrorResponse(HttpStatusCode.BadRequest, "something went wrong" + ex.Message);
+            }
+        }
+    }
+}

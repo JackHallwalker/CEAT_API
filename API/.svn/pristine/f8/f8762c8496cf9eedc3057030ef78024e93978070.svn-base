@@ -1,0 +1,105 @@
+﻿using System;
+using System.Collections.Generic;
+using SupremeCourtCore.Common;
+using SupremeCourtCore.Domain;
+using SupremeCourtCore.Infrastructure;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+
+namespace SupremeCourtCore.Controller
+{
+    public interface UserSystemFunctionController
+    {
+        List<UserSystemFunction> GetAllUserSystemFunctionsBySystemFunctionId(int systemFunctionId);
+        List<UserSystemFunction> GetAllUserSystemFunctionsBySystemUserId(int systemUserId);
+        int AddUserSystemFunction(UserSystemFunction userSystemFunction);
+        int DeleteUserSystemFunction(int systemFunctionId, int systemUserId);
+    }
+
+    public class UserSystemFunctionControllerImpl : UserSystemFunctionController
+    {
+        DBConnection dBConnection;
+        UserSystemFunctionDAO OrderTypeDAO = DAOFactory.CreateUserSystemFunctionDAO();
+
+        public int AddUserSystemFunction(UserSystemFunction userSystemFunction)
+        {
+            try
+            {
+                dBConnection = new DBConnection();
+                return OrderTypeDAO.AddUserSystemFunction(userSystemFunction, dBConnection);
+            }
+            catch (Exception)
+            {
+                dBConnection.RollBack();
+
+                throw;
+            }
+            finally
+            {
+                if (dBConnection.con.State == System.Data.ConnectionState.Open)
+                    dBConnection.Commit();
+            }
+        }
+
+        public int DeleteUserSystemFunction(int systemFunctionId, int systemUserId)
+        {
+            try
+            {
+                dBConnection = new DBConnection();
+                return OrderTypeDAO.DeleteUserSystemFunction(systemFunctionId, systemUserId, dBConnection);
+            }
+            catch (Exception)
+            {
+                dBConnection.RollBack();
+
+                throw;
+            }
+            finally
+            {
+                if (dBConnection.con.State == System.Data.ConnectionState.Open)
+                    dBConnection.Commit();
+            }
+        }
+
+        public List<UserSystemFunction> GetAllUserSystemFunctionsBySystemFunctionId(int systemFunctionId)
+        {
+            try
+            {
+                dBConnection = new DBConnection();
+                return OrderTypeDAO.GetAllUserSystemFunctionsBySystemFunctionId(systemFunctionId, dBConnection);
+            }
+            catch (Exception)
+            {
+                dBConnection.RollBack();
+
+                throw;
+            }
+            finally
+            {
+                if (dBConnection.con.State == System.Data.ConnectionState.Open)
+                    dBConnection.Commit();
+            }
+        }
+
+        public List<UserSystemFunction> GetAllUserSystemFunctionsBySystemUserId(int systemUserId)
+        {
+            try
+            {
+                dBConnection = new DBConnection();
+                return OrderTypeDAO.GetAllUserSystemFunctionsBySystemUserId(systemUserId, dBConnection);
+            }
+            catch (Exception)
+            {
+                dBConnection.RollBack();
+
+                throw;
+            }
+            finally
+            {
+                if (dBConnection.con.State == System.Data.ConnectionState.Open)
+                    dBConnection.Commit();
+            }
+        }
+    }
+}

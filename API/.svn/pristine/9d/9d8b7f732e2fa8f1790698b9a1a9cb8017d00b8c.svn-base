@@ -1,0 +1,112 @@
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Net;
+using System.Net.Http;
+using System.Web;
+using System.Web.Http;
+using SupremeCourtCore.Common;
+using SupremeCourtCore.Controller;
+using SupremeCourtCore.Domain;
+
+namespace SupremeCourtAPI.Controllers
+{
+    public class JudgeApiController : ApiController
+    {
+        [HttpPost]
+        [Route("api/v1/AddJudge/")]
+        public HttpResponseMessage AddJudge([FromBody] Judge value)
+        {
+            try
+            {
+                JudgeController orderTypeController = ControllerFactory.CreateJudgeController();
+                int itemId = orderTypeController.AddJudge(value);
+
+                return Request.CreateResponse(HttpStatusCode.OK, "Judge created successfully. Id-" + itemId);
+
+            }
+            catch (Exception ex)
+            {
+                return Request.CreateErrorResponse(HttpStatusCode.BadRequest, "something went wrong" + ex.Message);
+            }
+        }
+
+        [HttpGet]
+        [Route("api/v1/GetAllJudges/")]
+        public IEnumerable<Judge> GetAllJudges()
+        {
+            JudgeController orderTypeController = ControllerFactory.CreateJudgeController();
+
+            return orderTypeController.GetAllJudges();
+        }
+
+        [HttpGet]
+        [Route("api/v1/GetJudge/{id?}")]
+        public Judge GetJudge(int id)
+        {
+            JudgeController orderTypeController = ControllerFactory.CreateJudgeController();
+
+            return orderTypeController.GetJudge(id);
+        }
+
+        [HttpPut]
+        [Route("api/v1/UpdateJudge/")]
+        public HttpResponseMessage UpdateJudge([FromBody] Judge value)
+        {
+            try
+            {
+                JudgeController orderTypeController = ControllerFactory.CreateJudgeController();
+                int itemId = orderTypeController.UpdateJudge(value);
+
+                return Request.CreateResponse(HttpStatusCode.OK, "Judge updated successfully.");
+
+            }
+            catch (Exception ex)
+            {
+                return Request.CreateErrorResponse(HttpStatusCode.BadRequest, "something went wrong" + ex.Message);
+            }
+        }
+
+        [HttpPut]
+        [Route("api/v1/DeleteJudge/{id}")]
+        public HttpResponseMessage DeleteJudge(int id)
+        {
+            try
+            {
+                JudgeController orderTypeController = ControllerFactory.CreateJudgeController();
+                int itemId = orderTypeController.DeleteJudge(id);
+
+                return Request.CreateResponse(HttpStatusCode.OK, "Judge deleted successfully.");
+
+            }
+            catch (Exception ex)
+            {
+                return Request.CreateErrorResponse(HttpStatusCode.BadRequest, "something went wrong" + ex.Message);
+            }
+        }
+
+        [HttpGet]
+        [Route("api/v1/GetJudgeSchedule")]
+        public IEnumerable<Schedule> GetJudgeSchedule(int judgeId, string date)
+        {
+
+            JudgeController judgeController = ControllerFactory.CreateJudgeController();
+
+            return judgeController.GetJudgeSchedule(judgeId, date);
+
+
+        }
+
+        [HttpGet]
+        [Route("api/v1/GetJudgeScheduleByDate")]
+        public IEnumerable<Schedule> GetJudgeScheduleByDate(string date)
+        {
+
+            JudgeController judgeController = ControllerFactory.CreateJudgeController();
+
+            return judgeController.GetJudgeScheduleByDate(date);
+
+
+        }
+    }
+}

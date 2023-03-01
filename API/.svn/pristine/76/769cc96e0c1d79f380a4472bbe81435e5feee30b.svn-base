@@ -1,0 +1,95 @@
+﻿using SupremeCourtCore.Common;
+using SupremeCourtCore.Domain;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+
+namespace SupremeCourtCore.Infrastructure
+{
+    public interface PartyTypeDAO
+    {
+        List<PartyType> GetAllPartyTypes(DBConnection dbConnection);
+        PartyType GetPartyType(int id, DBConnection dbConnection);
+        int AddPartyType(PartyType partyType, DBConnection dbConnection);
+        int UpdatePartyType(PartyType partyType, DBConnection dbConnection);
+        int DeletePartyType(int partyTypeId, DBConnection dbConnection);
+    }
+    public class PartyTypeSqlDAOImpl : PartyTypeDAO
+    {
+        public int AddPartyType(PartyType partyType, DBConnection dbConnection)
+        {
+            dbConnection.cmd.CommandText = "INSERT INTO PARTY_TYPE(NAME,IS_ACTIVE) VALUES('" + partyType.name + "',1) SELECT SCOPE_IDENTITY()";
+            return Convert.ToInt32(dbConnection.cmd.ExecuteScalar());
+        }
+
+        public int DeletePartyType(int partyTypeId, DBConnection dbConnection)
+        {
+            dbConnection.cmd.CommandText = "UPDATE PARTY_TYPE SET IS_ACTIVE = 0 WHERE ID = " + partyTypeId;
+            return dbConnection.cmd.ExecuteNonQuery();
+        }
+
+        public List<PartyType> GetAllPartyTypes(DBConnection dbConnection)
+        {
+            dbConnection.cmd.CommandText = "SELECT * FROM PARTY_TYPE WHERE IS_ACTIVE = 1";
+
+            dbConnection.dr = dbConnection.cmd.ExecuteReader();
+            DataAccessObject dataAccessObject = new DataAccessObject();
+            return dataAccessObject.ReadCollection<PartyType>(dbConnection.dr);
+        }
+
+        public PartyType GetPartyType(int id, DBConnection dbConnection)
+        {
+            dbConnection.cmd.CommandText = "SELECT * FROM PARTY_TYPE WHERE ID = " + id + " ";
+
+            dbConnection.dr = dbConnection.cmd.ExecuteReader();
+            DataAccessObject dataAccessObject = new DataAccessObject();
+            return dataAccessObject.GetSingleOject<PartyType>(dbConnection.dr);
+        }
+
+        public int UpdatePartyType(PartyType partyType, DBConnection dbConnection)
+        {
+            dbConnection.cmd.CommandText = "UPDATE PARTY_TYPE SET NAME = '" + partyType.name + "', IS_ACTIVE = " + partyType.isActive + " WHERE ID = " + partyType.id;
+            return dbConnection.cmd.ExecuteNonQuery();
+        }
+    }
+    public class PartyTypeDAOImpl : PartyTypeDAO
+    {
+        public int AddPartyType(PartyType partyType, DBConnection dbConnection)
+        {
+            dbConnection.cmd.CommandText = "INSERT INTO PARTY_TYPE(NAME,IS_ACTIVE) VALUES('" + partyType.name + "',1); SELECT currval('party_type_id_seq');";
+            return Convert.ToInt32(dbConnection.cmd.ExecuteScalar());
+        }
+
+        public int DeletePartyType(int partyTypeId, DBConnection dbConnection)
+        {
+            dbConnection.cmd.CommandText = "UPDATE PARTY_TYPE SET IS_ACTIVE = 0 WHERE ID = "+ partyTypeId;
+            return dbConnection.cmd.ExecuteNonQuery();
+        }
+
+        public List<PartyType> GetAllPartyTypes(DBConnection dbConnection)
+        {
+            dbConnection.cmd.CommandText = "SELECT * FROM PARTY_TYPE WHERE IS_ACTIVE = 1";
+
+            dbConnection.dr = dbConnection.cmd.ExecuteReader();
+            DataAccessObject dataAccessObject = new DataAccessObject();
+            return dataAccessObject.ReadCollection<PartyType>(dbConnection.dr);
+        }
+
+        public PartyType GetPartyType(int id, DBConnection dbConnection)
+        {
+            dbConnection.cmd.CommandText = "SELECT * FROM PARTY_TYPE WHERE ID = " + id + " ";
+
+            dbConnection.dr = dbConnection.cmd.ExecuteReader();
+            DataAccessObject dataAccessObject = new DataAccessObject();
+            return dataAccessObject.GetSingleOject<PartyType>(dbConnection.dr);
+        }
+
+        public int UpdatePartyType(PartyType partyType, DBConnection dbConnection)
+        {
+            dbConnection.cmd.CommandText = "UPDATE PARTY_TYPE SET NAME = '"+partyType.name+"', IS_ACTIVE = "+partyType.isActive+" WHERE ID = " + partyType.id;
+            return dbConnection.cmd.ExecuteNonQuery();
+        }
+    }
+}

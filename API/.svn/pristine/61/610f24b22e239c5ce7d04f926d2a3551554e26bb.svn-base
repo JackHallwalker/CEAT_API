@@ -1,0 +1,35 @@
+<?xml version="1.0"?>
+<doc>
+    <assembly>
+        <name>HotelAPI</name>
+    </assembly>
+    <members>
+        <member name="T:HotelAPI.ApiAuthorizationServerProvider">
+            <summary>
+            ApiAuthorizationServerProvider
+            </summary>
+        </member>
+        <member name="T:HotelAPI.ApiAuthorizeAttribute">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="M:HotelAPI.ApiAuthorizeAttribute.HandleUnauthorizedRequest(System.Web.Http.Controllers.HttpActionContext)">
+            <summary>
+            
+            </summary>
+            <param name="actionContext"></param>
+        </member>
+        <member name="T:HotelAPI.AuthenticationStartup">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="M:HotelAPI.AuthenticationStartup.Configuration(Owin.IAppBuilder)">
+            <summary>
+            
+            </summary>
+            <param name="app"></param>
+        </member>
+    </members>
+</doc>

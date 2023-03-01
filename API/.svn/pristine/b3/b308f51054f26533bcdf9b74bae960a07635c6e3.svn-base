@@ -1,0 +1,347 @@
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Net;
+using System.Net.Http;
+using System.Web;
+using System.Web.Http;
+using SupremeCourtCore.Common;
+using SupremeCourtCore.Controller;
+using SupremeCourtCore.Domain;
+
+namespace SupremeCourtAPI.Controllers
+{
+    public class ApplicationApiController : ApiController
+    {
+        [HttpPost]
+        [Route("api/v1/AddApplication/")]
+        public HttpResponseMessage AddApplication([FromBody] Application value)
+        {
+            try
+            {
+                ApplicationController orderTypeController = ControllerFactory.CreateApplicationController();
+                int itemId = orderTypeController.AddApplication(value);
+
+                if (value.caseLawyers != null)
+                {
+                    CaseLawyerController aa = ControllerFactory.CreateCaseLawyerController();
+                    foreach (var caseLawyer in value.caseLawyers)
+                    {
+                        caseLawyer.applicationId = itemId;
+                        aa.AddCaseLawyer(caseLawyer);
+                    }
+                }
+                if (value.applicationParties != null)
+                {
+                    ApplicationPartyController aa = ControllerFactory.CreateApplicationPartyController();
+                    foreach (var applicationParty in value.applicationParties)
+                    {
+                        applicationParty.applicationId = itemId;
+                        aa.AddApplicationParty(applicationParty);
+                    }
+                }
+                /*         if (value.caseJudges != null)
+                         {
+                             CaseJudgeController aa = ControllerFactory.CreateCaseJudgeController();
+                             foreach (var caseJudge in value.caseJudges)
+                             {
+                                 caseJudge.applicationId = itemId;
+                                 aa.AddCaseJudge(caseJudge);
+                             }
+                         }
+                         if (value.caseJudges != null)
+                         {
+                             CaseJudgeController aa = ControllerFactory.CreateCaseJudgeController();
+                             foreach (var caseJudge in value.caseJudges)
+                             {
+                                 caseJudge.applicationId = itemId;
+                                 aa.AddCaseJudge(caseJudge);
+                             }
+                         }*/
+
+                return Request.CreateResponse(HttpStatusCode.OK, "Application created successfully. Id-" + itemId);
+
+            }
+            catch (Exception ex)
+            {
+                return Request.CreateErrorResponse(HttpStatusCode.BadRequest, "something went wrong" + ex.Message);
+            }
+        }
+
+        [HttpGet]
+        [Route("api/v1/GetAllApplications/{withCaseType}/{withCategory}/{withApplicationParties}/{withCaseLawyers}/{withCaseJudges}/{withCaseJournals}/{withNextActions}")]
+        public IEnumerable<Application> GetAllApplications(bool withCaseType, bool withCategory, bool withApplicationParties, bool withCaseLawyers, bool withCaseJudges, bool withCaseJournals, bool withNextActions)
+        {
+            ApplicationController orderTypeController = ControllerFactory.CreateApplicationController();
+
+            var applications = orderTypeController.GetAllApplications(withCaseType, withCategory, withApplicationParties, withCaseLawyers, withCaseJudges, withCaseJournals, withNextActions);
+            foreach (var application in applications)
+            {
+                if (withCaseType)
+                {
+                    var aa = ControllerFactory.CreateCaseTypeController();
+                    application.caseType = aa.GetCaseType(application.caseTypeId);
+                }
+                if (withCategory)
+                {
+                    var aa = ControllerFactory.CreateCategoryController();
+                    application.category = aa.GetCategory(application.CategoryID);
+                }
+                if (withApplicationParties)
+                {
+                    var aa = ControllerFactory.CreateApplicationPartyController();
+                    application.applicationParties = aa.GetAllApplicationParties(application.id);
+                }
+                if (withCaseLawyers)
+                {
+                    var aa = ControllerFactory.CreateCaseLawyerController();
+                    application.caseLawyers = aa.GetAllCaseLawyerByApplicationId(application.id);
+                }
+                if (withCaseJudges)
+                {
+                    var aa = ControllerFactory.CreateCaseJudgeController();
+                    application.caseJudges = aa.GetAllCaseByApplicationId(application.id);
+                }
+                if (withCaseJournals)
+                {
+                    var aa = ControllerFactory.CreateJournalController();
+                    application.journals = aa.GetAllJournals(application.id);
+                }
+                if (withNextActions)
+                {
+                    var aa = ControllerFactory.CreateNextActionController();
+                    application.nextActions = aa.GetAllNextActions(application.id);
+                }
+            }
+
+            return applications;
+        }
+
+        //----------------------------------------------------------------------------------------------------------
+        /*[HttpGet]
+        [Route("api/v1/SearchApplications/{withCaseType}")]
+        public IEnumerable<Application> SearchApplications (int id, bool withCaseType)
+        {
+            ApplicationController orderTypeController = ControllerFactory.CreateApplicationController();
+
+            var applications = orderTypeController.SearchApplications(withCaseType);
+            return (IEnumerable<Application>)(Application)applications;
+        }*/
+
+        [HttpGet]
+        [Route("api/v1/GetApplication/{id?}/{withCaseType}/{withCategory}/{withApplicationParties}/{withCaseLawyers}/{withCaseJudges}/{withCaseJournals}/{withNextActions}")]
+        public Application GetApplication(int id, bool withCaseType, bool withCategory, bool withApplicationParties, bool withCaseLawyers, bool withCaseJudges, bool withCaseJournals, bool withNextActions)
+        {
+            ApplicationController orderTypeController = ControllerFactory.CreateApplicationController();
+
+            var application = orderTypeController.GetApplication(id, withCaseType, withCategory, withApplicationParties, withCaseLawyers, withCaseJudges, withCaseJournals, withNextActions);
+            if (withCaseType)
+            {
+                var aa = ControllerFactory.CreateCaseTypeController();
+                application.caseType = aa.GetCaseType(application.caseTypeId);
+            }
+            if (withCategory)
+            {
+                var aa = ControllerFactory.CreateCategoryController();
+                application.category = aa.GetCategory(application.CategoryID);
+            }
+            if (withApplicationParties)
+            {
+                var aa = ControllerFactory.CreateApplicationPartyController();
+                application.applicationParties = aa.GetAllApplicationParties(application.id);
+            }
+            if (withCaseLawyers)
+            {
+                var aa = ControllerFactory.CreateCaseLawyerController();
+                application.caseLawyers = aa.GetAllCaseLawyerByApplicationId(application.id);
+            }
+            if (withCaseJudges)
+            {
+                var aa = ControllerFactory.CreateCaseJudgeController();
+                application.caseJudges = aa.GetAllCaseByApplicationId(application.id);
+            }
+            if (withCaseJournals)
+            {
+                var aa = ControllerFactory.CreateJournalController();
+                application.journals = aa.GetAllJournals(application.id);
+            }
+            if (withNextActions)
+            {
+                var aa = ControllerFactory.CreateNextActionController();
+                application.nextActions = aa.GetAllNextActions(application.id);
+            }
+
+            return application;
+        }
+
+
+        [HttpPut]
+        [Route("api/v1/UpdateApplication/")]
+        public HttpResponseMessage UpdateApplication([FromBody] Application value)
+        {
+            try
+            {
+                ApplicationController orderTypeController = ControllerFactory.CreateApplicationController();
+                int itemId = orderTypeController.UpdateApplication(value);
+
+                return Request.CreateResponse(HttpStatusCode.OK, "Application updated successfully.");
+
+            }
+            catch (Exception ex)
+            {
+                return Request.CreateErrorResponse(HttpStatusCode.BadRequest, "something went wrong" + ex.Message);
+            }
+        }
+
+        [HttpPut]
+        [Route("api/v1/DeleteApplication/{applicaionId}")]
+        public HttpResponseMessage DeleteApplication(int applicaionId)
+        {
+            try
+            {
+                ApplicationController orderTypeController = ControllerFactory.CreateApplicationController();
+                int itemId = orderTypeController.DeleteApplication(applicaionId);
+
+                return Request.CreateResponse(HttpStatusCode.OK, "Application deleted successfully.");
+
+            }
+            catch (Exception ex)
+            {
+                return Request.CreateErrorResponse(HttpStatusCode.BadRequest, "something went wrong" + ex.Message);
+            }
+        }
+
+
+        [HttpGet]
+        [Route("api/v1/GetAllApplicationsFromDateRange")]
+        public IEnumerable<Application> GetAllApplicationsFromDateRange(string fromDate, string toDate, int caseTypeId, string caseId, int serialNo, int regYear)
+        {
+            ApplicationController orderTypeController = ControllerFactory.CreateApplicationController();
+            var applications = orderTypeController.GetAllApplicationsFromDateRange(fromDate, toDate, caseTypeId, caseId, serialNo, regYear);
+            bool withCaseType = true;
+            bool withCategory = true;
+            bool withApplicationParties = true;
+            bool withCaseLawyers = true;
+            bool withCaseJudges = true;
+            bool withCaseJournals = true;
+            bool withNextActions = true;
+            foreach (var application in applications)
+            {
+                if (withCaseType)
+                {
+                    var aa = ControllerFactory.CreateCaseTypeController();
+                    application.caseType = aa.GetCaseType(application.caseTypeId);
+                }
+                if (withCategory)
+                {
+                    var aa = ControllerFactory.CreateCategoryController();
+                    application.category = aa.GetCategory(application.CategoryID);
+                }
+                if (withApplicationParties)
+                {
+                    var aa = ControllerFactory.CreateApplicationPartyController();
+                    application.applicationParties = aa.GetAllApplicationParties(application.id);
+                }
+                if (withCaseLawyers)
+                {
+                    var aa = ControllerFactory.CreateCaseLawyerController();
+                    application.caseLawyers = aa.GetAllCaseLawyerByApplicationId(application.id);
+                }
+                if (withCaseJudges)
+                {
+                    var aa = ControllerFactory.CreateCaseJudgeController();
+                    application.caseJudges = aa.GetAllCaseByApplicationId(application.id);
+                }
+                if (withCaseJournals)
+                {
+                    var aa = ControllerFactory.CreateJournalController();
+                    application.journals = aa.GetAllJournals(application.id);
+                }
+                if (withNextActions)
+                {
+                    var aa = ControllerFactory.CreateNextActionController();
+                    application.nextActions = aa.GetAllNextActions(application.id);
+                }
+            }
+
+            return applications;
+        }
+
+        //[HttpGet]
+        //[Route("api/v1/GetAllCases")]
+        //public IEnumerable<Application> GetAllCases(string fromDate, string toDate, int caseTypeId, string caseId, int serialNo, int regYear)
+        //{
+        //    ApplicationController orderTypeController = ControllerFactory.CreateApplicationController();
+
+        //    return orderTypeController.GetAllCases(fromDate, toDate, caseTypeId, caseId, serialNo, regYear);
+        //}
+
+
+        [HttpGet]
+        [Route("api/v1/GetAllCases")]
+        public IEnumerable<Application> GetAllCases(string fromDate, string toDate, int caseTypeId, string caseId, int serialNo, int regYear)
+        {
+            ApplicationController orderTypeController = ControllerFactory.CreateApplicationController();
+            var applications = orderTypeController.GetAllCases(fromDate, toDate, caseTypeId, caseId, serialNo, regYear);
+            bool withCaseType = true;
+            bool withCategory = true;
+            bool withApplicationParties = true;
+            bool withCaseLawyers = true;
+            bool withCaseJudges = true;
+            //bool withCaseJournals = true;
+            //bool withNextActions = true;
+            foreach (var application in applications)
+            {
+                if (withCaseType)
+                {
+                    var aa = ControllerFactory.CreateCaseTypeController();
+                    application.caseType = aa.GetCaseType(application.caseTypeId);
+                }
+                if (withCategory)
+                {
+                    var aa = ControllerFactory.CreateCategoryController();
+                    application.category = aa.GetCategory(application.CategoryID);
+                }
+                if (withApplicationParties)
+                {
+                    var aa = ControllerFactory.CreateApplicationPartyController();
+                    application.applicationParties = aa.GetAllApplicationParties(application.id);
+                }
+                if (withCaseLawyers)
+                {
+                    var aa = ControllerFactory.CreateCaseLawyerController();
+                    application.caseLawyers = aa.GetAllCaseLawyerByApplicationId(application.id);
+                }
+                if (withCaseJudges)
+                {
+                    var aa = ControllerFactory.CreateCaseJudgeController();
+                    application.caseJudges = aa.GetAllCaseByApplicationId(application.id);
+                }
+                //if (withCaseJournals)
+                //{
+                //    var aa = ControllerFactory.CreateJournalController();
+                //    application.journals = aa.GetAllJournals(application.id);
+                //}
+                //if (withNextActions)
+                //{
+                //    var aa = ControllerFactory.CreateNextActionController();
+                //    application.nextActions = aa.GetAllNextActions(application.id);
+                //}
+            }
+
+            return applications;
+        }
+
+
+        [HttpGet]
+        [Route("api/v1/GetApplicationByCaseNo")]
+        public IEnumerable<Application> GetApplicationByCaseNo(string caseNo)
+        {
+            ApplicationController orderTypeController = ControllerFactory.CreateApplicationController();
+
+            //return orderTypeController.GetAllJournalsWithPartyTypeId(applicationId, partyTypeId);
+            return orderTypeController.GetApplicationByCaseNo(caseNo);
+        }
+
+    }
+}

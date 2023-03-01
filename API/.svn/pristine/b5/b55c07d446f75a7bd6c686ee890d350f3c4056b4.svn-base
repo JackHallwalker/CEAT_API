@@ -1,0 +1,65 @@
+﻿using System;
+using System.Collections.Generic;
+using SupremeCourtCore.Common;
+using SupremeCourtCore.Domain;
+using SupremeCourtCore.Infrastructure;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+
+
+namespace SupremeCourtCore.Controller
+{
+    public interface UserActionLogController
+    {
+        int AddUserActionLog(UserActionLogOnline userActionLogOnline);
+        //List<UserActionLog> GetUserActionLog(int userId, DateTime FromDate, DateTime ToDate);
+        List<UserActionLog> GetUserActionLogTaken(string username, string FromDate, string ToDate, string caseId);
+    }
+
+    public class UserActionLogControllerImpl : UserActionLogController
+    {
+        DBConnection dBConnection;
+        UserActionLogDAO userActionLogDAO = DAOFactory.CreateUserActionLogDAO();
+        public int AddUserActionLog(UserActionLogOnline userActionLogOnline)
+        {
+            try
+            {
+                
+                dBConnection = new DBConnection();
+                return userActionLogDAO.AddUserActionLog(userActionLogOnline, dBConnection);
+            }
+            catch (Exception)
+            {
+                dBConnection.RollBack();
+
+                throw;
+            }
+            finally
+            {
+                if (dBConnection.con.State == System.Data.ConnectionState.Open)
+                    dBConnection.Commit();
+            }
+        }
+
+        public List<UserActionLog> GetUserActionLogTaken(string username, string FromDate, string ToDate, string caseId)
+        {
+            try
+            {
+                dBConnection = new DBConnection();
+                return userActionLogDAO.GetUserActionLogTaken(username, FromDate, ToDate, caseId, dBConnection);
+            }
+            catch (Exception)
+            {
+                dBConnection.RollBack();
+
+                throw;
+            }
+            finally
+            {
+                if (dBConnection.con.State == System.Data.ConnectionState.Open)
+                    dBConnection.Commit();
+            }
+        }
+    }
+}

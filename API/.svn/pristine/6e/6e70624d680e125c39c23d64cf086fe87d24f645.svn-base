@@ -1,0 +1,89 @@
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Net;
+using System.Net.Http;
+using System.Web;
+using System.Web.Http;
+using SupremeCourtCore.Common;
+using SupremeCourtCore.Controller;
+using SupremeCourtCore.Domain;
+
+
+namespace SupremeCourtAPI.Controllers
+{
+    public class SystemApiController : ApiController
+    {
+        [HttpPost]
+        [Route("api/v1/AddSystem/")]
+        public HttpResponseMessage AddSystem([FromBody] SupremeCourtCore.Domain.System value)
+        {
+            try
+            {
+                SystemController orderTypeController = ControllerFactory.CreateSystemController();
+                int itemId = orderTypeController.AddSystem(value);
+
+                return Request.CreateResponse(HttpStatusCode.OK, "System created successfully. Id-" + itemId);
+
+            }
+            catch (Exception ex)
+            {
+                return Request.CreateErrorResponse(HttpStatusCode.BadRequest, "something went wrong" + ex.Message);
+            }
+        }
+
+        [HttpGet]
+        [Route("api/v1/GetAllSystems/")]
+        public IEnumerable<SupremeCourtCore.Domain.System> GetAllSystems()
+        {
+            SystemController orderTypeController = ControllerFactory.CreateSystemController();
+
+            return orderTypeController.GetAllSystems();
+        }
+        
+        [HttpGet]
+        [Route("api/v1/GetSystem/{id}")]
+        public SupremeCourtCore.Domain.System GetSystem(int id)
+        {
+            SystemController orderTypeController = ControllerFactory.CreateSystemController();
+
+            return orderTypeController.GetSystem(id);
+        }
+
+        [HttpPut]
+        [Route("api/v1/UpdateSystem/")]
+        public HttpResponseMessage UpdateSystem([FromBody] SupremeCourtCore.Domain.System value)
+        {
+            try
+            {
+                SystemController orderTypeController = ControllerFactory.CreateSystemController();
+                int itemId = orderTypeController.UpdateSystem(value);
+
+                return Request.CreateResponse(HttpStatusCode.OK, "System updated successfully.");
+
+            }
+            catch (Exception ex)
+            {
+                return Request.CreateErrorResponse(HttpStatusCode.BadRequest, "something went wrong" + ex.Message);
+            }
+        }
+        
+        [HttpDelete]
+        [Route("api/v1/DeleteSystem/{systemId}")]
+        public HttpResponseMessage DeleteSystem(int systemId)
+        {
+            try
+            {
+                SystemController orderTypeController = ControllerFactory.CreateSystemController();
+                int itemId = orderTypeController.DeleteSystem(systemId);
+
+                return Request.CreateResponse(HttpStatusCode.OK, "System deleted successfully.");
+
+            }
+            catch (Exception ex)
+            {
+                return Request.CreateErrorResponse(HttpStatusCode.BadRequest, "something went wrong" + ex.Message);
+            }
+        }
+    }
+}

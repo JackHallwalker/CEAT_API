@@ -1,0 +1,53 @@
+﻿using SupremeCourtCore.Common;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+
+namespace SupremeCourtCore.Domain
+{
+    public class UserActionLog
+    {
+        [DBField("USER_ID")]
+        public int UserId { get; set; }
+
+        [DBField("LOG_DATE")]
+        public DateTime LogDate { get; set; }
+
+        [DBField("USER_ACTION")]
+        public string UserAction { get; set; }
+
+        [DBField("IP_ADDRESS")]
+        public string IpAddress { get; set; }
+
+        [DBField("CASE_NO")]
+        public string CaseNo { get; set; }
+
+        [DBField("USERNAME")]
+        public string username { get; set; }
+
+    }
+
+    public class UserActionLogOnline
+    {
+        public int UserId { get; set; }
+
+        public string UserAction { get; set; }
+
+        public DateTime date { get; set; }
+
+        public string IpAddress { get; set; }
+
+        public string CaseNo { get; set; }
+
+        public string username { get; set; }
+    }
+
+    public class DateRange
+    {
+        public int userId { get; set; }
+        public DateTime StartDate { get; set; }
+        public DateTime EndDate { get; set; }
+    }
+}

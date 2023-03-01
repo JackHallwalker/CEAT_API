@@ -1,0 +1,70 @@
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Net;
+using System.Net.Http;
+using System.Web;
+using System.Web.Http;
+using SupremeCourtCore.Common;
+using SupremeCourtCore.Controller;
+using SupremeCourtCore.Domain;
+
+namespace SupremeCourtAPI.Controllers
+{
+    public class RoleFunctionApiController : ApiController
+    {
+        [HttpPost]
+        [Route("api/v1/AddRoleFunction/")]
+        public HttpResponseMessage AddRoleFunction([FromBody] RoleFunction value)
+        {
+            try
+            {
+                RoleFunctionController orderTypeController = ControllerFactory.CreateRoleFunctionController();
+                int itemId = orderTypeController.AddRoleFunction(value);
+
+                return Request.CreateResponse(HttpStatusCode.OK, "Role function created successfully.");
+
+            }
+            catch (Exception ex)
+            {
+                return Request.CreateErrorResponse(HttpStatusCode.BadRequest, "something went wrong" + ex.Message);
+            }
+        }
+
+        [HttpGet]
+        [Route("api/v1/GetAllRoleFunctionsBySystemRoleId/{systemRoleId}")]
+        public IEnumerable<RoleFunction> GetAllRoleFunctionsBySystemRoleId(int systemRoleId)
+        {
+            RoleFunctionController orderTypeController = ControllerFactory.CreateRoleFunctionController();
+
+            return orderTypeController.GetAllRoleFunctionsBySystemRoleId(systemRoleId);
+        }
+        
+        [HttpGet]
+        [Route("api/v1/GetAllRoleFunctionsBySystemFunctionId/{systemFunctionId}")]
+        public IEnumerable<RoleFunction> GetAllRoleFunctionsBySystemFunctionId(int systemFunctionId)
+        {
+            RoleFunctionController orderTypeController = ControllerFactory.CreateRoleFunctionController();
+
+            return orderTypeController.GetAllRoleFunctionsBySystemFunctionId(systemFunctionId);
+        }
+
+        [HttpDelete]
+        [Route("api/v1/DeleteRoleFunction/{systemRoleId}/{systemFunctionId}")]
+        public HttpResponseMessage DeleteRoleFunction(int systemRoleId, int systemFunctionId)
+        {
+            try
+            {
+                RoleFunctionController orderTypeController = ControllerFactory.CreateRoleFunctionController();
+                int itemId = orderTypeController.DeleteRoleFunction(systemRoleId, systemFunctionId);
+
+                return Request.CreateResponse(HttpStatusCode.OK, "Role function deleted successfully. Id-" + itemId);
+
+            }
+            catch (Exception ex)
+            {
+                return Request.CreateErrorResponse(HttpStatusCode.BadRequest, "something went wrong" + ex.Message);
+            }
+        }
+    }
+}

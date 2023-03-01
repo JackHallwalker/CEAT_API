@@ -1,0 +1,99 @@
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Net;
+using System.Net.Http;
+using System.Web;
+using System.Web.Http;
+using SupremeCourtCore.Common;
+using SupremeCourtCore.Controller;
+using SupremeCourtCore.Domain;
+
+namespace SupremeCourtAPI.Controllers
+{
+    public class CaseLaywerApiController : ApiController
+    {
+        [HttpPost]
+        [Route("api/v1/AddCaseLawyer/")]
+        public HttpResponseMessage AddCaseLawyer([FromBody] CaseLawyer value)
+        {
+            try
+            {
+                CaseLawyerController orderTypeController = ControllerFactory.CreateCaseLawyerController();
+                int itemId = orderTypeController.AddCaseLawyer(value);
+
+                return Request.CreateResponse(HttpStatusCode.OK, "Case lawyer created successfully.");
+
+            }
+            catch (Exception ex)
+            {
+                return Request.CreateErrorResponse(HttpStatusCode.BadRequest, "something went wrong" + ex.Message);
+            }
+        }
+
+        [HttpGet]
+        [Route("api/v1/GetAllCaseLawyerByApplicationId/{applicationId}")]
+        public IEnumerable<CaseLawyer> GetAllCaseLawyerByApplicationId(int applicationId)
+        {
+            CaseLawyerController orderTypeController = ControllerFactory.CreateCaseLawyerController();
+
+            return orderTypeController.GetAllCaseLawyerByApplicationId(applicationId);
+        }
+
+        [HttpGet]
+        [Route("api/v1/GetAllCaseLawyerByLawyerId/{lawyerId}")]
+        public IEnumerable<CaseLawyer> GetAllCaseLawyerByLawyerId(int lawyerId)
+        {
+            CaseLawyerController orderTypeController = ControllerFactory.CreateCaseLawyerController();
+
+            return orderTypeController.GetAllCaseLawyerByLawyerId(lawyerId);
+        }
+        
+        [HttpGet]
+        [Route("api/v1/GetAllCaseLawyerByPartyTypeId/{partyTypeId}")]
+        public IEnumerable<CaseLawyer> GetAllCaseLawyerByPartyTypeId(int partyTypeId)
+        {
+            CaseLawyerController orderTypeController = ControllerFactory.CreateCaseLawyerController();
+
+            return orderTypeController.GetAllCaseLawyerByPartyTypeId(partyTypeId);
+        }
+
+        [HttpDelete]
+        [Route("api/v1/DeleteCaseLawyer/{applicationId}/{lawyerId}/{partyId}")]
+        public HttpResponseMessage DeleteCaseLawyer(int applicationId, int lawyerId, int partyId)
+        {
+            try
+            {
+                CaseLawyerController orderTypeController = ControllerFactory.CreateCaseLawyerController();
+                int itemId = orderTypeController.DeleteCaseLawyer(applicationId, lawyerId, partyId);
+
+                return Request.CreateResponse(HttpStatusCode.OK, "Case lawyer deleted successfully.");
+
+            }
+            catch (Exception ex)
+            {
+                return Request.CreateErrorResponse(HttpStatusCode.BadRequest, "something went wrong" + ex.Message);
+            }
+        }
+
+
+
+        [HttpPut]
+        [Route("api/v1/UpdateCaseLawyer/")]
+        public HttpResponseMessage UpdateCaseLawyer([FromBody] CaseLawyer value)
+        {
+            try
+            {
+                CaseLawyerController orderTypeController = ControllerFactory.CreateCaseLawyerController();
+                int itemId = orderTypeController.UpdateCaseLawyer(value);
+
+                return Request.CreateResponse(HttpStatusCode.OK, "Application party updated successfully.");
+
+            }
+            catch (Exception ex)
+            {
+                return Request.CreateErrorResponse(HttpStatusCode.BadRequest, "something went wrong" + ex.Message);
+            }
+        }
+    }
+}

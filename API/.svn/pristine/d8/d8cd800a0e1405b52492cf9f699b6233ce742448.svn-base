@@ -1,0 +1,88 @@
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Net;
+using System.Net.Http;
+using System.Web;
+using System.Web.Http;
+using SupremeCourtCore.Common;
+using SupremeCourtCore.Controller;
+using SupremeCourtCore.Domain;
+
+namespace SupremeCourtAPI.Controllers
+{
+    public class CourtApiController : ApiController
+    {
+        [HttpPost]
+        [Route("api/v1/AddCourt/")]
+        public HttpResponseMessage AddCourt([FromBody] Court value)
+        {
+            try
+            {
+                CourtController orderTypeController = ControllerFactory.CreateCourtController();
+                int itemId = orderTypeController.AddCourt(value);
+
+                return Request.CreateResponse(HttpStatusCode.OK, "Court created successfully. Id-" + itemId);
+
+            }
+            catch (Exception ex)
+            {
+                return Request.CreateErrorResponse(HttpStatusCode.BadRequest, "something went wrong" + ex.Message);
+            }
+        }
+
+        [HttpGet]
+        [Route("api/v1/GetAllCourts/")]
+        public IEnumerable<Court> GetAllCourts()
+        {
+            CourtController orderTypeController = ControllerFactory.CreateCourtController();
+
+            return orderTypeController.GetAllCourts();
+        }
+
+        [HttpGet]
+        [Route("api/v1/GetCourt/{id?}")]
+        public Court GetCourt(int id)
+        {
+            CourtController orderTypeController = ControllerFactory.CreateCourtController();
+
+            return orderTypeController.GetCourt(id);
+        }
+
+        [HttpPut]
+        [Route("api/v1/UpdateCourt/")]
+        public HttpResponseMessage UpdateCourt([FromBody] Court value)
+        {
+            try
+            {
+                CourtController orderTypeController = ControllerFactory.CreateCourtController();
+                int itemId = orderTypeController.UpdateCourt(value);
+
+                return Request.CreateResponse(HttpStatusCode.OK, "Court updated successfully.");
+
+            }
+            catch (Exception ex)
+            {
+                return Request.CreateErrorResponse(HttpStatusCode.BadRequest, "something went wrong" + ex.Message);
+            }
+        }
+        
+        [HttpPut]
+        [Route("api/v1/DeleteCourt/{courtId}")]
+        public HttpResponseMessage DeleteCourt(int courtId)
+        {
+            try
+            {
+                CourtController orderTypeController = ControllerFactory.CreateCourtController();
+                int itemId = orderTypeController.DeleteCourt(courtId);
+
+                return Request.CreateResponse(HttpStatusCode.OK, "Court delete successfully.");
+
+            }
+            catch (Exception ex)
+            {
+                return Request.CreateErrorResponse(HttpStatusCode.BadRequest, "something went wrong" + ex.Message);
+            }
+        }
+    }
+}

@@ -1,0 +1,90 @@
+﻿using SathosaCore.Common;
+using SathosaCore.Controller;
+using SathosaCore.Domain;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Net;
+using System.Net.Http;
+using System.Web;
+using System.Web.Http;
+
+
+namespace SathosaAPI.Controllers
+{
+    public class RegionalItemApiController : ApiController
+    {
+        //  [Authorize]
+        [HttpPost]
+        [Route("api/v1/CreateRegionalItem")]
+        public HttpResponseMessage Post([FromBody] RegionalItemOnline value)
+        {
+            RegionalItem RegionalItem = (RegionalItem)Utility.cloneObject(value, new RegionalItem());
+
+            try
+            {
+                RegionalItemController regionalItemController = ControllerFactory.createRegionalItemController();
+                int item = regionalItemController.CreatrRegionalItem(RegionalItem);
+                if(item > 0)
+                {
+                    return Request.CreateResponse(HttpStatusCode.OK, "Regional Item created successfully.");
+                }
+                else
+                {
+                    return Request.CreateErrorResponse(HttpStatusCode.BadRequest, "Regional Item not created.");
+                }
+                
+            }
+            catch (Exception ex)
+            {
+                return Request.CreateErrorResponse(HttpStatusCode.BadRequest, "something went wrong " + ex.Message);
+            }
+
+        }
+
+        [HttpGet]
+        [Route("api/v1/GetProductsByRegionalIdAndDate/{id}")]
+        public IEnumerable<RegionalItemOut> Get(int id)
+        {
+            RegionalItemController regionalItemController = ControllerFactory.createRegionalItemController();
+            int regionalId = id;
+            return regionalItemController.GetProductsByRegionalIdAndDate(regionalId);
+        }
+
+        [HttpPost]
+        [Route("api/v1/CreateRegionalItemList")]
+        public HttpResponseMessage Post([FromBody] RegionalItemOnlineList value)
+        {
+            try
+            {
+                
+                RegionalItemList regionalItemList = (RegionalItemList)Utility.cloneObject(value, new RegionalItemList());
+                foreach (var regionalItem in value.regionalItemOnlineList)
+                {
+                    regionalItemList.regionalItemList.Add((RegionalItem)Utility.cloneObject(regionalItem, new RegionalItem()));
+
+
+                }
+
+
+                RegionalItemController regionalItemController = ControllerFactory.createRegionalItemController();
+                int orderId = regionalItemController.SaveRegionalItemList(regionalItemList.regionalItemList);
+                if(orderId == 1)
+                {
+                    return Request.CreateResponse(HttpStatusCode.OK, "Item List created successfully.");
+                }
+                else
+                {
+                    return Request.CreateErrorResponse(HttpStatusCode.BadRequest, "Item List not created");
+                }
+                
+
+            }
+            catch (Exception ex)
+            {
+                return Request.CreateErrorResponse(HttpStatusCode.BadRequest, "something went wrong" + ex.Message);
+            }
+        }
+
+    }
+}

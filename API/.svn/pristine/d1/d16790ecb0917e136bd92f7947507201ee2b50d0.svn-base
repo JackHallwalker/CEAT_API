@@ -1,0 +1,35 @@
+<?xml version="1.0"?>
+<doc>
+    <assembly>
+        <name>SupremeCourtAPI</name>
+    </assembly>
+    <members>
+        <member name="T:SupremeCourtAPI.ApiAuthorizationServerProvider">
+            <summary>
+            ApiAuthorizationServerProvider
+            </summary>
+        </member>
+        <member name="T:SupremeCourtAPI.ApiAuthorizeAttribute">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="M:SupremeCourtAPI.ApiAuthorizeAttribute.HandleUnauthorizedRequest(System.Web.Http.Controllers.HttpActionContext)">
+            <summary>
+            
+            </summary>
+            <param name="actionContext"></param>
+        </member>
+        <member name="T:SupremeCourtAPI.AuthenticationStartup">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="M:SupremeCourtAPI.AuthenticationStartup.Configuration(Owin.IAppBuilder)">
+            <summary>
+            
+            </summary>
+            <param name="app"></param>
+        </member>
+    </members>
+</doc>

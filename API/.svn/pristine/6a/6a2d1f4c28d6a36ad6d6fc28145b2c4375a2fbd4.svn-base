@@ -1,0 +1,145 @@
+﻿using SupremeCourtCore.Common;
+using SupremeCourtCore.Domain;
+using System;
+using System.Collections.Generic;
+using System.Data.OracleClient;
+using System.Globalization;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+
+namespace SupremeCourtCore.Infrastructure
+{
+    public interface UserLoginDAO
+    {
+        UserLogin GetLoginDetails(string username, string password, DBConnection dbConnection);
+        //GetAllUserLogin
+        //int getMaxLoginId(DBConnection dbConnection);
+        int userLoginCreate(UserLogin userLogin, DBConnection dbConnection);
+        int UpdateLogin(UserLogin userLogin, DBConnection dbConnection);
+        int DeleteLoginUser(int userLogin, DBConnection dbConnection);
+        List<UserLogin> GetAllUsersLogin(DBConnection dbConnection);
+        int UpdateUserLoginActiveStatusByUserId(int userId, int isActive, DBConnection dbConnection);
+        bool CheckUserLoginExitsByUserId(int userId, DBConnection dbConnection);
+        int UpdateUserLoginPasswordByUserId(int loginId, string newPassword, DBConnection dbConnection);
+        int UpdateUserLoginUserNameByUserId(int loginId, string newUsername, DBConnection dbConnection);
+        //int GetLoginIdByUsername(string username, DBConnection dbConnection);      
+        //int CheckUserName(string username, DBConnection dbConnection);
+        //int UpdatePasswordByUserId(int loginId, string newPassword, DBConnection dbConnection);
+    }
+
+    public class UserLoginDAOImpl : UserLoginDAO
+    {
+        public UserLogin GetLoginDetails(string username, string password, DBConnection dbConnection)
+        {
+
+            dbConnection.cmd.CommandText = "SELECT * FROM USER_LOGIN WHERE USER_NAME = '" + username + "' AND PASSWORD = '" + password + "' ";
+
+            //int count = Convert.ToInt32(dbConnection.cmd.ExecuteScalar());
+            //return count;
+            dbConnection.dr = dbConnection.cmd.ExecuteReader();
+            DataAccessObject dataAccessObject = new DataAccessObject();
+            return dataAccessObject.GetSingleOject<UserLogin>(dbConnection.dr);
+        }
+
+        /*public int getMaxLoginId(DBConnection dbConnection)
+        {
+            dbConnection.cmd.CommandText = "SELECT NVL(MAX(ID),0) FROM user_login";
+            int loginId = Convert.ToInt32(dbConnection.cmd.ExecuteScalar());
+            if (loginId == 0)
+            {
+                loginId = 1000001;
+            }
+            else
+                loginId = loginId + 1;
+
+            return loginId;
+        }*/
+
+        public int userLoginCreate(UserLogin userLogin, DBConnection dbConnection)
+        {
+            dbConnection.cmd.CommandText = "INSERT INTO USER_LOGIN (USER_NAME, PASSWORD, USER_TYPE_ID, IS_ACTIVE) values('" + userLogin.UserName + "','" + userLogin.Password + "'," + userLogin.UserTypeId + "," + userLogin.is_active + " ); SELECT currval('user_login_id_seq');";
+            return dbConnection.cmd.ExecuteNonQuery();
+        }
+
+        public int UpdateLogin(UserLogin userLogin, DBConnection dbConnection)
+        {
+            dbConnection.cmd.CommandText = "update USER_LOGIN set USER_TYPE_ID = " + userLogin.UserTypeId + ", USER_NAME = '" + userLogin.UserName + "', PASSWORD = '" + userLogin.Password + "', IS_ACTIVE = " + userLogin.is_active + " where ID = " + userLogin.LoginId;
+
+            return dbConnection.cmd.ExecuteNonQuery();
+        }
+
+        public int DeleteLoginUser(int userLoginId, DBConnection dbConnection)
+        {
+            dbConnection.cmd.CommandText = "UPDATE USER_LOGIN SET IS_ACTIVE = 0 WHERE ID =" + userLoginId;
+
+            return dbConnection.cmd.ExecuteNonQuery();
+        }
+
+        public List<UserLogin> GetAllUsersLogin(DBConnection dbConnection)
+        {
+            dbConnection.cmd.CommandText = "SELECT * FROM USER_LOGIN WHERE IS_ACTIVE = 1 ";
+
+            dbConnection.dr = dbConnection.cmd.ExecuteReader();
+            DataAccessObject dataAccessObject = new DataAccessObject();
+            return dataAccessObject.ReadCollection<UserLogin>(dbConnection.dr);
+        }
+
+        public int UpdateUserLoginActiveStatusByUserId(int userId, int isActive, DBConnection dbConnection)
+        {
+            dbConnection.cmd.CommandText = "UPDATE USER_LOGIN SET IS_ACTIVE =" + isActive + " WHERE ID = " + userId + " ";
+
+            return dbConnection.cmd.ExecuteNonQuery();
+        }
+
+        public bool CheckUserLoginExitsByUserId(int userId, DBConnection dbConnection)
+        {
+            dbConnection.cmd.CommandText = "SELECT * FROM USER_LOGIN WHERE ID = " + userId + " ";
+
+            return Convert.ToBoolean(dbConnection.cmd.ExecuteNonQuery());
+        }
+
+        public int UpdateUserLoginPasswordByUserId(int loginId, string newPassword, DBConnection dbConnection)
+        {
+            dbConnection.cmd.Parameters.Clear();
+            dbConnection.cmd.CommandText = "UPDATE USER_LOGIN SET PASSWORD='" + newPassword + "' WHERE ID =" + loginId + "";
+
+            return dbConnection.cmd.ExecuteNonQuery();
+        }
+
+        public int UpdateUserLoginUserNameByUserId(int loginId, string newUsername, DBConnection dbConnection)
+        {
+            dbConnection.cmd.Parameters.Clear();
+            dbConnection.cmd.CommandText = "UPDATE USER_LOGIN SET USER_NAME='" + newUsername + "' WHERE ID =" + loginId + "";
+
+            return dbConnection.cmd.ExecuteNonQuery();
+        }
+
+
+        /*public int GetLoginIdByUsername(string username, DBConnection dbConnection)
+        {
+            dbConnection.cmd.Parameters.Clear();
+            dbConnection.cmd.CommandText = "SELECT ID FROM user_login WHERE USER_NAME = '" + username + "' ";
+
+            int count = Convert.ToInt32(dbConnection.cmd.ExecuteScalar());
+            return count;
+        }
+
+        public int CheckUserName(string username, DBConnection dbConnection)
+        {
+            dbConnection.cmd.Parameters.Clear();
+            dbConnection.cmd.CommandText = "SELECT COUNT(*) FROM user_login WHERE USER_NAME = '" + username + "' ";
+            
+            int count = Convert.ToInt32(dbConnection.cmd.ExecuteScalar());
+            return count;
+        }
+
+        public int UpdatePasswordByUserId(int loginId, string newPassword, DBConnection dbConnection)
+        {
+            dbConnection.cmd.Parameters.Clear();
+            dbConnection.cmd.CommandText = "UPDATE user_login SET PASSWORD='" + newPassword + "' WHERE ID =" + loginId + "";
+
+            return dbConnection.cmd.ExecuteNonQuery();
+        }*/
+    }
+}

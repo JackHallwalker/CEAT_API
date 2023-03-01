@@ -1,0 +1,163 @@
+﻿using SupremeCourtCore.Infrastructure;
+using SupremeCourtCore.Infrastructure;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+
+namespace SupremeCourtCore.Common
+{
+    public class DAOFactory
+    {
+        public static AdminLoginDAO CreateAdminLoginDAO()
+        {
+            AdminLoginDAO aa = new AdminLoginDAOImpl();
+            return (AdminLoginDAO)aa;
+        }
+        public static ApiVersionDAO CreateApiVersionDAO()
+        {
+            ApiVersionDAO aa = new ApiVersionDAOImpl();
+            return (ApiVersionDAO)aa;
+        }
+
+        public static UserLoginDAO CreateUserLoginDAO()
+        {
+            UserLoginDAO aa = new UserLoginDAOImpl();
+            return (UserLoginDAO)aa;
+        }
+
+        //New
+        public static MealPlanDAO CreateMealPlanDAO()
+        {
+            MealPlanDAO aa = new MealPlanDAOImpl();
+            return (MealPlanDAO)aa;
+        }
+        
+        public static ApplicationDAO CreateApplicationDAO()
+        {
+            ApplicationDAO aa = new ApplicationDAOImpl();
+            return (ApplicationDAO)aa;
+        }
+        
+        public static ApplicationPartyDAO CreateApplicationPartyDAO()
+        {
+            ApplicationPartyDAO aa = new ApplicationPartyDAOImpl();
+            return (ApplicationPartyDAO)aa;
+        }
+        
+        public static PartyTypeDAO CreatePartyTypeDAO()
+        {
+            PartyTypeDAO aa = new PartyTypeDAOImpl();
+            return (PartyTypeDAO)aa;
+        }
+        
+        public static LawyerDAO CreateLawyerDAO()
+        {
+            LawyerDAO aa = new LawyerDAOImpl();
+            return (LawyerDAO)aa;
+        }
+        
+        public static JudgeDAO CreateJudgeDAO()
+        {
+            JudgeDAO aa = new JudgeDAOImpl();
+            return (JudgeDAO)aa;
+        }
+        
+        public static CaseTypeDAO CreateCaseTypeDAO()
+        {
+            CaseTypeDAO aa = new CaseTypeDAOImpl();
+            return (CaseTypeDAO)aa;
+        }
+        
+        public static JournalDAO CreateJournalDAO()
+        {
+            JournalDAO aa = new JournalDAOImpl();
+            return (JournalDAO)aa;
+        }
+        
+        public static CategoryDAO CreateCategoryDAO()
+        {
+            CategoryDAO aa = new CategoryDAOImpl();
+            return (CategoryDAO)aa;
+        }
+        
+        public static CaseJudgeDAO CreateCaseJudgeDAO()
+        {
+            CaseJudgeDAO aa = new CaseJudgeDAOImpl();
+            return (CaseJudgeDAO)aa;
+        }
+        
+        public static CaseLawyerDAO CreateCaseLawyerDAO()
+        {
+            CaseLawyerDAO aa = new CaseLawyerDAOImpl();
+            return (CaseLawyerDAO)aa;
+        }
+        
+        public static ActionTypeDAO CreateActionTypeDAO()
+        {
+            ActionTypeDAO aa = new ActionTypeDAOImpl();
+            return (ActionTypeDAO)aa;
+        }
+        
+        public static CourtDAO CreateCourtDAO()
+        {
+            CourtDAO aa = new CourtDAOImpl();
+            return (CourtDAO)aa;
+        }
+        
+        public static PetitionDAO CreatePetitionDAO()
+        {
+            PetitionDAO aa = new PetitionDAOImpl();
+            return (PetitionDAO)aa;
+        }
+        
+        public static NextActionDAO CreateNextActionDAO()
+        {
+            NextActionDAO aa = new NextActionDAOImpl();
+            return (NextActionDAO)aa;
+        }
+        
+        public static SystemDAO CreateSystemDAO()
+        {
+            SystemDAO aa = new SystemDAOImpl();
+            return (SystemDAO)aa;
+        }
+        
+        public static SystemRoleDAO CreateSystemRoleDAO()
+        {
+            SystemRoleDAO aa = new SystemRoleDAOImpl();
+            return (SystemRoleDAO)aa;
+        }
+        
+        public static RoleFunctionDAO CreateRoleFunctionDAO()
+        {
+            RoleFunctionDAO aa = new RoleFunctionDAOImpl();
+            return (RoleFunctionDAO)aa;
+        }
+        
+        public static SystemFunctionDAO CreateSystemFunctionDAO()
+        {
+            SystemFunctionDAO aa = new SystemFunctionDAOImpl();
+            return (SystemFunctionDAO)aa;
+        }
+        
+        public static UserSystemFunctionDAO CreateUserSystemFunctionDAO()
+        {
+            UserSystemFunctionDAO aa = new UserSystemFunctionDAOImpl();
+            return (UserSystemFunctionDAO)aa;
+        }
+        
+        public static SysUserDAO CreateSysUserDAO()
+        {
+            SysUserDAO aa = new SysUserDAOImpl();
+            return (SysUserDAO)aa;
+        }
+        
+        public static UserActionLogDAO CreateUserActionLogDAO()
+        {
+            UserActionLogDAO aa = new UserActionLogDAOImpl();
+            return (UserActionLogDAO)aa;
+        }
+    }
+}

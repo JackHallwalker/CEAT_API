@@ -1,0 +1,95 @@
+﻿using SupremeCourtCore.Common;
+using SupremeCourtCore.Domain;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+
+namespace SupremeCourtCore.Infrastructure
+{
+    public interface CourtDAO
+    {
+        List<Court> GetAllCourts(DBConnection dbConnection);
+        Court GetCourt(int id, DBConnection dbConnection);
+        int AddCourt(Court court, DBConnection dbConnection);
+        int UpdateCourt(Court court, DBConnection dbConnection);
+        int DeleteCourt(int courtId, DBConnection dbConnection);
+    }
+    public class CourtSqlDAOImpl : CourtDAO
+    {
+        public int AddCourt(Court court, DBConnection dbConnection)
+        {
+            dbConnection.cmd.CommandText = "INSERT INTO COURT(NAME,SHORT_CODE,IS_ACTIVE) VALUES('" + court.name + "','" + court.shortCode + "',1) SELECT SCOPE_IDENTITY()";
+            return Convert.ToInt32(dbConnection.cmd.ExecuteScalar());
+        }
+
+        public int DeleteCourt(int courtId, DBConnection dbConnection)
+        {
+            dbConnection.cmd.CommandText = "UPDATE COURT SET IS_ACTIVE = 0  WHERE ID = " + courtId;
+            return dbConnection.cmd.ExecuteNonQuery();
+        }
+
+        public List<Court> GetAllCourts(DBConnection dbConnection)
+        {
+            dbConnection.cmd.CommandText = "SELECT * FROM COURT WHERE IS_ACTIVE = 1";
+
+            dbConnection.dr = dbConnection.cmd.ExecuteReader();
+            DataAccessObject dataAccessObject = new DataAccessObject();
+            return dataAccessObject.ReadCollection<Court>(dbConnection.dr);
+        }
+
+        public Court GetCourt(int id, DBConnection dbConnection)
+        {
+            dbConnection.cmd.CommandText = "SELECT * FROM COURT WHERE ID = " + id + " ";
+
+            dbConnection.dr = dbConnection.cmd.ExecuteReader();
+            DataAccessObject dataAccessObject = new DataAccessObject();
+            return dataAccessObject.GetSingleOject<Court>(dbConnection.dr);
+        }
+
+        public int UpdateCourt(Court court, DBConnection dbConnection)
+        {
+            dbConnection.cmd.CommandText = "UPDATE COURT SET NAME = '" + court.name + "', SHORT_CODE = '" + court.shortCode + "', IS_ACTIVE = " + court.isActive + "  WHERE ID = " + court.id;
+            return dbConnection.cmd.ExecuteNonQuery();
+        }
+    }
+    public class CourtDAOImpl : CourtDAO
+    {
+        public int AddCourt(Court court, DBConnection dbConnection)
+        {
+            dbConnection.cmd.CommandText = "INSERT INTO COURT(NAME,SHORT_CODE,IS_ACTIVE) VALUES('" + court.name + "','" + court.shortCode + "',1); SELECT currval('court_id_seq');";
+            return Convert.ToInt32(dbConnection.cmd.ExecuteScalar());
+        }
+
+        public int DeleteCourt(int courtId, DBConnection dbConnection)
+        {
+            dbConnection.cmd.CommandText = "UPDATE COURT SET IS_ACTIVE = 0  WHERE ID = " + courtId;
+            return dbConnection.cmd.ExecuteNonQuery();
+        }
+
+        public List<Court> GetAllCourts(DBConnection dbConnection)
+        {
+            dbConnection.cmd.CommandText = "SELECT * FROM COURT WHERE IS_ACTIVE = 1";
+
+            dbConnection.dr = dbConnection.cmd.ExecuteReader();
+            DataAccessObject dataAccessObject = new DataAccessObject();
+            return dataAccessObject.ReadCollection<Court>(dbConnection.dr);
+        }
+
+        public Court GetCourt(int id, DBConnection dbConnection)
+        {
+            dbConnection.cmd.CommandText = "SELECT * FROM COURT WHERE ID = " + id + " ";
+
+            dbConnection.dr = dbConnection.cmd.ExecuteReader();
+            DataAccessObject dataAccessObject = new DataAccessObject();
+            return dataAccessObject.GetSingleOject<Court>(dbConnection.dr);
+        }
+
+        public int UpdateCourt(Court court, DBConnection dbConnection)
+        {
+            dbConnection.cmd.CommandText = "UPDATE COURT SET NAME = '" + court.name + "', SHORT_CODE = '" + court.shortCode + "', IS_ACTIVE = " + court.isActive + "  WHERE ID = " + court.id;
+            return dbConnection.cmd.ExecuteNonQuery();
+        }
+    }
+}

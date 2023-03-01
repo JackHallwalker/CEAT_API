@@ -1,0 +1,103 @@
+﻿using SupremeCourtCore.Common;
+using SupremeCourtCore.Domain;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+
+namespace SupremeCourtCore.Infrastructure
+{
+    public interface SystemRoleDAO
+    {
+        List<SystemRole> GetAllSystemRoles(int systemId, DBConnection dbConnection);
+        SystemRole GetSystemRole(int id, DBConnection dbConnection);
+        int AddSystemRole(SystemRole systemRole, DBConnection dbConnection);
+        int UpdateSystemRole(SystemRole systemRole, DBConnection dbConnection);
+/*        int DeleteSystemRole(int systemRoleId, DBConnection dbConnection);*/
+    }
+    public class SystemRoleSqlDAOImpl : SystemRoleDAO
+    {
+        public int AddSystemRole(SystemRole systemRole, DBConnection dbConnection)
+        {
+            dbConnection.cmd.CommandText = "INSERT INTO SYSTEM_ROLE(SYSTEM_ID,NAME) VALUES(" + systemRole.systemId + ",'" + systemRole.name + "') SELECT SCOPE_IDENTITY()";
+            return Convert.ToInt32(dbConnection.cmd.ExecuteScalar());
+        }
+
+        /* public int DeleteSystemRole(int systemRoleId, DBConnection dbConnection)
+         {
+             dbConnection.cmd.CommandText = "DELETE FROM SYSTEM_FUNCTION WHERE SYSTEM_ID = " + systemRoleId;
+             dbConnection.cmd.ExecuteNonQuery();
+             dbConnection.cmd.CommandText = "DELETE FROM SYSTEM_ROLE WHERE SYSTEM_ID = " + systemRoleId;
+             dbConnection.cmd.ExecuteNonQuery();
+             dbConnection.cmd.CommandText = "DELETE FROM SYSTEM_ROLE WHERE ID = " + systemRoleId;
+             return dbConnection.cmd.ExecuteNonQuery();
+         }*/
+
+        public List<SystemRole> GetAllSystemRoles(int systemId, DBConnection dbConnection)
+        {
+            dbConnection.cmd.CommandText = "SELECT * FROM SYSTEM_ROLE WHERE SYSTEM_ID =" + systemId;
+
+            dbConnection.dr = dbConnection.cmd.ExecuteReader();
+            DataAccessObject dataAccessObject = new DataAccessObject();
+            return dataAccessObject.ReadCollection<SystemRole>(dbConnection.dr);
+        }
+
+        public SystemRole GetSystemRole(int id, DBConnection dbConnection)
+        {
+            dbConnection.cmd.CommandText = "SELECT * FROM SYSTEM_ROLE WHERE ID = " + id + " ";
+
+            dbConnection.dr = dbConnection.cmd.ExecuteReader();
+            DataAccessObject dataAccessObject = new DataAccessObject();
+            return dataAccessObject.GetSingleOject<SystemRole>(dbConnection.dr);
+        }
+
+        public int UpdateSystemRole(SystemRole systemRole, DBConnection dbConnection)
+        {
+            dbConnection.cmd.CommandText = "UPDATE SYSTEM_ROLE SET SYSTEM_ID = " + systemRole.systemId + ", NAME = '" + systemRole.name + "' WHERE ID = " + systemRole.id;
+            return dbConnection.cmd.ExecuteNonQuery();
+        }
+    }
+    public class SystemRoleDAOImpl : SystemRoleDAO
+    {
+        public int AddSystemRole(SystemRole systemRole, DBConnection dbConnection)
+        {
+            dbConnection.cmd.CommandText = "INSERT INTO SYSTEM_ROLE(SYSTEM_ID,NAME) VALUES("+systemRole.systemId+",'" + systemRole.name + "'); SELECT currval('system_role_id_seq');";
+            return Convert.ToInt32(dbConnection.cmd.ExecuteScalar());
+        }
+
+       /* public int DeleteSystemRole(int systemRoleId, DBConnection dbConnection)
+        {
+            dbConnection.cmd.CommandText = "DELETE FROM SYSTEM_FUNCTION WHERE SYSTEM_ID = " + systemRoleId;
+            dbConnection.cmd.ExecuteNonQuery();
+            dbConnection.cmd.CommandText = "DELETE FROM SYSTEM_ROLE WHERE SYSTEM_ID = " + systemRoleId;
+            dbConnection.cmd.ExecuteNonQuery();
+            dbConnection.cmd.CommandText = "DELETE FROM SYSTEM_ROLE WHERE ID = " + systemRoleId;
+            return dbConnection.cmd.ExecuteNonQuery();
+        }*/
+
+        public List<SystemRole> GetAllSystemRoles(int systemId, DBConnection dbConnection)
+        {
+            dbConnection.cmd.CommandText = "SELECT * FROM SYSTEM_ROLE WHERE SYSTEM_ID ="+systemId;
+
+            dbConnection.dr = dbConnection.cmd.ExecuteReader();
+            DataAccessObject dataAccessObject = new DataAccessObject();
+            return dataAccessObject.ReadCollection<SystemRole>(dbConnection.dr);
+        }
+
+        public SystemRole GetSystemRole(int id, DBConnection dbConnection)
+        {
+            dbConnection.cmd.CommandText = "SELECT * FROM SYSTEM_ROLE WHERE ID = " + id + " ";
+
+            dbConnection.dr = dbConnection.cmd.ExecuteReader();
+            DataAccessObject dataAccessObject = new DataAccessObject();
+            return dataAccessObject.GetSingleOject<SystemRole>(dbConnection.dr);
+        }
+
+        public int UpdateSystemRole(SystemRole systemRole, DBConnection dbConnection)
+        {
+            dbConnection.cmd.CommandText = "UPDATE SYSTEM_ROLE SET SYSTEM_ID = "+systemRole.systemId+", NAME = '" + systemRole.name + "' WHERE ID = " + systemRole.id;
+            return dbConnection.cmd.ExecuteNonQuery();
+        }
+    }
+}

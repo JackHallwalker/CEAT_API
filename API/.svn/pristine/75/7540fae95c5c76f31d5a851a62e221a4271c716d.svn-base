@@ -1,0 +1,98 @@
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Net;
+using System.Net.Http;
+using System.Web;
+using System.Web.Http;
+using SupremeCourtCore.Common;
+using SupremeCourtCore.Controller;
+using SupremeCourtCore.Domain;
+
+namespace SupremeCourtAPI.Controllers
+{
+    public class ApplicationPartyApiController : ApiController
+    {
+        [HttpPost]
+        [Route("api/v1/AddApplicationParty/")]
+        public HttpResponseMessage AddApplicationParty([FromBody] ApplicationParty value)
+        {
+            try
+            {
+                ApplicationPartyController orderTypeController = ControllerFactory.CreateApplicationPartyController();
+                int itemId = orderTypeController.AddApplicationParty(value);
+
+                return Request.CreateResponse(HttpStatusCode.OK, "Application party created successfully.");
+
+            }
+            catch (Exception ex)
+            {
+                return Request.CreateErrorResponse(HttpStatusCode.BadRequest, "something went wrong" + ex.Message);
+            }
+        }
+
+        [HttpGet]
+        [Route("api/v1/GetAllApplicationParties/{applicationId}")]
+        public IEnumerable<ApplicationParty> GetAllApplicationParties(int applicationId)
+        {
+            ApplicationPartyController orderTypeController = ControllerFactory.CreateApplicationPartyController();
+
+            return orderTypeController.GetAllApplicationParties(applicationId);
+        }
+
+        [HttpGet]
+        [Route("api/v1/GetApplicationParty/{id?}")]
+        public ApplicationParty GetApplicationParty(int id)
+        {
+            ApplicationPartyController orderTypeController = ControllerFactory.CreateApplicationPartyController();
+
+            return orderTypeController.GetApplicationParty(id);
+        }
+
+
+        [HttpPut]
+        [Route("api/v1/UpdateApplicationParty/")]
+        public HttpResponseMessage UpdateApplicationParty([FromBody] ApplicationParty value)
+        {
+            try
+            {
+                ApplicationPartyController orderTypeController = ControllerFactory.CreateApplicationPartyController();
+                int itemId = orderTypeController.UpdateApplicationParty(value);
+
+                return Request.CreateResponse(HttpStatusCode.OK, "Application party updated successfully.");
+
+            }
+            catch (Exception ex)
+            {
+                return Request.CreateErrorResponse(HttpStatusCode.BadRequest, "something went wrong" + ex.Message);
+            }
+        }
+
+        [HttpPut]
+        [Route("api/v1/DeleteApplicationParty/{id}")]
+        public HttpResponseMessage DeleteApplicationParty(int id)
+        {
+            try
+            {
+                ApplicationPartyController orderTypeController = ControllerFactory.CreateApplicationPartyController();
+                int itemId = orderTypeController.DeleteApplicationParty(id);
+
+                return Request.CreateResponse(HttpStatusCode.OK, "Application party deleted successfully.");
+
+            }
+            catch (Exception ex)
+            {
+                return Request.CreateErrorResponse(HttpStatusCode.BadRequest, "something went wrong" + ex.Message);
+            }
+        }
+
+        [HttpGet]
+        [Route("api/v1/GetAllApplicationParties/")]
+        public IEnumerable<ApplicationParty> GetAllApplicationParties()
+        {
+            ApplicationPartyController orderTypeController = ControllerFactory.CreateApplicationPartyController();
+
+            return orderTypeController.GetAllApplicationParties();
+        }
+    }
+}

@@ -1,0 +1,76 @@
+﻿using SupremeCourtCore.Common;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+
+namespace SupremeCourtCore.Domain
+{
+    public class CaseJudge
+    {
+        [DBField("JUDGE_ID")]
+        public int judgeId { get; set; }
+        
+        [DBField("APPLICATION_ID")]
+        public int applicationId { get; set; }
+        
+        [DBField("CREATED_BY")]
+        public string createdBy { get; set; }
+        
+        [DBField("CREATED_DATE")]
+        public DateTime createdDate { get; set; }
+        
+        [DBField("IS_MAIN_JUDGE")]
+        public int isMainJudge { get; set; }
+        
+        [DBField("IS_BEFORE")]
+        public int isBefore { get; set; }
+        
+        [DBField("UPDATED_BY")]
+        public string updatedBy { get; set; }
+        
+        [DBField("UPDATED_DATE")]
+        public DateTime updatedDate { get; set; }
+
+        [DBField("is_NOTBEFORE")]
+        public int isNotBefore { get; set; }
+
+        [DBField("JUDGE_NAME")]
+        public string judgeName { get; set; }
+    }
+
+    public class CaseJudgeOnline
+    {
+        [DBField("JUDGE_ID")]
+        public int judgeId { get; set; }
+
+        [DBField("APPLICATION_ID")]
+        public int applicationId { get; set; }
+
+        [DBField("CREATED_BY")]
+        public string createdBy { get; set; }
+
+        [DBField("CREATED_DATE")]
+        public DateTime createdDate { get; set; }
+
+        [DBField("IS_MAIN_JUDGE")]
+        public int isMainJudge { get; set; }
+
+        [DBField("IS_BEFORE")]
+        public int isBefore { get; set; }
+
+        [DBField("UPDATED_BY")]
+        public string updatedBy { get; set; }
+
+        [DBField("UPDATED_DATE")]
+        public DateTime updatedDate { get; set; }
+
+        [DBField("is_NOTBEFORE")]
+        public int isNotBefore { get; set; }
+
+        [DBField("JUDGE_NAME")]
+        public string judgeName { get; set; }
+
+    }
+}

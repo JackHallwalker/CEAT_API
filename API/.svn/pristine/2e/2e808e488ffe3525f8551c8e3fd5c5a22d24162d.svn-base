@@ -1,0 +1,133 @@
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Net;
+using System.Net.Http;
+using System.Web;
+using System.Web.Http;
+using SupremeCourtCore.Common;
+using SupremeCourtCore.Controller;
+using SupremeCourtCore.Domain;
+
+namespace SupremeCourtAPI.Controllers
+{
+    public class NextActionApiController : ApiController
+    {
+        [HttpPost]
+        [Route("api/v1/AddNextAction/")]
+        public HttpResponseMessage AddNextAction([FromBody] NextAction value)
+        {
+            try
+            {
+                NextActionController orderTypeController = ControllerFactory.CreateNextActionController();
+                //orderTypeController.AddNextAction(value);
+                int itemId = orderTypeController.AddNextAction(value);
+                return Request.CreateResponse(HttpStatusCode.OK, "Judge created successfully. Id-" + itemId);
+
+            }
+            catch (Exception ex)
+            {
+                return Request.CreateErrorResponse(HttpStatusCode.BadRequest, "something went wrong" + ex.Message);
+            }
+        }
+
+        [HttpGet]
+        [Route("api/v1/GetAllNextActions/")]
+        public IEnumerable<NextActionOnline> GetAllNextActions()
+        {
+            NextActionController orderTypeController = ControllerFactory.CreateNextActionController();
+
+            return orderTypeController.GetAllNextActions();
+        }
+        
+        [HttpGet]
+        [Route("api/v1/GetAllNextActions/{applicationId}")]
+        public IEnumerable<NextAction> GetAllNextActions(int applicationId)
+        {
+            NextActionController orderTypeController = ControllerFactory.CreateNextActionController();
+
+            return orderTypeController.GetAllNextActions(applicationId);
+        }
+
+        [HttpGet]
+        [Route("api/v1/GetAllNextActions/{trialDate}/{trialTime}")]
+        public IEnumerable<NextActionForGetAllNextActionsByAppId> GetAllNextActions(string trialDate, string trialTime)
+        {
+            NextActionController orderTypeController = ControllerFactory.CreateNextActionController();
+
+            return orderTypeController.GetAllNextActions(trialDate, trialTime);
+        }
+        //[HttpGet]
+        //[Route("api/v1/GetAllNextActionsWithDateTime")]
+        //public IEnumerable<NextActionForGetAllNextActionsByAppId> GetAllNextActionsWithDateTime([FromBody] NextActionDateTimeOnline value)
+        //{
+        //    NextActionController orderTypeController = ControllerFactory.CreateNextActionController();
+        //    string trialDate = value.trialDate;
+        //    string trialTime = value.trialTime; 
+        //    return orderTypeController.GetAllNextActions(trialDate, trialTime);
+        //}
+
+        [HttpGet]
+        [Route("api/v1/GetAllNextActionsByAppId/{applicationId}")]
+        public IEnumerable<NextActionForGetAllNextActionsByAppId> GetAllNextActionsByAppId(int applicationId)
+        {
+            NextActionController orderTypeController = ControllerFactory.CreateNextActionController();
+
+            return orderTypeController.GetAllNextActionsByAppId(applicationId);
+        }
+
+        [HttpGet]
+        [Route("api/v1/GetNextAction/{nextActionId}")]
+        public NextAction GetNextAction(int nextActionId)
+        {
+            NextActionController orderTypeController = ControllerFactory.CreateNextActionController();
+
+            return orderTypeController.GetNextAction(nextActionId);
+        }
+
+        [HttpPut]
+        [Route("api/v1/UpdateNextAction")]
+        public HttpResponseMessage UpdateNextAction([FromBody] NextAction value)
+        {
+            try
+            {
+                NextActionController orderTypeController = ControllerFactory.CreateNextActionController();
+                int itemId = orderTypeController.UpdateNextAction(value);
+
+                return Request.CreateResponse(HttpStatusCode.OK, "Next action updated successfully.");
+
+            }
+            catch (Exception ex)
+            {
+                return Request.CreateErrorResponse(HttpStatusCode.BadRequest, "something went wrong" + ex.Message);
+            }
+        }
+        
+        [HttpDelete]
+        [Route("api/v1/DeleteNextAction/{nextActionid}")]
+        public HttpResponseMessage DeleteNextAction(int nextActionid)
+        {
+            try
+            {
+                NextActionController orderTypeController = ControllerFactory.CreateNextActionController();
+                int itemId = orderTypeController.DeleteNextAction(nextActionid);
+
+                return Request.CreateResponse(HttpStatusCode.OK, "Next action deleted successfully.");
+
+            }
+            catch (Exception ex)
+            {
+                return Request.CreateErrorResponse(HttpStatusCode.BadRequest, "something went wrong" + ex.Message);
+            }
+        }
+
+        [HttpGet]
+        [Route("api/v1/GetAllNextApplicationsByDate/{date}")]
+        public List<NextAction> GetAllApplicationsByDate(string date)
+        {
+            NextActionController orderTypeController = ControllerFactory.CreateNextActionController();
+            //return orderTypeController.GetAllJournalsWithPartyTypeId(applicationId, partyTypeId);
+            return orderTypeController.GetAllNextApplicationsByDate(date);
+        }
+    }
+}

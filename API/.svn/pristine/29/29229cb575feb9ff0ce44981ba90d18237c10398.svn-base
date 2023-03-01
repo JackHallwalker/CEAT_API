@@ -1,0 +1,120 @@
+﻿using SupremeCourtCore.Common;
+using SupremeCourtCore.Domain;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+
+namespace SupremeCourtCore.Infrastructure
+{
+    public interface ApplicationPartyDAO
+    {
+        List<ApplicationParty> GetAllApplicationParties(int applicationId, DBConnection dbConnection);
+        ApplicationParty GetApplicationParty(int id, DBConnection dbConnection);
+        int AddApplicationParty(ApplicationParty application, DBConnection dbConnection);
+        int UpdateApplicationParty(ApplicationParty application, DBConnection dbConnection);
+        int DeleteApplicationParty(int applicationId, DBConnection dbConnection);
+        List<ApplicationParty> GetAllApplicationParties(DBConnection dbConnection);
+    }
+    public class ApplicationPartySqlDAOImpl : ApplicationPartyDAO
+    {
+        public int AddApplicationParty(ApplicationParty application, DBConnection dbConnection)
+        {
+            dbConnection.cmd.CommandText = "INSERT INTO APPLICATION_PARTY (APPLICATION_ID,NAME,NIC,PASSPORT,ADDRESS,PARTY_TYPE_ID,IS_ACTIVE) " +
+                                        "VALUES (" + application.applicationId + ",'" + application.name + "','" + application.nic + "','" + application.passport + "','" + application.address + "'," + application.partyTypeId + ",1) SELECT SCOPE_IDENTITY()";
+            return Convert.ToInt32(dbConnection.cmd.ExecuteScalar());
+        }
+
+        public int DeleteApplicationParty(int applicationId, DBConnection dbConnection)
+        {
+            dbConnection.cmd.CommandText = "UPDATE APPLICATION_PARTY SET IS_ACTIVE = 0 WHERE ID = " + applicationId;
+            return dbConnection.cmd.ExecuteNonQuery();
+        }
+
+        public List<ApplicationParty> GetAllApplicationParties(int applicationId, DBConnection dbConnection)
+        {
+            dbConnection.cmd.CommandText = "SELECT * FROM APPLICATION_PARTY WHERE IS_ACTIVE=1 AND APPLICATION_ID = " + applicationId + "";
+
+            dbConnection.dr = dbConnection.cmd.ExecuteReader();
+            DataAccessObject dataAccessObject = new DataAccessObject();
+            return dataAccessObject.ReadCollection<ApplicationParty>(dbConnection.dr);
+        }
+
+        public ApplicationParty GetApplicationParty(int id, DBConnection dbConnection)
+        {
+            dbConnection.cmd.CommandText = "SELECT * FROM APPLICATION_PARTY WHERE ID = " + id + " ";
+
+            dbConnection.dr = dbConnection.cmd.ExecuteReader();
+            DataAccessObject dataAccessObject = new DataAccessObject();
+            return dataAccessObject.GetSingleOject<ApplicationParty>(dbConnection.dr);
+        }
+
+        public int UpdateApplicationParty(ApplicationParty application, DBConnection dbConnection)
+        {
+            dbConnection.cmd.CommandText = "INSERT INTO APPLICATION_PARTY_HISTORY (SELECT * FROM APPLICATION_PARTY WHERE ID = " + application.id + ")";
+            dbConnection.cmd.ExecuteNonQuery();
+            dbConnection.cmd.CommandText = "UPDATE APPLICATION_PARTY SET NAME = '" + application.name + "', NIC = '" + application.nic + "', PASSPORT = '" + application.passport + "', ADDRESS = '" + application.address + "', IS_ACTIVE = " + application.isActive + "  WHERE ID = " + application.id;
+            return dbConnection.cmd.ExecuteNonQuery();
+        }
+
+        public List<ApplicationParty> GetAllApplicationParties(DBConnection dbConnection)
+        {
+            dbConnection.cmd.CommandText = "SELECT * FROM APPLICATION_PARTY WHERE IS_ACTIVE = 1";
+
+            dbConnection.dr = dbConnection.cmd.ExecuteReader();
+            DataAccessObject dataAccessObject = new DataAccessObject();
+            return dataAccessObject.ReadCollection<ApplicationParty>(dbConnection.dr);
+        }
+    }
+    public class ApplicationPartyDAOImpl : ApplicationPartyDAO
+    {
+        public int AddApplicationParty(ApplicationParty application, DBConnection dbConnection)
+        {
+            dbConnection.cmd.CommandText = "INSERT INTO APPLICATION_PARTY (APPLICATION_ID,NAME,NIC,PASSPORT,ADDRESS,PARTY_TYPE_ID,IS_ACTIVE) " +
+                                        "VALUES ("+application.applicationId+",'"+application.name+"','"+application.nic+"','"+application.passport+"','"+application.address+"',"+application.partyTypeId+ ",1); SELECT currval('application_party_id_seq');";
+            return Convert.ToInt32(dbConnection.cmd.ExecuteScalar());
+        }
+
+        public int DeleteApplicationParty(int applicationId, DBConnection dbConnection)
+        {
+            dbConnection.cmd.CommandText = "UPDATE APPLICATION_PARTY SET IS_ACTIVE = 0 WHERE ID = " + applicationId;
+            return dbConnection.cmd.ExecuteNonQuery();
+        }
+
+        public List<ApplicationParty> GetAllApplicationParties(int applicationId, DBConnection dbConnection)
+        {
+            dbConnection.cmd.CommandText = "SELECT * FROM APPLICATION_PARTY WHERE APPLICATION_ID = "+applicationId+"";
+
+            dbConnection.dr = dbConnection.cmd.ExecuteReader();
+            DataAccessObject dataAccessObject = new DataAccessObject();
+            return dataAccessObject.ReadCollection<ApplicationParty>(dbConnection.dr);
+        }
+
+        public ApplicationParty GetApplicationParty(int id, DBConnection dbConnection)
+        {
+            dbConnection.cmd.CommandText = "SELECT * FROM APPLICATION_PARTY WHERE ID = " + id + " ";
+
+            dbConnection.dr = dbConnection.cmd.ExecuteReader();
+            DataAccessObject dataAccessObject = new DataAccessObject();
+            return dataAccessObject.GetSingleOject<ApplicationParty>(dbConnection.dr);
+        }
+
+        public int UpdateApplicationParty(ApplicationParty application, DBConnection dbConnection)
+        {
+            //dbConnection.cmd.CommandText = "INSERT INTO APPLICATION_PARTY_HISTORY (SELECT * FROM APPLICATION_PARTY WHERE ID = " + application.id + ")";
+            //dbConnection.cmd.ExecuteNonQuery();
+            dbConnection.cmd.CommandText = "UPDATE APPLICATION_PARTY SET NAME = '" + application.name + "', NIC = '"+application.nic+ "', PASSPORT = '"+application.passport+ "', ADDRESS = '"+application.address+ "', IS_ACTIVE = "+application.isActive+ ",PARTY_TYPE_ID = " + application.partyTypeId + ", APPLICATION_ID = " + application.applicationId +" WHERE ID = " + application.id;
+            return dbConnection.cmd.ExecuteNonQuery();
+        }
+
+        public List<ApplicationParty> GetAllApplicationParties(DBConnection dbConnection)
+        {
+            dbConnection.cmd.CommandText = "SELECT * FROM APPLICATION_PARTY WHERE IS_ACTIVE = 1";
+
+            dbConnection.dr = dbConnection.cmd.ExecuteReader();
+            DataAccessObject dataAccessObject = new DataAccessObject();
+            return dataAccessObject.ReadCollection<ApplicationParty>(dbConnection.dr);
+        }
+    }
+}

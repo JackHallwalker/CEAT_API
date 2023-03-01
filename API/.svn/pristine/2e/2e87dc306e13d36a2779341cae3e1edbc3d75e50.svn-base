@@ -1,0 +1,163 @@
+﻿using SupremeCourtCore.Controller;
+using SupremeCourtCore.Controller;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+
+
+namespace SupremeCourtCore.Common
+{
+    public class ControllerFactory
+    {        
+        public static AdminLoginController CreateAdminLoginController()
+        {
+            AdminLoginController aa = new AdminLoginControllerImpl();
+            return (AdminLoginController)aa;
+        }
+
+        public static UserLoginController CreateUserLoginController()
+        {
+            UserLoginController aa = new UserLoginControllerImpl();
+            return (UserLoginController)aa;
+        }
+        public static ApiVersionController createApiVersionController()
+        {
+            ApiVersionController apiVersionController = new ApiVersionControllerImpl();
+            return (ApiVersionController)apiVersionController;
+        }
+
+        public static MealPlanController CreateMealPlanController()
+        {
+            MealPlanController aa = new MealPlanControllerImpl();
+            return (MealPlanController)aa;
+        }
+        
+        public static ApplicationController CreateApplicationController()
+        {
+            ApplicationController aa = new ApplicationControllerImpl();
+            return (ApplicationController)aa;
+        }
+        
+        public static ApplicationPartyController CreateApplicationPartyController()
+        {
+            ApplicationPartyController aa = new ApplicationPartyControllerImpl();
+            return (ApplicationPartyController)aa;
+        }
+        
+        public static PartyTypeController CreatePartyTypeController()
+        {
+            PartyTypeController aa = new PartyTypeControllerImpl();
+            return (PartyTypeController)aa;
+        }
+        
+        public static LawyerController CreateLawyerController()
+        {
+            LawyerController aa = new LawyerControllerImpl();
+            return (LawyerController)aa;
+        }
+        
+        public static JudgeController CreateJudgeController()
+        {
+            JudgeController aa = new JudgeControllerImpl();
+            return (JudgeController)aa;
+        }
+        
+        public static CaseTypeController CreateCaseTypeController()
+        {
+            CaseTypeController aa = new CaseTypeControllerImpl();
+            return (CaseTypeController)aa;
+        }
+        
+        public static JournalController CreateJournalController()
+        {
+            JournalController aa = new JournalControllerImpl();
+            return (JournalController)aa;
+        }
+        
+        public static CategoryController CreateCategoryController()
+        {
+            CategoryController aa = new CategoryControllerImpl();
+            return (CategoryController)aa;
+        }
+        
+        public static CaseJudgeController CreateCaseJudgeController()
+        {
+            CaseJudgeController aa = new CaseJudgeControllerImpl();
+            return (CaseJudgeController)aa;
+        }
+        
+        public static CaseLawyerController CreateCaseLawyerController()
+        {
+            CaseLawyerController aa = new CaseLawyerControllerImpl();
+            return (CaseLawyerController)aa;
+        }
+        
+        public static ActionTypeController CreateActionTypeController()
+        {
+            ActionTypeController aa = new ActionTypeControllerImpl();
+            return (ActionTypeController)aa;
+        }
+        
+        public static CourtController CreateCourtController()
+        {
+            CourtController aa = new CourtControllerImpl();
+            return (CourtController)aa;
+        }
+        
+        public static PetitionController CreatePetitionController()
+        {
+            PetitionController aa = new PetitionControllerImpl();
+            return (PetitionController)aa;
+        }
+        
+        public static NextActionController CreateNextActionController()
+        {
+            NextActionController aa = new NextActionControllerImpl();
+            return (NextActionController)aa;
+        }
+        
+        public static SystemController CreateSystemController()
+        {
+            SystemController aa = new SystemControllerImpl();
+            return (SystemController)aa;
+        }
+        
+        public static SystemRoleController CreateSystemRoleController()
+        {
+            SystemRoleController aa = new SystemRoleControllerImpl();
+            return (SystemRoleController)aa;
+        }
+        
+        public static RoleFunctionController CreateRoleFunctionController()
+        {
+            RoleFunctionController aa = new RoleFunctionControllerImpl();
+            return (RoleFunctionController)aa;
+        }
+        
+        public static SystemFunctionController CreateSystemFunctionController()
+        {
+            SystemFunctionController aa = new SystemFunctionControllerImpl();
+            return (SystemFunctionController)aa;
+        }
+        
+        public static UserSystemFunctionController CreateUserSystemFunctionController()
+        {
+            UserSystemFunctionController aa = new UserSystemFunctionControllerImpl();
+            return (UserSystemFunctionController)aa;
+        }
+        
+        public static SysUserController CreateSysUserController()
+        {
+            SysUserController aa = new SysUserControllerImpl();
+            return (SysUserController)aa;
+        }
+
+        public static UserActionLogController CreateUserActionLogController()
+        {
+            UserActionLogController aa = new UserActionLogControllerImpl();
+            return (UserActionLogController)aa;
+        }
+    }
+}

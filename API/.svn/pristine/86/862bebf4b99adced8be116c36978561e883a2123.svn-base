@@ -1,0 +1,347 @@
+﻿using SupremeCourtCore.Common;
+using SupremeCourtCore.Domain;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+namespace SupremeCourtCore.Infrastructure
+{
+    public interface ApplicationDAO
+
+    {
+        //int SearchApplication(Application application, DBConnection dBConnection);
+        //List<Application> SearchApplication(DateTime regDate, DateTime createdDate, int caseTypeId, int serialNo, DBConnection dbConnection, DBConnection dbConnection);
+        List<Application> GetAllApplications(DBConnection dbConnection);
+        Application GetApplication(int id, DBConnection dbConnection);
+        int AddApplication(Application application, DBConnection dbConnection);
+        int UpdateApplication(Application application, DBConnection dbConnection); 
+        int DeleteApplication(int applicationId, DBConnection dbConnection);
+        //List<Application> GetAllApplicationsFromDateRange(string fromDate, string toDate, int caseType, string caseNo, string serialNo, DBConnection dbConnection);
+        object GetApplication(DBConnection dBConnection);
+        List<Application> GetAllApplicationsFromDateRange(string fromDate, string toDate, int caseTypeId, string caseId, int serialNo, int regYear, DBConnection dBConnection);
+        List<Application> GetAllCases(string fromDate, string toDate, int caseTypeId, string caseId, int serialNo, int regYear, DBConnection dBConnection);
+        List<Application> GetApplicationByCaseNo(string caseNo, DBConnection dbConnection);
+    }
+
+    public class ApplicationSqlDAOImpl : ApplicationDAO
+    {
+        public int AddApplication(Application application, DBConnection dbConnection)
+        {
+            dbConnection.cmd.CommandText = "INSERT INTO APPLICATION (CATEGORY_ID,CASE_TYPE_ID,CASE_NO,SERIAL_NO,LOWER_COURT_NO,DESCRIPTION,REG_DATE,CREATED_BY,CREATED_DATE,IS_ACTIVE,REG_YEAR) " +
+                                        "VALUES (" + application.CategoryID + "," + application.caseTypeId + ",'" + application.caseNo + "'," + application.serialNo + ",'" + application.lowerCourtNo + "','" + application.description + "','" + application.regDate.ToString("yyyy/MM/dd") + "','" + application.createdBy + "','" + application.createdDate.ToString("yyyy/MM/dd") + "', 1 , '" + application.regYear + "') SELECT SCOPE_IDENTITY()";
+            return Convert.ToInt32(dbConnection.cmd.ExecuteScalar());
+        }
+
+        public int DeleteApplication(int applicationId, DBConnection dbConnection)
+        {
+            dbConnection.cmd.CommandText = "UPDATE APPLICATION SET IS_ACTIVE = 0 WHERE ID = " + applicationId;
+            return dbConnection.cmd.ExecuteNonQuery();
+        }
+
+        //-----------------created (07/18/2022)
+        /*public List<Application> SearchApplication(DateTime regDate, DateTime createdDate, int caseTypeId, int serialNo, DBConnection dbConnection)
+        {
+            string regDateSql = "";
+            if (!regDate.Equals(DateTime.MinValue))
+                regDateSql = "  And REG_DATE = '" + regDate + "'";
+
+            string createBySql = "";
+            if (!createdDate.Equals(DateTime.MinValue))
+                createBySql = "  And CREATED_DATE = '" + createdDate + "'";
+
+            string caseTypesQL = "";
+            if (caseTypeId !=0)
+                caseTypesQL = "  And CASE_TYPE_ID = " + caseTypeId + "";
+
+
+            string serialNoSQL = "";
+            if (serialNo != 0)
+                caseTypesQL = "  And SERIAL_NO = " + serialNo + "";
+
+
+            dbConnection.cmd.CommandText = "SELECT * FROM APPLICATION WHERE 1 = 1 " + regDateSql + createBySql + caseTypesQL + serialNoSQL;
+
+            dbConnection.dr = dbConnection.cmd.ExecuteReader();
+            DataAccessObject dataAccessObject = new DataAccessObject();
+            return dataAccessObject.ReadCollection<Application>(dbConnection.dr);
+        }*/
+
+        public List<Application> GetAllApplications(DBConnection dbConnection)
+        {
+            dbConnection.cmd.CommandText = "SELECT * FROM APPLICATION WHERE IS_ACTIVE = 1";
+
+            dbConnection.dr = dbConnection.cmd.ExecuteReader();
+            DataAccessObject dataAccessObject = new DataAccessObject();
+            return dataAccessObject.ReadCollection<Application>(dbConnection.dr);
+        }
+
+        public Application GetApplication(int id, DBConnection dbConnection)
+        {
+            dbConnection.cmd.CommandText = "SELECT * FROM APPLICATION WHERE ID = " + id + " ";
+            //dbConnection.cmd.CommandText = "SELECT * FROM APPLICATION WHERE IS_ACTIVE = 1 AND ID = " + id + " ";
+
+            dbConnection.dr = dbConnection.cmd.ExecuteReader();
+            DataAccessObject dataAccessObject = new DataAccessObject();
+            return dataAccessObject.GetSingleOject<Application>(dbConnection.dr);
+        }
+
+        public int UpdateApplication(Application application, DBConnection dbConnection)
+        {
+            dbConnection.cmd.CommandText = "INSERT INTO APPLICATION_HISTORY (SELECT * FROM APPLICATION WHERE ID = " + application.id + ")";
+            dbConnection.cmd.ExecuteNonQuery();
+            dbConnection.cmd.CommandText = "UPDATE APPLICATION SET CATEGORY_ID = " + application.CategoryID + ",CASE_TYPE_ID = " + application.caseTypeId + ",CASE_NO = '" + application.caseNo + "',SERIAL_NO = " + application.serialNo + ",LOWER_COURT_NO = '" + application.lowerCourtNo + "',DESCRIPTION = '" + application.description + "', CREATED_BY = '" + application.createdBy + "',CREATED_DATE = '" + application.createdDate.ToString("yyyy/MM/dd") + "', IS_ACTIVE = " + application.isActive + " WHERE ID = " + application.id;
+            return dbConnection.cmd.ExecuteNonQuery();
+        }
+
+        public List<Application> GetAllApplicationsFromDateRange(string fromDate, string toDate, int caseTypeId, string caseId, int serialNo, int regYear, DBConnection dBConnection)
+        {
+
+            string fromDateSql = "";
+            if (fromDate != null)
+                fromDateSql = " AND REG_DATE >= '" + DateTime.ParseExact(fromDate, "yyyy-MM-dd", System.Globalization.CultureInfo.InvariantCulture).ToString("dd-MMM-yyyy") + "' ";
+
+            string toDateSql = "";
+            if (toDate != null)
+                toDateSql = " AND REG_DATE <= '" + DateTime.ParseExact(toDate, "yyyy-MM-dd", System.Globalization.CultureInfo.InvariantCulture).ToString("dd-MMM-yyyy") + "' ";
+
+            string ctidSql = "";
+            if (caseTypeId != 0)
+                ctidSql = " AND CASE_TYPE_ID = " + caseTypeId + " ";
+
+            string cidSql = "";
+            if (caseId != null)
+                cidSql = " AND CASE_NO = '" + caseId + "' ";
+
+            string sernoSql = "";
+            if (serialNo != 0)
+                sernoSql = " AND SERIAL_NO = " + serialNo + " ";
+
+            string yearSql = "";
+            if (regYear != 0)
+                yearSql = " AND REG_YEAR = " + regYear + " ";
+
+            dBConnection.cmd.CommandText = "SELECT * FROM APPLICATION WHERE IS_ACTIVE = 1 " + fromDateSql + toDateSql + ctidSql + cidSql + sernoSql + yearSql;
+
+            dBConnection.dr = dBConnection.cmd.ExecuteReader();
+            DataAccessObject dataAccessObject = new DataAccessObject();
+            return dataAccessObject.ReadCollection<Application>(dBConnection.dr);
+        }
+
+        public List<Application> GetAllCases(string fromDate, string toDate, int caseTypeId, string caseId, int serialNo, int regYear, DBConnection dBConnection)
+        {
+
+            string fromDateSql = "";
+            if (fromDate != null)
+                fromDateSql = " AND REG_DATE >= '" + DateTime.ParseExact(fromDate, "yyyy-MM-dd", System.Globalization.CultureInfo.InvariantCulture).ToString("dd-MMM-yyyy") + "' ";
+
+            string toDateSql = "";
+            if (toDate != null)
+                toDateSql = " AND REG_DATE <= '" + DateTime.ParseExact(toDate, "yyyy-MM-dd", System.Globalization.CultureInfo.InvariantCulture).ToString("dd-MMM-yyyy") + "' ";
+
+            string ctidSql = "";
+            if (caseTypeId != 0)
+                ctidSql = " AND CASE_TYPE_ID = " + caseTypeId + " ";
+
+            string cidSql = "";
+            if (caseId != null)
+                cidSql = " AND CASE_NO = '" + caseId + "' ";
+
+            string sernoSql = "";
+            if (serialNo != 0)
+                sernoSql = " AND SERIAL_NO = " + serialNo + " ";
+
+            string yearSql = "";
+            if (regYear != 0)
+                yearSql = " AND REG_YEAR = " + regYear + " ";
+
+            dBConnection.cmd.CommandText = "SELECT * FROM APPLICATION WHERE IS_ACTIVE = 1 " + fromDateSql + toDateSql + ctidSql + cidSql + sernoSql + yearSql;
+
+            dBConnection.dr = dBConnection.cmd.ExecuteReader();
+            DataAccessObject dataAccessObject = new DataAccessObject();
+            return dataAccessObject.ReadCollection<Application>(dBConnection.dr);
+        }
+
+
+        public List<Application> GetApplicationByCaseNo(string caseNo, DBConnection dbConnection)
+        {
+            dbConnection.cmd.CommandText = "SELECT * FROM APPLICATION WHERE CASE_NO = '" + caseNo + "'";
+
+            dbConnection.dr = dbConnection.cmd.ExecuteReader();
+            DataAccessObject dataAccessObject = new DataAccessObject();
+            return dataAccessObject.ReadCollection<Application>(dbConnection.dr);
+        }
+
+        public object GetApplication(DBConnection dBConnection)
+        {
+            throw new NotImplementedException();
+        }
+
+
+
+    }
+    public class ApplicationDAOImpl : ApplicationDAO
+    {
+        //-----------------created (07/18/2022)
+        /*public List<Application> SearchApplication(DateTime regDate, DateTime createdDate, int caseTypeId, int serialNo, DBConnection dbConnection)
+        {
+            string regDateSql = "";
+            if (!regDate.Equals(DateTime.MinValue))
+                regDateSql = "  And REG_DATE = '" + regDate + "'";
+
+            string createBySql = "";
+            if (!createdDate.Equals(DateTime.MinValue))
+                createBySql = "  And CREATED_DATE = '" + createdDate + "'";
+
+            string caseTypesQL = "";
+            if (caseTypeId != 0)
+                caseTypesQL = "  And CASE_TYPE_ID = " + caseTypeId + "";
+
+
+            string serialNoSQL = "";
+            if (serialNo != 0)
+                caseTypesQL = "  And SERIAL_NO = " + serialNo + "";
+
+            dbConnection.cmd.CommandText = "SELECT * FROM APPLICATION WHERE 1 = 1 " + regDateSql + createBySql + caseTypesQL + serialNoSQL;
+
+            dbConnection.dr = dbConnection.cmd.ExecuteReader();
+            DataAccessObject dataAccessObject = new DataAccessObject();
+            return dataAccessObject.ReadCollection<Application>(dbConnection.dr);
+        }*/
+
+        public int AddApplication(Application application, DBConnection dbConnection)
+        {
+            dbConnection.cmd.CommandText = "INSERT INTO APPLICATION (CATEGORY_ID,CASE_TYPE_ID,CASE_NO,SERIAL_NO,LOWER_COURT_NO,DESCRIPTION,REG_DATE,CREATED_BY,CREATED_DATE,IS_ACTIVE,REG_YEAR) " +
+                                        "VALUES (" + application.CategoryID + "," + application.caseTypeId + ",'" + application.caseNo + "'," + application.serialNo + ",'" + application.lowerCourtNo + "','" + application.description + "','" + application.regDate.ToString("yyyy/MM/dd") + "','" + application.createdBy + "','" + application.createdDate.ToString("yyyy/MM/dd") + "',1,'" + application.regYear + "'); SELECT currval('application_id_seq');";
+            return Convert.ToInt32(dbConnection.cmd.ExecuteScalar());
+        }
+
+        public int DeleteApplication(int applicationId, DBConnection dbConnection)
+        {
+            dbConnection.cmd.CommandText = "UPDATE APPLICATION SET IS_ACTIVE = 0 WHERE ID = " + applicationId;
+            return dbConnection.cmd.ExecuteNonQuery();
+        }
+
+        public List<Application> GetAllApplications(DBConnection dbConnection)
+        {
+            dbConnection.cmd.CommandText = "SELECT * FROM APPLICATION WHERE IS_ACTIVE = 1";
+
+            dbConnection.dr = dbConnection.cmd.ExecuteReader();
+            DataAccessObject dataAccessObject = new DataAccessObject();
+            return dataAccessObject.ReadCollection<Application>(dbConnection.dr);
+        }
+
+        public Application GetApplication(int id, DBConnection dbConnection)
+        {
+            dbConnection.cmd.CommandText = "SELECT * FROM APPLICATION WHERE ID = " + id + " ";
+            //dbConnection.cmd.CommandText = "SELECT * FROM APPLICATION WHERE IS_ACTIVE = 1 AND ID = " + id + " ";
+
+            dbConnection.dr = dbConnection.cmd.ExecuteReader();
+            DataAccessObject dataAccessObject = new DataAccessObject();
+            return dataAccessObject.GetSingleOject<Application>(dbConnection.dr);
+        }
+
+        public int UpdateApplication(Application application, DBConnection dbConnection)
+        {
+            dbConnection.cmd.CommandText = "INSERT INTO APPLICATION_HISTORY (SELECT * FROM APPLICATION WHERE ID = " + application.id + ")";
+            dbConnection.cmd.ExecuteNonQuery();
+            dbConnection.cmd.CommandText = "UPDATE APPLICATION SET CATEGORY_ID = " + application.CategoryID + ",CASE_TYPE_ID = " + application.caseTypeId + ",CASE_NO = '" + application.caseNo + "',SERIAL_NO = " + application.serialNo + ",LOWER_COURT_NO = '" + application.lowerCourtNo + "',DESCRIPTION = '" + application.description + "', CREATED_BY = '" + application.createdBy + "',CREATED_DATE = '" + application.createdDate.ToString("yyyy/MM/dd") + "', IS_ACTIVE = " + application.isActive + " WHERE ID = " + application.id;
+            return dbConnection.cmd.ExecuteNonQuery();
+        }
+
+
+        /*public List<Application> GetAllApplicationsFromDateRange(string fromDate, string toDate, int caseType, string caseNo, string serialNo, DBConnection dbConnection)
+        {
+            //dbConnection.cmd.CommandText = "SELECT * FROM APPLICATION WHERE REG_DATE >= '"+ fromDate + "' AND REG_DATE <= '"+ toDate + "' AND CASE_TYPE_ID = "+ caseType + " AND CASE_NO ='"+ caseNo + "' AND SERIAL_NO='"+ serialNo + "' AND IS_ACTIVE = 1";
+
+            dbConnection.cmd.CommandText = "SELECT * FROM APPLICATION WHERE REG_DATE >= '" + fromDate + "' AND REG_DATE <= '" + toDate + "' AND(CASE_TYPE_ID = " + caseType + " OR " + caseType + " IS NULL) AND(CASE_NO = '" + caseNo + "' OR '" + caseNo + "' IS NULL)AND(SERIAL_NO = '" + serialNo + "' OR '" + serialNo + "' IS NULL)AND IS_ACTIVE = 1";
+
+            dbConnection.dr = dbConnection.cmd.ExecuteReader();
+            DataAccessObject dataAccessObject = new DataAccessObject();
+            return dataAccessObject.ReadCollection<Application>(dbConnection.dr);
+        }*/
+
+        public List<Application> GetAllApplicationsFromDateRange(string fromDate, string toDate, int caseTypeId, string caseId, int serialNo, int regYear, DBConnection dBConnection)
+        {
+
+            string fromDateSql = "";
+            if (fromDate != null)
+                fromDateSql = " AND REG_DATE >= '" + DateTime.ParseExact(fromDate, "yyyy-MM-dd", System.Globalization.CultureInfo.InvariantCulture).ToString("dd-MMM-yyyy") + "' ";
+
+            string toDateSql = "";
+            if (toDate != null)
+                toDateSql = " AND REG_DATE <= '" + DateTime.ParseExact(toDate, "yyyy-MM-dd", System.Globalization.CultureInfo.InvariantCulture).ToString("dd-MMM-yyyy") + "' ";
+
+            string ctidSql = "";
+            if (caseTypeId != 0)
+                ctidSql = " AND CASE_TYPE_ID = " + caseTypeId + " ";
+
+            string cidSql = "";
+            if (caseId != null)
+                cidSql = " AND CASE_NO = '" + caseId + "' ";
+
+            string sernoSql = "";
+            if (serialNo != 0)
+                sernoSql = " AND SERIAL_NO = " + serialNo + " ";
+
+            string yearSql = "";
+            if (regYear != 0)
+                yearSql = " AND REG_YEAR = " + regYear + " ";
+
+            dBConnection.cmd.CommandText = "SELECT * FROM APPLICATION WHERE IS_ACTIVE = 1 " + fromDateSql + toDateSql + ctidSql + cidSql + sernoSql + yearSql;
+
+            dBConnection.dr = dBConnection.cmd.ExecuteReader();
+            DataAccessObject dataAccessObject = new DataAccessObject();
+            return dataAccessObject.ReadCollection<Application>(dBConnection.dr);
+        }
+
+        public List<Application> GetAllCases(string fromDate, string toDate, int caseTypeId, string caseId, int serialNo, int regYear, DBConnection dBConnection)
+        {
+
+            string fromDateSql = "";
+            if (fromDate != null)
+                fromDateSql = " AND REG_DATE >= '" + DateTime.ParseExact(fromDate, "yyyy-MM-dd", System.Globalization.CultureInfo.InvariantCulture).ToString("dd-MMM-yyyy") + "' ";
+
+            string toDateSql = "";
+            if (toDate != null)
+                toDateSql = " AND REG_DATE <= '" + DateTime.ParseExact(toDate, "yyyy-MM-dd", System.Globalization.CultureInfo.InvariantCulture).ToString("dd-MMM-yyyy") + "' ";
+
+            string ctidSql = "";
+            if (caseTypeId != 0)
+                ctidSql = " AND CASE_TYPE_ID = " + caseTypeId + " ";
+
+            string cidSql = "";
+            if (caseId != null)
+                cidSql = " AND CASE_NO = '" + caseId + "' ";
+
+            string sernoSql = "";
+            if (serialNo != 0)
+                sernoSql = " AND SERIAL_NO = " + serialNo + " ";
+
+            string yearSql = "";
+            if (regYear != 0)
+                yearSql = " AND REG_YEAR = " + regYear + " ";
+
+            dBConnection.cmd.CommandText = "SELECT * FROM APPLICATION WHERE IS_ACTIVE = 1 " + fromDateSql + toDateSql + ctidSql + cidSql + sernoSql + yearSql;
+
+            dBConnection.dr = dBConnection.cmd.ExecuteReader();
+            DataAccessObject dataAccessObject = new DataAccessObject();
+            return dataAccessObject.ReadCollection<Application>(dBConnection.dr);
+        }
+
+
+        public List<Application> GetApplicationByCaseNo(string caseNo, DBConnection dbConnection)
+        {
+            dbConnection.cmd.CommandText = "SELECT * FROM APPLICATION WHERE CASE_NO =  '" + caseNo + "'";
+
+            dbConnection.dr = dbConnection.cmd.ExecuteReader();
+            DataAccessObject dataAccessObject = new DataAccessObject();
+            return dataAccessObject.ReadCollection<Application>(dbConnection.dr);
+        }
+        public object GetApplication(DBConnection dBConnection)
+        {
+            throw new NotImplementedException();
+        }
+
+    }
+}

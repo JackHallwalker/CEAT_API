@@ -1,0 +1,62 @@
+﻿using SupremeCourtCore.Common;
+using SupremeCourtCore.Domain;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+
+namespace SupremeCourtCore.Infrastructure
+{
+    public interface SystemFunctionDAO
+    {
+        List<SystemFunction> GetAllSystemFunctions(int systemId, DBConnection dbConnection);
+        SystemFunction GetSystemFunction(int id, DBConnection dbConnection);
+        int AddSystemFunction(SystemFunction systemFunction, DBConnection dbConnection);
+        int UpdateSystemFunction(SystemFunction systemFunction, DBConnection dbConnection);
+        int DeleteSystemFunction(int systemFunctionId, DBConnection dbConnection);
+    }
+
+    public class SystemFunctionDAOImpl : SystemFunctionDAO
+    {
+        public int AddSystemFunction(SystemFunction systemFunction, DBConnection dbConnection)
+        {
+            dbConnection.cmd.CommandText = "INSERT INTO SYSTEM_FUNCTION(SYSTEM_ID,NAME,URL) VALUES(" + systemFunction.systemId + ",'" + systemFunction.name + "','"+ systemFunction.url+ "'); SELECT currval('system_function_id_seq');";
+            return Convert.ToInt32(dbConnection.cmd.ExecuteScalar());
+        }
+
+        public int DeleteSystemFunction(int systemFunctionId, DBConnection dbConnection)
+        {
+            dbConnection.cmd.CommandText = "DELETE FROM USER_SYSTEM_FUNCTION WHERE SYSTEM_FUNCTION_ID = " + systemFunctionId;
+            dbConnection.cmd.ExecuteNonQuery();
+            dbConnection.cmd.CommandText = "DELETE FROM ROLE_FUNCTION WHERE SYSTEM_FUNCTION_ID = " + systemFunctionId;
+            dbConnection.cmd.ExecuteNonQuery();
+            dbConnection.cmd.CommandText = "DELETE FROM SYSTEM_FUNCTION WHERE ID = " + systemFunctionId;
+            return dbConnection.cmd.ExecuteNonQuery();
+        }
+
+        public List<SystemFunction> GetAllSystemFunctions(int systemId, DBConnection dbConnection)
+        {
+            dbConnection.cmd.CommandText = "SELECT * FROM SYSTEM_FUNCTION WHERE SYSTEM_ID =" + systemId;
+
+            dbConnection.dr = dbConnection.cmd.ExecuteReader();
+            DataAccessObject dataAccessObject = new DataAccessObject();
+            return dataAccessObject.ReadCollection<SystemFunction>(dbConnection.dr);
+        }
+
+        public SystemFunction GetSystemFunction(int id, DBConnection dbConnection)
+        {
+            dbConnection.cmd.CommandText = "SELECT * FROM SYSTEM_FUNCTION WHERE ID = " + id + " ";
+
+            dbConnection.dr = dbConnection.cmd.ExecuteReader();
+            DataAccessObject dataAccessObject = new DataAccessObject();
+            return dataAccessObject.GetSingleOject<SystemFunction>(dbConnection.dr);
+        }
+
+        public int UpdateSystemFunction(SystemFunction systemFunction, DBConnection dbConnection)
+        {
+            dbConnection.cmd.CommandText = "UPDATE SYSTEM_FUNCTION SET SYSTEM_ID = " + systemFunction.systemId + ", NAME = '" + systemFunction.name + "', URL = '"+systemFunction.url+"' WHERE ID = " + systemFunction.id;
+            return dbConnection.cmd.ExecuteNonQuery();
+        }
+    }
+}

@@ -1,0 +1,218 @@
+﻿using SupremeCourtCore.Common;
+using SupremeCourtCore.Domain;
+using SupremeCourtCore.Infrastructure;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+
+namespace SupremeCourtCore.Controller
+{
+    public interface ApplicationController
+    {
+        List<Application> GetAllApplications(bool withCaseType, bool withCategory, bool withApplicationParties, bool withCaseLawyers, bool withCaseJudges, bool withCaseJournals, bool withNextActions);
+        Application GetApplication(int id, bool withCaseType, bool withCategory, bool withApplicationParties, bool withCaseLawyers, bool withCaseJudges, bool withCaseJournals, bool withNextActions);
+        int AddApplication(Application application);
+        int UpdateApplication(Application application);
+        int DeleteApplication(int applicationId);
+        List<Application> GetAllApplicationsFromDateRange(string fromDate, string toDate, int caseTypeId, string caseId, int serialNo, int regYear);
+        //object SearchApplications(int id, bool withCaseType);
+        //object SearchApplications(bool withCaseType);
+        List<Application> GetAllCases(string fromDate, string toDate, int caseTypeId, string caseId, int serialNo, int regYear);
+        List<Application> GetApplicationByCaseNo(string caseNo);
+    }
+
+    public class ApplicationControllerImpl : ApplicationController
+    {
+        DBConnection dBConnection;
+        ApplicationDAO OrderTypeDAO = DAOFactory.CreateApplicationDAO();
+        public int AddApplication(Application application)
+        {
+            try
+            {
+                dBConnection = new DBConnection();
+                return OrderTypeDAO.AddApplication(application, dBConnection);
+            }
+            catch (Exception)
+            {
+                dBConnection.RollBack();
+
+                throw;
+            }
+            finally
+            {
+                if (dBConnection.con.State == System.Data.ConnectionState.Open)
+                    dBConnection.Commit();
+            }
+        }
+
+        public int DeleteApplication(int applicationId)
+        {
+            try
+            {
+                dBConnection = new DBConnection();
+                return OrderTypeDAO.DeleteApplication(applicationId, dBConnection);
+            }
+            catch (Exception)
+            {
+                dBConnection.RollBack();
+
+                throw;
+            }
+            finally
+            {
+                if (dBConnection.con.State == System.Data.ConnectionState.Open)
+                    dBConnection.Commit();
+            }
+        }
+
+        public List<Application> GetAllApplications(bool withCaseType, bool withCategory, bool withApplicationParties, bool withCaseLawyers, bool withCaseJudges, bool withCaseJournals, bool withNextActions)
+        {
+            try
+            {
+                dBConnection = new DBConnection();
+                var applications = OrderTypeDAO.GetAllApplications(dBConnection);
+
+                return applications;
+            }
+            catch (Exception)
+            {
+                dBConnection.RollBack();
+
+                throw;
+            }
+            finally
+            {
+                if (dBConnection.con.State == System.Data.ConnectionState.Open)
+                    dBConnection.Commit();
+            }
+        }
+
+        public Application GetApplication(int id, bool withCaseType, bool withCategory, bool withApplicationParties, bool withCaseLawyers, bool withCaseJudges, bool withCaseJournals, bool withNextActions)
+        {
+            try
+            {
+                dBConnection = new DBConnection();
+                var application = OrderTypeDAO.GetApplication(id, dBConnection);
+
+                return application;
+            }
+            catch (Exception)
+            {
+                dBConnection.RollBack();
+
+                throw;
+            }
+            finally
+            {
+                if (dBConnection.con.State == System.Data.ConnectionState.Open)
+                    dBConnection.Commit();
+            }
+        }
+
+        public int UpdateApplication(Application application)
+        {
+            try
+            {
+                dBConnection = new DBConnection();
+                return OrderTypeDAO.UpdateApplication(application, dBConnection);
+            }
+            catch (Exception)
+            {
+                dBConnection.RollBack();
+
+                throw;
+            }
+            finally
+            {
+                if (dBConnection.con.State == System.Data.ConnectionState.Open)
+                    dBConnection.Commit();
+            }
+        }
+
+
+        public List<Application> GetAllApplicationsFromDateRange(string fromDate, string toDate, int caseTypeId, string caseId, int serialNo, int regYear)
+        {
+            try
+            {
+                dBConnection = new DBConnection();
+                return OrderTypeDAO.GetAllApplicationsFromDateRange(fromDate, toDate, caseTypeId, caseId, serialNo, regYear, dBConnection);
+            }
+            catch (Exception)
+            {
+                dBConnection.RollBack();
+
+                throw;
+            }
+            finally
+            {
+                if (dBConnection.con.State == System.Data.ConnectionState.Open)
+                    dBConnection.Commit();
+            }
+        }
+
+        /*public object SearchApplications(DateTime regDate, DateTime createdDate, int caseTypeId, int serialNo)
+        {
+            try
+            {
+                dBConnection = new DBConnection();
+                var application = OrderTypeDAO.SearchApplications(regDate, createdDate, caseTypeId, serialNo, dBConnection);
+
+                return application;
+            }
+            catch (Exception)
+            {
+                dBConnection.RollBack();
+
+                throw;
+            }
+            finally
+            {
+                if (dBConnection.con.State == System.Data.ConnectionState.Open)
+                    dBConnection.Commit();
+            }
+        }*/
+
+        public List<Application> GetAllCases(string fromDate, string toDate, int caseTypeId, string caseId, int serialNo, int regYear)
+        {
+            try
+            {
+                dBConnection = new DBConnection();
+                return OrderTypeDAO.GetAllCases(fromDate, toDate, caseTypeId, caseId, serialNo, regYear, dBConnection);
+            }
+            catch (Exception)
+            {
+                dBConnection.RollBack();
+
+                throw;
+            }
+            finally
+            {
+                if (dBConnection.con.State == System.Data.ConnectionState.Open)
+                    dBConnection.Commit();
+            }
+        }
+
+        public List<Application> GetApplicationByCaseNo(string caseNo)
+        {
+            try
+            {
+                dBConnection = new DBConnection();
+                return OrderTypeDAO.GetApplicationByCaseNo(caseNo, dBConnection);
+            }
+            catch (Exception)
+            {
+                dBConnection.RollBack();
+
+                throw;
+            }
+            finally
+            {
+                if (dBConnection.con.State == System.Data.ConnectionState.Open)
+                    dBConnection.Commit();
+            }
+        }
+
+    }
+}

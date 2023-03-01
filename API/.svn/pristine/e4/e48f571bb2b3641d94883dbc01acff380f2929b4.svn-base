@@ -1,0 +1,39 @@
+﻿using SupremeCourtCore.Common;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+
+namespace SupremeCourtCore.Domain
+{
+    public class Journal
+    {
+        [DBField("ID")]
+        public int id { get; set; }
+
+        [DBField("APPLICATION_ID")]
+        public int applicationId { get; set; }
+
+        [DBField("DATE")]
+        public DateTime date { get; set; }
+
+        [DBField("JOURNAL_RECORD")]
+        public string journalRecord { get; set; }
+
+        [DBField("CREATED_BY")]
+        public string createdBy { get; set; }
+
+        [DBField("CREATED_DATE")]
+        public DateTime createdDate { get; set; }
+
+        [DBField("CASE_NO")]
+        public string caseNo { get; set; }
+
+        [DBField("S_FILE")]
+        public string sFile { get; set; }
+
+        //[DBField("NAME")]
+        //public string applicationPartyName { get; set; }
+    }
+}
