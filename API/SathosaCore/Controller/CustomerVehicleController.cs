@@ -71,7 +71,7 @@ namespace CeatCore.Controller
 
         }
 
-        int Delete(CustomerVehicle customerVehicle)
+        public int Delete(CustomerVehicle customerVehicle)
         {
             try
             {
@@ -117,26 +117,28 @@ namespace CeatCore.Controller
 
         }
 
-        //public int deleteCustomer(int customerId)
-        //{
-        //    try
-        //    {
-        //        dBConnection = new DBConnection();
-        //        return customerDAO.deleteCustomer(customerId, dBConnection);
+        public int deleteCustomer(int customerId)
+        {
+            //    try
+            //    {
+            //        dBConnection = new DBConnection();
+            //        return customerDAO.deleteCustomer(customerId, dBConnection);
 
-        //    }
-        //    catch (Exception)
-        //    {
-        //        dBConnection.RollBack();
+            //    }
+            //    catch (Exception)
+            //    {
+            //        dBConnection.RollBack();
 
-        //        throw;
-        //    }
-        //    finally
-        //    {
-        //        if (dBConnection.con.State == System.Data.ConnectionState.Open)
-        //            dBConnection.Commit();
-        //    }
-        //}
+            //        throw;
+            //    }
+            //    finally
+            //    {
+            //        if (dBConnection.con.State == System.Data.ConnectionState.Open)
+            //            dBConnection.Commit();
+            //    }
+
+            throw new NotImplementedException();
+        }
 
 
 

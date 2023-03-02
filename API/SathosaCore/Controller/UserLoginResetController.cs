@@ -15,8 +15,12 @@ namespace SupremeCourtCore.Controller
     {
         int Save(UserLoginReset userLoginReset);
 
-        UserLoginReset GetUserLoginResetCheck(int id);
-        UserLoginReset GetUserLoginReset(UserLoginReset userLoginReset);
+        UserLoginReset GetUserLoginResetCheck(int id, int verified = 0);
+        UserLoginReset GetUserLoginReset(UserLoginReset userLoginReset, int verified = 0);
+
+        UserLoginReset GetUserLoginResetCheckById(int id, int verified = 0);
+
+        int Update(UserLoginReset userLoginReset);
 
     }
     public partial class UserLoginResetControllerimpl : UserLoginResetController
@@ -45,13 +49,36 @@ namespace SupremeCourtCore.Controller
             }
 
         }
-        public UserLoginReset GetUserLoginReset(UserLoginReset userLoginReset)
+
+        public int Update(UserLoginReset userLoginReset)
         {
             try
             {
                 dBConnection = new DBConnection();
 
-                return userLoginResetDAO.GetUserLoginResetByEmail(userLoginReset, dBConnection);
+                return userLoginResetDAO.Update(userLoginReset, dBConnection);
+
+            }
+            catch (Exception)
+            {
+                dBConnection.RollBack();
+
+                throw;
+            }
+            finally
+            {
+                if (dBConnection.con.State == System.Data.ConnectionState.Open)
+                    dBConnection.Commit();
+            }
+
+        }
+        public UserLoginReset GetUserLoginReset(UserLoginReset userLoginReset, int verified = 0)
+        {
+            try
+            {
+                dBConnection = new DBConnection();
+
+                return userLoginResetDAO.GetUserLoginResetByEmail(userLoginReset, dBConnection, verified);
 
             }
             catch (Exception)
@@ -68,13 +95,36 @@ namespace SupremeCourtCore.Controller
 
         }
 
-        public UserLoginReset GetUserLoginResetCheck(int id)
+        public UserLoginReset GetUserLoginResetCheck(int id, int verified = 0)
         {
             try
             {
                 dBConnection = new DBConnection();
 
-                return userLoginResetDAO.GetUserLoginResetByEmailCheck(id, dBConnection);
+                return userLoginResetDAO.GetUserLoginResetByEmailCheck(id, dBConnection, verified);
+
+            }
+            catch (Exception)
+            {
+                dBConnection.RollBack();
+
+                throw;
+            }
+            finally
+            {
+                if (dBConnection.con.State == System.Data.ConnectionState.Open)
+                    dBConnection.Commit();
+            }
+
+        }
+
+        public UserLoginReset GetUserLoginResetCheckById(int id, int verified = 0)
+        {
+            try
+            {
+                dBConnection = new DBConnection();
+
+                return userLoginResetDAO.GetUserLoginResetById(id, dBConnection, verified);
 
             }
             catch (Exception)

@@ -18,5 +18,8 @@ namespace SupremeCourtCore.Domain
         [DBField("verification_code")]
 
         public string verificationCode { get; set; }
+
+        [DBField("verified")]
+        public int verified { get; set; }
     }
 }

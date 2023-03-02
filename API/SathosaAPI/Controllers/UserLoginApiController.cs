@@ -109,6 +109,8 @@ namespace CeatAPI.Controllers
                 if (userLoginReset.verificationCode == value.verificationCode)
                 {
                     userLogin = userLoginController.getUserByEmail(userLoginReset.email);
+                    userLoginReset.verified = 1;
+                    userLoginResetController.Update(userLoginReset);
                     return Request.CreateResponse(HttpStatusCode.OK, "Code Verified! ( id - " + userLogin.id + " )");
                 }
                 else
@@ -173,11 +175,18 @@ namespace CeatAPI.Controllers
             try
             {
                 UserLoginController userLoginController = ControllerFactory.CreateUserLoginController();
-                string password1 = userLoginController.Encryptword(password);
-                int itemId = userLoginController.updateUserPasswordByUserId(userLoginId, password1);
+                UserLoginResetController userLoginResetController = ControllerFactory.CreateUserLoginResetController();
+                if (userLoginResetController.GetUserLoginResetCheckById(userLoginId, 1).id != 0)
+                {
+                    string password1 = userLoginController.Encryptword(password);
+                    int itemId = userLoginController.updateUserPasswordByUserId(userLoginId, password1);
 
-                return Request.CreateResponse(HttpStatusCode.OK, "User Passwaord Updated Successfully.");
-
+                    return Request.CreateResponse(HttpStatusCode.OK, "User Passwaord Updated Successfully.");
+                }
+                else
+                {
+                    return Request.CreateResponse(HttpStatusCode.OK, "User Passwaord reset time expired!.");
+                }
             }
             catch (Exception ex)
             {

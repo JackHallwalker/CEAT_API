@@ -13,9 +13,14 @@ namespace SupremeCourtCore.Infrastructure
     {
         int Save(UserLoginReset userLoginReset, DBConnection dbConnection);
 
-        UserLoginReset GetUserLoginResetByEmailCheck(int id, DBConnection dbConnection);
 
-        UserLoginReset GetUserLoginResetByEmail(UserLoginReset userLoginReset, DBConnection dbConnection);
+        UserLoginReset GetUserLoginResetByEmailCheck(int id, DBConnection dbConnection, int verified = 0);
+
+        UserLoginReset GetUserLoginResetByEmail(UserLoginReset userLoginReset, DBConnection dbConnection, int verified = 0);
+
+        UserLoginReset GetUserLoginResetById(int id, DBConnection dbConnection, int verified = 0);
+
+        int Update(UserLoginReset userLoginReset, DBConnection dbConnection);
 
     }
     public partial class UserLoginResetDAOimpl : UserLoginResetDAO
@@ -28,9 +33,9 @@ namespace SupremeCourtCore.Infrastructure
             return Convert.ToInt32(dbConnection.cmd.ExecuteNonQuery());
         }
 
-        public UserLoginReset GetUserLoginResetByEmailCheck(int id, DBConnection dbConnection)
+        public UserLoginReset GetUserLoginResetByEmailCheck(int id, DBConnection dbConnection, int verified = 0)
         {
-            dbConnection.cmd.CommandText = "SELECT TOP 1  * FROM user_login_reset WHERE id = " + id + " AND date_time >= DATEADD(minute, -2, GETDATE()) ORDER BY date_time DESC;";
+            dbConnection.cmd.CommandText = "SELECT TOP 1  * FROM user_login_reset WHERE id = " + id + " AND date_time >= DATEADD(minute, -2, GETDATE()) AND verified = " + verified + " ORDER BY date_time DESC;";
 
             dbConnection.dr = dbConnection.cmd.ExecuteReader();
             DataAccessObject dataAccessObject = new DataAccessObject();
@@ -38,9 +43,25 @@ namespace SupremeCourtCore.Infrastructure
         }
 
 
-        public UserLoginReset GetUserLoginResetByEmail(UserLoginReset userLoginReset, DBConnection dbConnection)
+        public UserLoginReset GetUserLoginResetByEmail(UserLoginReset userLoginReset, DBConnection dbConnection, int verified = 0)
         {
-            dbConnection.cmd.CommandText = "SELECT TOP 1 * FROM user_login_reset WHERE  email = '" + userLoginReset.email + "' AND date_time >= DATEADD(minute, -10, GETDATE()) ORDER BY date_time DESC;";
+            dbConnection.cmd.CommandText = "SELECT TOP 1 * FROM user_login_reset WHERE  email = '" + userLoginReset.email + "' AND date_time >= DATEADD(minute, -10, GETDATE()) AND verified = " + verified + " ORDER BY date_time DESC;";
+
+            dbConnection.dr = dbConnection.cmd.ExecuteReader();
+            DataAccessObject dataAccessObject = new DataAccessObject();
+            return dataAccessObject.GetSingleOject<UserLoginReset>(dbConnection.dr);
+        }
+
+        public int Update(UserLoginReset userLoginReset, DBConnection dbConnection)
+        {
+            dbConnection.cmd.CommandText = "UPDATE user_login_reset SET  verified = " + userLoginReset.verified + " WHERE id = " + userLoginReset.id;
+            //return dbConnection.cmd.ExecuteNonQuery();
+            return Convert.ToInt32(dbConnection.cmd.ExecuteScalar());
+        }
+
+        public UserLoginReset GetUserLoginResetById(int id, DBConnection dbConnection, int verified = 0)
+        {
+            dbConnection.cmd.CommandText = "SELECT TOP 1 * FROM user_login_reset WHERE  id = '" + id + "' AND date_time >= DATEADD(minute, -10, GETDATE()) AND verified = " + verified + " ORDER BY date_time DESC;";
 
             dbConnection.dr = dbConnection.cmd.ExecuteReader();
             DataAccessObject dataAccessObject = new DataAccessObject();
