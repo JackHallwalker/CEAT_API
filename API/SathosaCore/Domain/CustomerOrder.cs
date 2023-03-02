@@ -24,6 +24,10 @@ namespace CeatCore.Domain
         public List<OrderDetails> orderDetails { get; set; }
         public List<OrderFitter> orderFitters { get; set; }
         public Dealer dealer { get; set; }
+
+        public CustomerVehicle customerVehicle { get; set; }
+
+        public OrderVehicle orderVehicle { get; set; }
         //public DealerRating dealerRating { get; set; }
 
 
@@ -57,7 +61,7 @@ namespace CeatCore.Domain
     {
         [DBField("QUANTITY")]
         public int quantity { get; set; }
-       
+
         //public int monthlySale { get; set; }
 
         [DBField("DEALER_ID")]
@@ -78,4 +82,6 @@ namespace CeatCore.Domain
 
         public Dealer dealer { get; set; }
     }
+
+
 }

@@ -16,6 +16,7 @@ namespace CeatCore.Infrastructure
         int Delete(CustomerVehicle customerVehicle, DBConnection dbConnection);
         CustomerVehicle GetCustomerVehicleByVehicleNumber(string vehicleNumber, DBConnection dbConnection, int isActive = 1);
 
+        CustomerVehicle GetCustomerVehicleByVehicleId(int vehicleId, DBConnection dbConnection, int isActive = 1);
     }
 
     public class CustomerVehicleDAOImpl : CustomerVehicleDAO
@@ -36,7 +37,7 @@ namespace CeatCore.Infrastructure
 
         public List<CustomerVehicle> GetCustomerVehiclesByCustomerId(int customerId, DBConnection dbConnection, int isActive = 1)
         {
-            if (isActive != 3)
+            if (isActive != 2)
             {
                 dbConnection.cmd.CommandText = "select * from customer_vehicle where customer_id = " + customerId + " AND is_active = " + isActive;
             }
@@ -58,13 +59,28 @@ namespace CeatCore.Infrastructure
 
         public CustomerVehicle GetCustomerVehicleByVehicleNumber(string vehicleNumber, DBConnection dbConnection, int isActive = 1)
         {
-            if (isActive != 3)
+            if (isActive != 2)
             {
                 dbConnection.cmd.CommandText = "SELECT * FROM customer_vehicle WHERE is_active = " + isActive + " AND vehicle_number = '" + vehicleNumber + "' ";
             }
             else
             {
                 dbConnection.cmd.CommandText = "SELECT * FROM customer_vehicle WHERE vehicle_number = '" + vehicleNumber + "' ";
+            }
+            dbConnection.dr = dbConnection.cmd.ExecuteReader();
+            DataAccessObject dataAccessObject = new DataAccessObject();
+            return dataAccessObject.GetSingleOject<CustomerVehicle>(dbConnection.dr);
+        }
+
+        public CustomerVehicle GetCustomerVehicleByVehicleId(int vehicleId, DBConnection dbConnection, int isActive = 1)
+        {
+            if (isActive != 2)
+            {
+                dbConnection.cmd.CommandText = "SELECT * FROM customer_vehicle WHERE is_active = " + isActive + " AND vehicle_id = '" + vehicleId + "' ";
+            }
+            else
+            {
+                dbConnection.cmd.CommandText = "SELECT * FROM customer_vehicle WHERE vehicle_id = '" + vehicleId + "' ";
             }
             dbConnection.dr = dbConnection.cmd.ExecuteReader();
             DataAccessObject dataAccessObject = new DataAccessObject();

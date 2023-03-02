@@ -5,7 +5,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace SupremeCourtCore.Domain
+namespace CeatCore.Domain
 {
     public partial class OrderVehicle
     {

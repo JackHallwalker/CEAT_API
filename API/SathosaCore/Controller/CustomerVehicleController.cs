@@ -17,6 +17,7 @@ namespace CeatCore.Controller
         int Update(CustomerVehicle customerVehicle);
         CustomerVehicle GetCustomerVehicleByVehicleNumber(string vehicleNumber, int isActive = 1);
 
+        CustomerVehicle GetCustomerVehicleByVehicleId(int vehicleId, int isActive = 1);
         int Delete(CustomerVehicle customerVehicle);
     }
 
@@ -148,6 +149,26 @@ namespace CeatCore.Controller
             {
                 dBConnection = new DBConnection();
                 return customerVehicleDAO.GetCustomerVehicleByVehicleNumber(vehicleNumber, dBConnection, isActive);
+            }
+            catch (Exception)
+            {
+                dBConnection.RollBack();
+
+                throw;
+            }
+            finally
+            {
+                if (dBConnection.con.State == System.Data.ConnectionState.Open)
+                    dBConnection.Commit();
+            }
+        }
+
+        public CustomerVehicle GetCustomerVehicleByVehicleId(int vehicleId, int isActive = 1)
+        {
+            try
+            {
+                dBConnection = new DBConnection();
+                return customerVehicleDAO.GetCustomerVehicleByVehicleId(vehicleId, dBConnection, isActive);
             }
             catch (Exception)
             {

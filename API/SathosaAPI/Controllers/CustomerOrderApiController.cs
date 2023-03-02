@@ -21,8 +21,13 @@ namespace CeatAPI.Controllers
             try
             {
                 CustomerOrderController orderTypeController = ControllerFactory.CreateCustomerOrderController();
+                OrderVehicleController orderVehicleController = ControllerFactory.CreateOrderController();
+                CustomerVehicleController customerVehicleController = ControllerFactory.CreateCustomerVehicleController();
                 int itemId = orderTypeController.createCustomerOrder(value);
-
+                OrderVehicle orderVehicle = new OrderVehicle();
+                orderVehicle.vehicleId = value.customerVehicle.id.ToString();
+                orderVehicle.orderId = itemId;
+                orderVehicleController.Save(orderVehicle);
                 if (value.orderDetails != null)
                 {
                     OrderDetailsController aa = ControllerFactory.CreateOrderDetailsController();
@@ -40,7 +45,7 @@ namespace CeatAPI.Controllers
                     }
                 }
 
-                if(value.orderFitters != null)
+                if (value.orderFitters != null)
                 {
                     OrderFitterController orderFitterController = ControllerFactory.CreateOrderFitterController();
                     foreach (var orderfitter in value.orderFitters)
@@ -57,7 +62,7 @@ namespace CeatAPI.Controllers
                 //    value.dealerRating.dealer_id = value.dealerId;
                 //    dealerRatingController.addRating(value.dealerRating);
                 //}
-                
+
 
                 return Request.CreateResponse(HttpStatusCode.OK, "Application created successfully. Id-" + itemId);
 
@@ -101,7 +106,8 @@ namespace CeatAPI.Controllers
         public IEnumerable<CustomerOrder> GetAllCustomerOrders(bool withOrderDetails)
         {
             CustomerOrderController orderTypeController = ControllerFactory.CreateCustomerOrderController();
-
+            CustomerVehicleController customerVehicleController = ControllerFactory.CreateCustomerVehicleController();
+            OrderVehicleController orderVehicleController = ControllerFactory.CreateOrderController();
             var customerOrders = orderTypeController.GetAllCustomerOrders(withOrderDetails);
             bool productMaster = true;
             bool productLineItem = true;
@@ -112,6 +118,8 @@ namespace CeatAPI.Controllers
                 {
                     var aa = ControllerFactory.CreateOrderDetailsController();
                     customerOrder.orderDetails = aa.GetAllOrderDetailsByCustomerOrderId(customerOrder.id);
+                    customerOrder.orderVehicle = orderVehicleController.GetOrderVehicleByOrderId(customerOrder.id);
+                    customerOrder.customerVehicle = customerVehicleController.GetCustomerVehicleByVehicleId(Convert.ToInt32(customerOrder.orderVehicle.vehicleId));
                 }
 
                 if (productMaster)
@@ -142,6 +150,8 @@ namespace CeatAPI.Controllers
         public List<CustomerOrderDetails> GetAllCustomerOrdersByDate(string date)
         {
             CustomerOrderController orderTypeController = ControllerFactory.CreateCustomerOrderController();
+            CustomerVehicleController customerVehicleController = ControllerFactory.CreateCustomerVehicleController();
+            OrderVehicleController orderVehicleController = ControllerFactory.CreateOrderController();
             var orderDetails = orderTypeController.GetAllCustomerOrdersByDate(date);
             bool productMater = true;
             bool productLineItem = true;
@@ -158,9 +168,10 @@ namespace CeatAPI.Controllers
                     order.productLineItem = aa.getProductLineItemById(order.product_line_item_id);
                     var bb = ControllerFactory.CreateProductMasterController();
                     order.productLineItem.productMaster = bb.getProductById(order.productLineItem.productMasterId);
+
                 }
             }
-            
+
 
             return orderDetails;
 
@@ -171,10 +182,14 @@ namespace CeatAPI.Controllers
         public List<CustomerOrder> GetAllCustomerOrdersByDealerId(int dealerId)
         {
             CustomerOrderController orderTypeController = ControllerFactory.CreateCustomerOrderController();
+            CustomerVehicleController customerVehicleController = ControllerFactory.CreateCustomerVehicleController();
+            OrderVehicleController orderVehicleController = ControllerFactory.CreateOrderController();
             var customerOrders = orderTypeController.GetAllCustomerOrdersByDealerId(dealerId);
             bool orderDetail = true;
             foreach (var order in customerOrders)
             {
+                order.orderVehicle = orderVehicleController.GetOrderVehicleByOrderId(order.id);
+                order.customerVehicle = customerVehicleController.GetCustomerVehicleByVehicleId(Convert.ToInt32(order.orderVehicle.vehicleId));
                 if (orderDetail)
                 {
                     var aa = ControllerFactory.CreateOrderDetailsController();
@@ -229,7 +244,7 @@ namespace CeatAPI.Controllers
             int year = 2022;
             int month = 10;
             CustomerOrderController orderTypeController = ControllerFactory.CreateCustomerOrderController();
-            var orderDetails = orderTypeController.GetAllCustomerOrdersByDateRangeAndDealerId(year,month, dealerId);
+            var orderDetails = orderTypeController.GetAllCustomerOrdersByDateRangeAndDealerId(year, month, dealerId);
             bool productMater = true;
             bool dealer = true;
             bool productLineItem = true;
@@ -270,7 +285,7 @@ namespace CeatAPI.Controllers
         //    CustomerOrderController orderTypeController = ControllerFactory.CreateCustomerOrderController();
         //    var orderDetails = orderTypeController.GetSalesCountByDealerId(year, month,date,dealerId);          
         //    bool dealer = true;
-          
+
 
         //    foreach (var order in orderDetails)
         //    {
@@ -297,7 +312,7 @@ namespace CeatAPI.Controllers
             int month = DateTime.Today.Month;
             string date = DateTime.Now.ToString("yyyy-MM-dd");
             CustomerOrderController orderTypeController = ControllerFactory.CreateCustomerOrderController();
-            var orderDetails = orderTypeController.GetTodaySalesCountByDealerId( date, dealerId);
+            var orderDetails = orderTypeController.GetTodaySalesCountByDealerId(date, dealerId);
             bool dealer = true;
 
 
